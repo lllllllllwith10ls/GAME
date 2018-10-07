@@ -21,48 +21,66 @@ class Vector {
 
 const updateGame = () => {
 	clear();
+	let vx = 0;
+	let vy = 0;
 	if (keys[87]) {
-		if(player.vY < -5) {
-			player.vY = -5
-		} else {
-			 player.vY -= 0.1;
-		}
-	} 
+		vy -= 1;
+	}
 	if (keys[65]) {
-		if(player.vX < -5) {
-			player.vX = -5
-		} else {
-			 player.vX -= 0.1;
-		}
+		vx -= 1;
 	} 
 	if (keys[83]) {
-		if(player.vY > 5) {
-			player.vY = 5
-		} else {
-			 player.vY += 0.1;
-		}
+		vy += 1;
 	}
 	if (keys[68]) {
-		if(player.vX > 5) {
-			player.vX = 5
+		vx += 1;
+	}
+	if(vy === 1 || vy === -1) {
+		if(player.v.y > 3) {
+			player.v.y = 3;
+		} else if(player.v.y < -3) {
+			player.v.y = -3;
 		} else {
-			 player.vX += 0.1;
+			 player.v.y += vy * 0.1;
 		}
 	}
-	if (player.xPos < 0) {
-		player.xPos = 0;
-		player.vX = -player.vX * 1/2;
+	if(vx === 1 || vx === -1) {
+		if(player.v.x > 3) {
+			player.v.x = 3;
+		} else if(player.v.y < -3) {
+			player.v.x = -3;
+		} else {
+			 player.v.x += vx * 0.1;
+		}
 	}
-	if (player.xPos > 400) {
-		player.xPos = 400;
-		player.vX = -player.vX * 1/2;
+	if(vy === 0) {
+		if(player.v.y > 0) {
+			player.v.y -= 0.1;
+		} else if(player.v.y < 0) {
+			player.v.y += 0.1;
+		}
 	}
-	if (player.yPos < 0) {
-		player.yPos = 0;
-		player.vY = -player.vY * 1/2;
+	if(vx === 0) {
+		if(player.v.x > 0) {
+			player.v.x -= 0.1;
+		} else if(player.v.x < 0) {
+			player.v.x += 0.1;
+		}
 	}
-	if (player.yPos > 400) {
-		player.yPos = 400;
-		player.vY = -player.vY * 1/2;
+	if (player.pos.x < 0) {
+		player.pos.x  = 0;
+		player.v.x = -player.v.x * 1/2;
+	}
+	if (player.pos.x  > 1000) {
+		player.pos.x  = 1000;
+		player.v.x = -player.v.x * 1/2;
+	}
+	if (player.pos.y < 0) {
+		player.pos.y = 0;
+		player.v.y = -player.v.y * 1/2;
+	}
+	if (player.pos.y > 400) {
+		player.pos.y = 400;
+		player.v.y = -player.v.y * 1/2;
 	}
 };
