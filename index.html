@@ -5,75 +5,55 @@
 	<body onload="startGame()">
 		<canvas id="game area" width="400" height="400" style="border:1px solid #c3c3c3;">
 		</canvas>
-		<p>WASD to move, Click to shoot</p>
-		<p id="lives"></p>
-		<p id="wave number"></p>
-		<button id="hell button" onclick="hell()">Hard mode</button>
-		<script type="text/javascript" src="entities.js"></script>
+		<script type="text/javascript" src="basics.js"></script>
 		<script>
 			const startGame = () => {
-				theGame.start();
-			}
-			
-			let player = {
-				xPos: 200,
-				yPos: 200,
-				vX: 0,
-				vY: 0,
-				reload: 15,
-				cooldown: 0,
-				damage: 1,
-				lives: 3
-			}
-			let keys = {
-				87: false,
-				65: false,
-				83: false,
-				68: false
-				
-			}
-			let mouse = {
-				x: 0,
-				y: 0
-				
-			}
-			let bullets = [];
-			let enemies = [];
-			let waves = 0;
-			let wavenum = 0;
-			
-			const theGame = {
-				canvas : document.getElementById("game area"),
-				start : function() {
-					this.canvas.width = 1000;
-					this.canvas.height = 1000;
-					this.context = this.canvas.getContext("2d");
-					this.interval = setInterval(updateGame, 20);
-					window.addEventListener("mousedown", function (e) {
-						mouse.down = true;
-						let margin = document.getElementById("game area").getBoundingClientRect();
-						mouse.x = e.clientX - margin.left;
-						mouse.y = e.clientY - margin.top;
-					})
-					window.addEventListener("mouseup", function (e) {
-						mouse.down = false;
-						
-					})
-					window.addEventListener('keydown', function (e) {
-							e.preventDefault();
-							keys[e.keyCode] = true;
-						})
-					window.addEventListener('keyup', function (e) {
-						keys[e.keyCode] = false;
-					})
-				},
-				stop : function() {
-					clearInterval(this.interval);
-				},
-				clear : function() {
-					this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				let player = {
+					xPos: 200,
+					yPos: 200,
+					vX: 0,
+					vY: 0,
+					reload: 15,
+					cooldown: 0,
+					damage: 1,
+					lives: 3
 				}
-			}
+				let keys = {
+					87: false,
+					65: false,
+					83: false,
+					68: false
+
+				}
+				let mouse = {
+					pos: 
+				}
+				let canvas = document.getElementById("game area");
+				let canvasW = 1000;
+				let canvasH = 1000;
+				let ctx = this.canvas.getContext("2d");
+				let interval = setInterval(updateGame, 20);
+				window.addEventListener("mousedown", function (e) {
+					mouse.down = true;
+					let margin = document.getElementById("game area").getBoundingClientRect();
+					mouse.x = e.clientX - margin.left;
+					mouse.y = e.clientY - margin.top;
+				});
+				window.addEventListener("mouseup", function (e) {
+					mouse.down = false;
+
+				});
+				window.addEventListener('keydown', function (e) {
+					e.preventDefault();
+					keys[e.keyCode] = true;
+				});
+				window.addEventListener('keyup', function (e) {
+					keys[e.keyCode] = false;
+				});
+			};
+			
+			
+			
 		</script>
 	</body>
 </html>
