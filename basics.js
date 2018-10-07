@@ -22,6 +22,7 @@ let player = {
 	v: new Vector(0,0),
 	show: function() {
 		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
+		angle = this.angle;
 		let x1 = Math.sin(angle)*3+this.pos.x;
 		let y1 = Math.cos(angle)*3+this.pos.y;
 		let x2 = Math.sin(angle+Math.atan(25/10))*Math.sqrt(625+100)+x1;
