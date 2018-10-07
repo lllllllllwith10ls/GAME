@@ -17,9 +17,36 @@ class Vector {
 		return new Vector(x,y);
 	};
 }
-
+let player = {
+	pos: new Vector(500,500),
+	v: new Vector(0,0),
+	show: function() {
+		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
+		let x1 = Math.sin(angle)*3+this.pos.x;
+		let y1 = Math.cos(angle)*3+this.pos.y;
+		let x2 = Math.sin(angle+Math.atan(25/10))*Math.sqrt(625+100)+x1;
+		let y2 = Math.cos(angle+Math.atan(25/10))*Math.sqrt(625+100)+y1;
+		let x3 = Math.sin(angle-Math.PI/4)*Math.sqrt(200)+x2;
+		let y3 = Math.cos(angle-Math.PI/4)*Math.sqrt(200)+y2;
+		let x4 = Math.sin(angle-3*Math.PI/4)*Math.sqrt(200)+x3;
+		let y4 = Math.cos(angle-3*Math.PI/4)*Math.sqrt(200)+y3;
+		ctx.fillStyle = "#FFFFFF";
+		ctx.beginPath();
+		ctx.moveTo(x1,y1);
+		ctx.lineTo(x2,y2);
+		ctx.lineTo(x3,y3);
+		ctx.lineTo(x3,y3);
+		ctx.lineTo(x4,y4);
+		ctx.lineTo(x1,y1);
+		ctx.fill();
+		ctx.stroke();
+		ctx.closePath();
+	}
+};
 const updateGame = () => {
 	clear();
+	ctx.fillStyle = "#000000";
+	ctx.fillRect(0,0,1000,1000);
 	let vx = 0;
 	let vy = 0;
 	if (keys[87]) {
@@ -82,4 +109,5 @@ const updateGame = () => {
 		player.pos.y = 400;
 		player.v.y = -player.v.y * 1/2;
 	}
+	player.show();
 };
