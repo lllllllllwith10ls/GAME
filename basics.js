@@ -27,8 +27,8 @@ let player = {
 		let y1 = Math.cos(angle)*3+this.pos.y;
 		let x2 = Math.sin(angle+Math.PI-Math.atan(10/25))*Math.sqrt(625+100)+x1;
 		let y2 = Math.cos(angle+Math.PI-Math.atan(10/25))*Math.sqrt(625+100)+y1;
-		let x3 = Math.sin(angle-Math.PI/2)*10+x2;
-		let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+		let x3 = Math.sin(angle-Math.PI/2)*20+x2;
+		let y3 = Math.cos(angle-Math.PI/2)*20+y2;
 		ctx.fillStyle = "#FFFFFF";
 		ctx.beginPath();
 		ctx.moveTo(x1,y1);
