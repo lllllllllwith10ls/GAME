@@ -59,7 +59,7 @@ const updateGame = () => {
 	if (keys[68]) {
 		vx += 1;
 	}
-	if(vy === 1 || vy === -2) {
+	if(vy === 1 || vy === -1) {
 		if(player.v.y > 2) {
 			player.v.y = 2;
 		} else if(player.v.y < -2) {
@@ -68,7 +68,7 @@ const updateGame = () => {
 			 player.v.y += vy * 0.1;
 		}
 	}
-	if(vx === 1 || vx === -2) {
+	if(vx === 1 || vx === -1) {
 		if(player.v.x > 2) {
 			player.v.x = 2;
 		} else if(player.v.x < -2) {
