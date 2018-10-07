@@ -18,7 +18,6 @@ class Vector {
 	};
 }
 
-
 const updateGame = () => {
 	clear();
 	let vx = 0;
