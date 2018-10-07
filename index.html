@@ -9,10 +9,8 @@
 		<script>
 			const startGame = () => {
 				let player = {
-					xPos: 200,
-					yPos: 200,
-					vX: 0,
-					vY: 0,
+					pos: new Vector(500,500);
+					v: new Vector(0,0);
 					reload: 15,
 					cooldown: 0,
 					damage: 1,
@@ -23,10 +21,9 @@
 					65: false,
 					83: false,
 					68: false
-
 				}
 				let mouse = {
-					pos: 
+					pos: new Vector(0,0);
 				}
 				let canvas = document.getElementById("game area");
 				let canvasW = 1000;
@@ -36,8 +33,8 @@
 				window.addEventListener("mousedown", function (e) {
 					mouse.down = true;
 					let margin = document.getElementById("game area").getBoundingClientRect();
-					mouse.x = e.clientX - margin.left;
-					mouse.y = e.clientY - margin.top;
+					mouse.pos.x = e.clientX - margin.left;
+					mouse.pos.y = e.clientY - margin.top;
 				});
 				window.addEventListener("mouseup", function (e) {
 					mouse.down = false;
@@ -51,9 +48,6 @@
 					keys[e.keyCode] = false;
 				});
 			};
-			
-			
-			
 		</script>
 	</body>
 </html>
