@@ -7,7 +7,7 @@
 		</canvas>
 		<script type="text/javascript" src="basics.js"></script>
 		<script>
-			const startGame = () => {
+			function startGame() {
 				let keys = {
 					87: false,
 					65: false,
@@ -15,7 +15,7 @@
 					68: false
 				}
 				let mouse = {
-					pos: new Vector(0,0);
+					pos: new Vector(0,0)
 				}
 				let canvas = document.getElementById("game area");
 				let canvasW = 1000;
