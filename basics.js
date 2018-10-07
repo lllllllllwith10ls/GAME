@@ -25,12 +25,12 @@ let player = {
 		angle = this.angle;
 		let x1 = Math.sin(angle)*3+this.pos.x;
 		let y1 = Math.cos(angle)*3+this.pos.y;
-		let x2 = Math.sin(angle-Math.PI+Math.atan(10/25))*Math.sqrt(625+100)+x1;
-		let y2 = Math.cos(angle-Math.PI+Math.atan(10/25))*Math.sqrt(625+100)+y1;
-		let x3 = Math.sin(angle+Math.PI/4)*Math.sqrt(200)+x2;
-		let y3 = Math.cos(angle+Math.PI/4)*Math.sqrt(200)+y2;
-		let x4 = Math.sin(angle+3*Math.PI/4)*Math.sqrt(200)+x3;
-		let y4 = Math.cos(angle+3*Math.PI/4)*Math.sqrt(200)+y3;
+		let x2 = Math.sin(angle+Math.PI-Math.atan(10/25))*Math.sqrt(625+100)+x1;
+		let y2 = Math.cos(angle+Math.PI-Math.atan(10/25))*Math.sqrt(625+100)+y1;
+		let x3 = Math.sin(angle-Math.PI/4)*Math.sqrt(200)+x2;
+		let y3 = Math.cos(angle-Math.PI/4)*Math.sqrt(200)+y2;
+		let x4 = Math.sin(angle-3*Math.PI/4)*Math.sqrt(200)+x3;
+		let y4 = Math.cos(angle-3*Math.PI/4)*Math.sqrt(200)+y3;
 		ctx.fillStyle = "#FFFFFF";
 		ctx.beginPath();
 		ctx.moveTo(x1,y1);
