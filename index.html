@@ -7,20 +7,21 @@
 		</canvas>
 		<script type="text/javascript" src="basics.js"></script>
 		<script>
+
+			let keys = {
+				87: false,
+				65: false,
+				83: false,
+				68: false
+			}
+			let mouse = {
+				pos: new Vector(0,0)
+			}
+			let canvas = document.getElementById("game area");
+			let canvasW = 1000;
+			let canvasH = 1000;
+			let ctx = canvas.getContext("2d");
 			function startGame() {
-				let keys = {
-					87: false,
-					65: false,
-					83: false,
-					68: false
-				}
-				let mouse = {
-					pos: new Vector(0,0)
-				}
-				let canvas = document.getElementById("game area");
-				let canvasW = 1000;
-				let canvasH = 1000;
-				let ctx = canvas.getContext("2d");
 				let interval = setInterval(updateGame, 20);
 				window.addEventListener("mousedown", function (e) {
 					mouse.down = true;
