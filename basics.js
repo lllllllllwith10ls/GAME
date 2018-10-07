@@ -25,12 +25,12 @@ let player = {
 		angle = this.angle;
 		let x1 = Math.sin(angle)*3+this.pos.x;
 		let y1 = Math.cos(angle)*3+this.pos.y;
-		let x2 = Math.sin(angle+Math.atan(10/25))*Math.sqrt(625+100)+x1;
-		let y2 = Math.cos(angle+Math.atan(10/25))*Math.sqrt(625+100)+y1;
+		let x2 = Math.sin(angle-Math.atan(10/25))*Math.sqrt(625+100)+x1;
+		let y2 = Math.cos(angle-Math.atan(10/25))*Math.sqrt(625+100)+y1;
 		let x3 = Math.sin(angle+Math.PI/4)*Math.sqrt(200)+x2;
 		let y3 = Math.cos(angle+Math.PI/4)*Math.sqrt(200)+y2;
-		let x4 = Math.sin(angle+3*Math.PI/4)*Math.sqrt(200)+x3;
-		let y4 = Math.cos(angle+3*Math.PI/4)*Math.sqrt(200)+y3;
+		let x4 = Math.sin(angle-Math.PI/4)*Math.sqrt(200)+x3;
+		let y4 = Math.cos(angle-Math.PI/4)*Math.sqrt(200)+y3;
 		ctx.fillStyle = "#FFFFFF";
 		ctx.beginPath();
 		ctx.moveTo(x1,y1);
@@ -106,8 +106,8 @@ const updateGame = () => {
 		player.pos.y = 0;
 		player.v.y = -player.v.y * 1/2;
 	}
-	if (player.pos.y > 400) {
-		player.pos.y = 400;
+	if (player.pos.y > 1000) {
+		player.pos.y = 1000;
 		player.v.y = -player.v.y * 1/2;
 	}
 	player.pos.add(player.v);
@@ -115,8 +115,8 @@ const updateGame = () => {
 	if (mouse.down === true) {
 		window.addEventListener("mousemove", function (e) {
 			let margin = document.getElementById("game area").getBoundingClientRect();
-			mouse.x = e.clientX - margin.left;
-			mouse.y = e.clientY - margin.top;
+			mouse.pos.x = e.clientX - margin.left;
+			mouse.pos.y = e.clientY - margin.top;
 		})
 		if(player.cooldown >= player.reload) {
 			let angle = Math.atan2(player.xPos-mouse.x,player.yPos-mouse.y); 
