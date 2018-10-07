@@ -60,19 +60,19 @@ const updateGame = () => {
 		vx += 1;
 	}
 	if(vy === 1 || vy === -1) {
-		if(player.v.y > 3) {
-			player.v.y = 3;
-		} else if(player.v.y < -3) {
-			player.v.y = -3;
+		if(player.v.y > 1) {
+			player.v.y = 1;
+		} else if(player.v.y < -1) {
+			player.v.y = -1;
 		} else {
 			 player.v.y += vy * 0.1;
 		}
 	}
 	if(vx === 1 || vx === -1) {
-		if(player.v.x > 3) {
-			player.v.x = 3;
-		} else if(player.v.y < -3) {
-			player.v.x = -3;
+		if(player.v.x > 1) {
+			player.v.x = 1;
+		} else if(player.v.x < -1) {
+			player.v.x = -1;
 		} else {
 			 player.v.x += vx * 0.1;
 		}
@@ -95,7 +95,7 @@ const updateGame = () => {
 		player.pos.x  = 0;
 		player.v.x = -player.v.x * 1/2;
 	}
-	if (player.pos.x  > 1000) {
+	if (player.pos.x > 1000) {
 		player.pos.x  = 1000;
 		player.v.x = -player.v.x * 1/2;
 	}
