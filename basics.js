@@ -7,15 +7,16 @@ class Vector {
 		return Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 	};
 	
-	this.prototype.add = function(b) {
-		this.x += b.x;
-		this.y += b.y;
-	}
+	
 	static add(a,b) {
 		let x = a.x + ybx;
 		let y = a.y + b.y;
 		return new Vector(x,y);
 	};
+}
+Vector.prototype.add = function(b) {
+	this.x += b.x;
+	this.y += b.y;
 }
 let player = {
 	pos: new Vector(500,500),
