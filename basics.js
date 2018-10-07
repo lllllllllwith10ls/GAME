@@ -59,20 +59,20 @@ const updateGame = () => {
 	if (keys[68]) {
 		vx += 1;
 	}
-	if(vy === 1 || vy === -1) {
-		if(player.v.y > 1) {
-			player.v.y = 1;
-		} else if(player.v.y < -1) {
-			player.v.y = -1;
+	if(vy === 1 || vy === -2) {
+		if(player.v.y > 2) {
+			player.v.y = 2;
+		} else if(player.v.y < -2) {
+			player.v.y = -2;
 		} else {
 			 player.v.y += vy * 0.1;
 		}
 	}
-	if(vx === 1 || vx === -1) {
-		if(player.v.x > 1) {
-			player.v.x = 1;
-		} else if(player.v.x < -1) {
-			player.v.x = -1;
+	if(vx === 1 || vx === -2) {
+		if(player.v.x > 2) {
+			player.v.x = 2;
+		} else if(player.v.x < -2) {
+			player.v.x = -2;
 		} else {
 			 player.v.x += vx * 0.1;
 		}
