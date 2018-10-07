@@ -7,7 +7,7 @@ class Vector {
 		return Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 	};
 	
-	function this.prototype.add(b) {
+	this.prototype.add = function(b) {
 		this.x += b.x;
 		this.y += b.y;
 	}
@@ -109,5 +109,6 @@ const updateGame = () => {
 		player.pos.y = 400;
 		player.v.y = -player.v.y * 1/2;
 	}
+	player.pos.add(player.v);
 	player.show();
 };
