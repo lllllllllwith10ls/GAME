@@ -111,5 +111,18 @@ const updateGame = () => {
 		player.v.y = -player.v.y * 1/2;
 	}
 	player.pos.add(player.v);
+	
+	if (mouse.down === true) {
+		window.addEventListener("mousemove", function (e) {
+			let margin = document.getElementById("game area").getBoundingClientRect();
+			mouse.x = e.clientX - margin.left;
+			mouse.y = e.clientY - margin.top;
+		})
+		if(player.cooldown >= player.reload) {
+			let angle = Math.atan2(player.xPos-mouse.x,player.yPos-mouse.y); 
+			bullets.push(new Bullet(player.xPos,player.yPos,-Math.sin(angle)*7.5,-Math.cos(angle)*7.5));
+			player.cooldown = 0;
+		}
+	}
 	player.show();
 };
