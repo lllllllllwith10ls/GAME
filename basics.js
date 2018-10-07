@@ -1,5 +1,26 @@
+class Vector {
+	constructor(x,y) {
+		this.x = x;
+		this.y = y;
+	}
+	get abs() {
+		return Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+	};
+	
+	function this.prototype.add(b) {
+		this.x += b.x;
+		this.y += b.y;
+	}
+	static add(a,b) {
+		let x = a.x + ybx;
+		let y = a.y + b.y;
+		return new Vector(x,y);
+	};
+}
+
+
 const updateGame = () => {
-	theGame.clear();
+	clear();
 	if (keys[87]) {
 		if(player.vY < -5) {
 			player.vY = -5
@@ -44,4 +65,4 @@ const updateGame = () => {
 		player.yPos = 400;
 		player.vY = -player.vY * 1/2;
 	}
-}
+};
