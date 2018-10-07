@@ -11,13 +11,10 @@
 		<button id="hell button" onclick="hell()">Hard mode</button>
 		<script type="text/javascript" src="entities.js"></script>
 		<script>
-			let hellish = false;
 			const startGame = () => {
 				theGame.start();
 			}
-			const hell = () => {
-				hellish = true;
-			}
+			
 			let player = {
 				xPos: 200,
 				yPos: 200,
@@ -48,8 +45,8 @@
 			const theGame = {
 				canvas : document.getElementById("game area"),
 				start : function() {
-					this.canvas.width = 400;
-					this.canvas.height = 400;
+					this.canvas.width = 1000;
+					this.canvas.height = 1000;
 					this.context = this.canvas.getContext("2d");
 					this.interval = setInterval(updateGame, 20);
 					window.addEventListener("mousedown", function (e) {
@@ -77,54 +74,6 @@
 					this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				}
 			}
-			const updateGame = () => {
-				theGame.clear();
-				if (keys[87]) {
-					if(player.vY < -5) {
-						player.vY = -5
-					} else {
-					   player.vY -= 0.1;
-					}
-				} 
-				if (keys[65]) {
-					if(player.vX < -5) {
-						player.vX = -5
-					} else {
-					   player.vX -= 0.1;
-					}
-				} 
-				if (keys[83]) {
-					if(player.vY > 5) {
-						player.vY = 5
-					} else {
-					   player.vY += 0.1;
-					}
-				}
-				if (keys[68]) {
-					if(player.vX > 5) {
-						player.vX = 5
-					} else {
-					   player.vX += 0.1;
-					}
-				}
-				if (player.xPos < 0) {
-					player.xPos = 0;
-					player.vX = -player.vX * 1/2;
-				}
-				if (player.xPos > 400) {
-					player.xPos = 400;
-					player.vX = -player.vX * 1/2;
-				}
-				if (player.yPos < 0) {
-					player.yPos = 0;
-					player.vY = -player.vY * 1/2;
-				}
-				if (player.yPos > 400) {
-					player.yPos = 400;
-					player.vY = -player.vY * 1/2;
-				}
-        }
-        }
 		</script>
 	</body>
 </html>
