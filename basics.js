@@ -303,6 +303,7 @@ class Spaceship extends Entity {
 				}
 				if(distance < 50 && this.mode === "hit") {
 					this.mode = "run";
+					this.modelength = Math.random()*60;
 				}
 				if(this.mode === "run") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
@@ -313,7 +314,7 @@ class Spaceship extends Entity {
 				}
 				if(this.modelength <= 0 && this.mode === "run") {
 					this.mode = "idle";
-					this.modelength = Math.random()*120;
+					this.modeLength = Math.random()*120;
 				}
 				this.pos.add(this.v);
 			} else if(this.ai === "Erratic") {
