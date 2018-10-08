@@ -195,21 +195,27 @@ class Spaceship extends Entity {
 			this.modeLength = Math.random()*120;
 		}
 		this.move = function() {
-			if (this.pos.x < 0) {
+			if(this.pos.x < 0) {
 				this.pos.x  = 0;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if (this.pos.x > 1000) {
+			if(this.pos.x > 1000) {
 				this.pos.x  = 1000;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if (player.pos.y < 0) {
+			if(player.pos.y < 0) {
 				this.pos.y = 0;
 				this.v.y = -this.v.y * 1/2;
 			}
-			if (this.pos.y > 1000) {
+			if(this.pos.y > 1000) {
 				this.pos.y = 1000;
 				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.v.x > this.speed) {
+				this.v.x = this.speed;
+			}
+			if(this.v.y > this.speed) {
+				this.v.y = this.speed;
 			}
 			if(this.ai === "Charger") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
