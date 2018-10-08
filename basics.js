@@ -165,8 +165,6 @@ class Bullet extends Entity {
 			ctx.fill();
 			ctx.stroke();
 			ctx.closePath();
-			ctx.strokeStyle = "#000000";
-			ctx.linewidth = "1"
 		}
 	}
 }
