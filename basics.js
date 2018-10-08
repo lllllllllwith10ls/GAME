@@ -176,6 +176,9 @@ const updateGame = () => {
 	ctx.fillRect(0,0,1000,1000);
 	
 	player.cooldown++;
+	if(player.cooldown > player.reload) {
+		player.cooldown = player.reload;
+	}
 	if (mouse.down === true) {
 		window.addEventListener("mousemove", function (e) {
 			let margin = document.getElementById("game area").getBoundingClientRect();
