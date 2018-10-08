@@ -241,7 +241,7 @@ class Spaceship extends Entity {
 					this.mode = "run";
 					this.modeLength = Math.random()*30;
 				}
-				if(this.mode = "run";) {
+				if(this.mode === "run") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
 					let angle = this.angle;
 					this.v.x += Math.sin(angle) * this.accel;
@@ -299,7 +299,7 @@ class Spaceship extends Entity {
 				if(distance < 25 && this.mode === "hit") {
 					this.mode = "run";
 				}
-				if(this.mode = "run";) {
+				if(this.mode === "run") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
 					let angle = this.angle;
 					this.v.x += Math.sin(angle) * this.accel;
