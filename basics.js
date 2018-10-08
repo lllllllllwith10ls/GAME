@@ -221,17 +221,18 @@ class Spaceship extends Entity {
 			} else if(this.ai === "Circler") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 				let distance = Vector.sub(player.pos,this.pos).abs;
-				let angle2 = this.angle+Math.PI;
+				let angle2;
 				if(this.mode === "clockwise") {
-					angle2 += Math.PI/30;
+					angle2 = this.angle+Math.PI/2;
 				} else {
-					angle2 -= Math.PI/30;
+					angle2 = this.angle-Math.PI/2;
 				}
 				let newy = new Vector(Math.sin(angle2)*distance,Math.cos(angle2)*distance);
 				newy.add(player.pos);
 				angle2 = Math.atan2(newy.x-this.pos.x,newy.y-this.pos.y);
-				this.v.x += Math.sin(angle2) * this.accel;
-				this.v.y += Math.cos(angle2) * this.accel;
+				let angle = this.angle;
+				this.v.x += Math.sin(angle) * this.accel + Math.sin(angle2) * this.accel;
+				this.v.y += Math.cos(angle) * this.accel + Math.cos(angle2) * this.accel;
 				this.modeLength --;
 				if(this.modeLength <= 0) {
 					if(this.mode === "clockwise") {
@@ -265,7 +266,7 @@ class Spaceship extends Entity {
 					} else {
 						vangle = Math.atan2(this.v.x,this.v.y);
 					}
-					let rand = Math.random()-0.5*Math.PI/4;
+					let rand = Math.random()-0.5*Math.PI/20;
 					this.v.x += Math.sin((vangle+rand+this.angle)/2) * this.accel;
 					this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
 					
@@ -281,7 +282,7 @@ class Spaceship extends Entity {
 					} else {
 						vangle = Math.atan2(this.v.x,this.v.y);
 					}
-					let rand = Math.random()-0.5*Math.PI/4;
+					let rand = Math.random()-0.5*Math.PI/20;
 					if(distance < 50) {
 						this.v.x += Math.sin((vangle+rand+this.angle+Math.PI)/2) * this.accel;
 						this.v.y += Math.cos((vangle+rand+this.angle+Math.PI)/2) * this.accel;
