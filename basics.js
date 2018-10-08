@@ -197,7 +197,7 @@ class Spaceship extends Entity {
 		this.move = function() {
 			console.log(Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y));
 			if(this.pos.x < 0) {
-				this.pos.x  = 0;
+				this.pos.x = 0;
 				this.v.x = -this.v.x * 1/2;
 			}
 			if(this.pos.x > 1000) {
@@ -214,9 +214,11 @@ class Spaceship extends Entity {
 			}
 			if(this.ai === "Charger") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				console.log(this.angle);
 				let angle = this.angle;
 				this.v.x += Math.sin(angle) * this.accel;
 				this.v.y += Math.cos(angle) * this.accel;
+				console.log(this.v);
 				this.pos.add(this.v);
 			} else if(this.ai === "Circler") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
