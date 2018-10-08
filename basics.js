@@ -227,9 +227,6 @@ class Spaceship extends Entity {
 				} else {
 					angle2 = this.angle-Math.PI/2;
 				}
-				let newy = new Vector(Math.sin(angle2)*distance,Math.cos(angle2)*distance);
-				newy.add(player.pos);
-				angle2 = Math.atan2(newy.x-this.pos.x,newy.y-this.pos.y);
 				let angle = this.angle;
 				this.v.x += Math.sin(angle) * this.accel + Math.sin(angle2) * this.accel;
 				this.v.y += Math.cos(angle) * this.accel + Math.cos(angle2) * this.accel;
@@ -240,11 +237,12 @@ class Spaceship extends Entity {
 					} else {
 						this.mode = "clockwise";
 					}
+					this.modeLength = Math.random()*300;
 				}
 				this.pos.add(this.v);
 			} else if(this.ai === "Coward") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
-				if(distance < 50) {
+				if(distance < 200) {
 					this.mode = "run";
 					this.modeLength = Math.random()*30;
 				}
@@ -253,9 +251,9 @@ class Spaceship extends Entity {
 					let angle = this.angle;
 					this.v.x += Math.sin(angle) * this.accel;
 					this.v.y += Math.cos(angle) * this.accel;
-					this.modelength--;
+					this.modeLength--;
 				}
-				if(this.modelength <= 0) {
+				if(this.modeLength <= 0) {
 					this.mode = "attack";
 				}
 				if(this.mode === "attack") {
@@ -292,7 +290,7 @@ class Spaceship extends Entity {
 						this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
 					}
 					
-					this.modelength--;
+					this.modeLength--;
 				}
 				if(this.modelength <= 0 && this.mode === "idle") {
 					this.mode = "hit";
@@ -311,7 +309,7 @@ class Spaceship extends Entity {
 					let angle = this.angle;
 					this.v.x += Math.sin(angle) * this.accel;
 					this.v.y += Math.cos(angle) * this.accel;
-					this.modelength--;
+					this.modeLength--;
 				}
 				if(this.modelength <= 0 && this.mode === "run") {
 					this.mode = "idle";
