@@ -95,6 +95,7 @@ let player = {
 		let x3 = Math.sin(angle-Math.PI/2)*20+x2;
 		let y3 = Math.cos(angle-Math.PI/2)*20+y2;
 		ctx.fillStyle = "#FFFFFF";
+		ctx.lineWidth = 0;
 		ctx.beginPath();
 		ctx.moveTo(x1,y1);
 		ctx.lineTo(x2,y2);
@@ -158,10 +159,10 @@ class Bullet extends Entity {
 		}
 		this.show = function() {
 			ctx.strokeStyle = "#FFFFFF";
-			ctx.beginPath();
-			ctx.moveTo(this.pos.x-this.v.x/2,this.pos.y-this.v.y/2);
-			ctx.lineTo(this.pos.x+this.v.x/2,this.pos.y-this.v.y/2);
 			ctx.lineWidth = 10;
+			ctx.beginPath();
+			ctx.moveTo(this.pos.x-this.v.x,this.pos.y-this.v.y);
+			ctx.lineTo(this.pos.x+this.v.x,this.pos.y-this.v.y);
 			ctx.stroke();
 			ctx.closePath();
 		}
