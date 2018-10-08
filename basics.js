@@ -346,7 +346,7 @@ class Spaceship extends Entity {
 					this.v.y += Math.cos(angle) * this.accel;
 					this.shoot();
 				}
-				if(distance < 50 && this.mode === "hit") {
+				if(distance < 75 && this.mode === "hit") {
 					this.mode = "run";
 					this.modeLength = Math.random()*60;
 				}
