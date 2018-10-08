@@ -179,7 +179,7 @@ class Bullet extends Entity {
 }
 class Spaceship extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,5,2,0.01);
+		super(x,y,vx,vy,5,2,0.1);
 		this.angle = 0;
 		this.ais = ["Charger","Circler","Coward","Hit n run"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
@@ -217,7 +217,7 @@ class Spaceship extends Entity {
 				let angle = this.angle;
 				this.v.x += Math.sin(angle) * this.accel;
 				this.v.y += Math.cos(angle) * this.accel;
-				console.log(this.v);
+				console.log(this.v.x);
 				this.pos.add(this.v);
 			} else if(this.ai === "Circler") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
