@@ -95,7 +95,7 @@ let player = {
 		let x3 = Math.sin(angle-Math.PI/2)*20+x2;
 		let y3 = Math.cos(angle-Math.PI/2)*20+y2;
 		ctx.fillStyle = "#FFFFFF";
-		ctx.lineWidth = 0;
+		ctx.lineWidth = 0.01;
 		ctx.beginPath();
 		ctx.moveTo(x1,y1);
 		ctx.lineTo(x2,y2);
