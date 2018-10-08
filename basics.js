@@ -195,6 +195,7 @@ class Spaceship extends Entity {
 			this.modeLength = Math.random()*120;
 		}
 		this.move = function() {
+			console.log(this.x+","+this.y);
 			if(this.pos.x < 0) {
 				this.pos.x  = 0;
 				this.v.x = -this.v.x * 1/2;
@@ -240,7 +241,7 @@ class Spaceship extends Entity {
 						this.mode = "clockwise";
 					}
 				}
-			} else if( this.ai === "Coward") {
+			} else if(this.ai === "Coward") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 50) {
 					this.mode = "run";
@@ -363,7 +364,9 @@ const updateGame = () => {
 	}
 	player.show();
 	for(let i = 0; i < entities.length; i++) {
-		entities[i].update();
+		if(!entities[i].dead) {
+			entities[i].update();
+		}
 	}
 	for(let i = entities.length-1; i >= 0; i--) {
 		if(entities[i].dead) {
