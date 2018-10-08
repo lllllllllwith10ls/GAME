@@ -195,7 +195,7 @@ class Spaceship extends Entity {
 			this.modeLength = Math.random()*120;
 		}
 		this.move = function() {
-			console.log(this.pos.x+","+this.pos.y);
+			console.log(Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y));
 			if(this.pos.x < 0) {
 				this.pos.x  = 0;
 				this.v.x = -this.v.x * 1/2;
@@ -232,7 +232,6 @@ class Spaceship extends Entity {
 				angle2 = Math.atan2(newy.x-this.pos.x,newy.y-this.pos.y);
 				this.v.x += Math.sin(angle) * this.accel;
 				this.v.y += Math.cos(angle) * this.accel;
-				this.pos.add(this.v);
 				this.modeLength --;
 				if(this.modeLength <= 0) {
 					if(this.mode === "clockwise") {
@@ -241,6 +240,7 @@ class Spaceship extends Entity {
 						this.mode = "clockwise";
 					}
 				}
+				this.pos.add(this.v);
 			} else if(this.ai === "Coward") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 50) {
