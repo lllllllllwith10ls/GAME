@@ -230,8 +230,8 @@ class Spaceship extends Entity {
 				let newy = new Vector(Math.sin(angle2)*distance,Math.cos(angle2)*distance);
 				newy.add(player.pos);
 				angle2 = Math.atan2(newy.x-this.pos.x,newy.y-this.pos.y);
-				this.v.x += Math.sin(angle) * this.accel;
-				this.v.y += Math.cos(angle) * this.accel;
+				this.v.x += Math.sin(angle2) * this.accel;
+				this.v.y += Math.cos(angle2) * this.accel;
 				this.modeLength --;
 				if(this.modeLength <= 0) {
 					if(this.mode === "clockwise") {
