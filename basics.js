@@ -229,7 +229,7 @@ class Spaceship extends Entity {
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				let angle = this.angle+Math.PI; 
-				entities.push(new Bullet(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5));
+				entities.push(new EnemyBullet(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5));
 				this.cooldown -= this.reload;
 			}
 		}
