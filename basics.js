@@ -204,7 +204,7 @@ class Spaceship extends Entity {
 				this.pos.x  = 1000;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if(player.pos.y < 0) {
+			if(this.pos.y < 0) {
 				this.pos.y = 0;
 				this.v.y = -this.v.y * 1/2;
 			}
