@@ -182,7 +182,7 @@ class Spaceship extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,5,2,0.1);
 		this.angle = 0;
-		this.ais = ["Charger","Circler","Coward","Hit n run"];
+		this.ais = ["Charger","Circler","Coward","Hit n run","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		if(this.ai === "Circler") {
 			let array = ["clockwise","counterclockwise"];
@@ -244,7 +244,7 @@ class Spaceship extends Entity {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 200) {
 					this.mode = "run";
-					this.modeLength = Math.random()*30;
+					this.modeLength = Math.random()*60;
 				}
 				if(this.mode === "run") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
@@ -281,7 +281,7 @@ class Spaceship extends Entity {
 						vangle = Math.atan2(this.v.x,this.v.y);
 					}
 					let rand = Math.random()-0.5*Math.PI/20;
-					if(distance < 50) {
+					if(distance < 100) {
 						this.v.x += Math.sin((vangle+rand+this.angle+Math.PI)/2) * this.accel;
 						this.v.y += Math.cos((vangle+rand+this.angle+Math.PI)/2) * this.accel;
 					} else {
@@ -301,7 +301,7 @@ class Spaceship extends Entity {
 					this.v.x += Math.sin(angle) * this.accel;
 					this.v.y += Math.cos(angle) * this.accel;
 				}
-				if(distance < 25 && this.mode === "hit") {
+				if(distance < 50 && this.mode === "hit") {
 					this.mode = "run";
 				}
 				if(this.mode === "run") {
@@ -313,7 +313,22 @@ class Spaceship extends Entity {
 				}
 				if(this.modelength <= 0 && this.mode === "run") {
 					this.mode = "idle";
+					this.modelength = Math.random()*120;
 				}
+				this.pos.add(this.v);
+			} else if(this.ai === "Erratic") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let rand = Math.random()-0.5*Math.PI/20;
+				
+				this.v.x += Math.sin((vangle+rand+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
+				
 				this.pos.add(this.v);
 			}
 		}
