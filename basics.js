@@ -195,7 +195,7 @@ class Spaceship extends Entity {
 			this.modeLength = Math.random()*120;
 		}
 		this.move = function() {
-			console.log(this.x+","+this.y);
+			console.log(this.pos.x+","+this.pos.y);
 			if(this.pos.x < 0) {
 				this.pos.x  = 0;
 				this.v.x = -this.v.x * 1/2;
