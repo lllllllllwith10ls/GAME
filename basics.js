@@ -87,7 +87,7 @@ let player = {
 		}
 		player.pos.add(player.v);
 		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
-		angle = this.angle;
+		let angle = this.angle;
 		let x1 = Math.sin(angle)*10+this.pos.x;
 		let y1 = Math.cos(angle)*10+this.pos.y;
 		let x2 = Math.sin(angle+Math.PI-Math.atan(10/25))*Math.sqrt(625+100)+x1;
@@ -161,7 +161,7 @@ class Bullet extends Entity {
 			ctx.beginPath();
 			ctx.moveTo(this.pos.x-this.v.x/2,this.pos.y-this.v.y/2);
 			ctx.lineTo(this.pos.x+this.v.x/2,this.pos.y-this.v.y/2);
-			ctx.linewidth = 10;
+			ctx.lineWidth = 10;
 			ctx.stroke();
 			ctx.closePath();
 		}
