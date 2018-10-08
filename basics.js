@@ -8,8 +8,13 @@ class Vector {
 	};
 	
 	static add(a,b) {
-		let x = a.x + ybx;
+		let x = a.x + b.x;
 		let y = a.y + b.y;
+		return new Vector(x,y);
+	};
+	static sub(a,b) {
+		let x = a.x - b.x;
+		let y = a.y - b.y;
 		return new Vector(x,y);
 	};
 }
