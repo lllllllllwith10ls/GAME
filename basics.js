@@ -197,7 +197,7 @@ class EnemyBullet extends Entity {
 			}
 		}
 		this.show = function() {
-			ctx.strokeStyle = "#FFFFFF";
+			ctx.strokeStyle = "#FF0000";
 			ctx.lineWidth = 3;
 			ctx.beginPath();
 			ctx.moveTo(this.pos.x-this.v.x*2,this.pos.y-this.v.y*2);
@@ -387,7 +387,7 @@ class Spaceship extends Entity {
 			let y2 = Math.cos(angle+Math.PI-Math.atan(10/25))*Math.sqrt(625+100)+y1;
 			let x3 = Math.sin(angle-Math.PI/2)*20+x2;
 			let y3 = Math.cos(angle-Math.PI/2)*20+y2;
-			ctx.fillStyle = "#FFFFFF";
+			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
 			ctx.beginPath();
 			ctx.moveTo(x1,y1);
