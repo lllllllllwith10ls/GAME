@@ -214,20 +214,18 @@ class Spaceship extends Entity {
 			}
 			if(this.ai === "Charger") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
-				console.log(this.angle);
 				let angle = this.angle;
 				this.v.x += Math.sin(angle) * this.accel;
 				this.v.y += Math.cos(angle) * this.accel;
-				console.log(this.v.x);
 				this.pos.add(this.v);
 			} else if(this.ai === "Circler") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				let angle2 = this.angle+Math.PI;
 				if(this.mode === "clockwise") {
-					angle2 += Math.PI/90;
+					angle2 += Math.PI/30;
 				} else {
-					angle2 -= Math.PI/90;
+					angle2 -= Math.PI/30;
 				}
 				let newy = new Vector(Math.sin(angle2)*distance,Math.cos(angle2)*distance);
 				newy.add(player.pos);
