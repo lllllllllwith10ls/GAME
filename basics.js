@@ -178,10 +178,41 @@ class Bullet extends Entity {
 		}
 	}
 }
+class EnemyBullet extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,1,5,0);
+		this.move = function() {
+			this.pos.add(this.v);
+			if (this.pos.x < 0) {
+				this.dead = true;
+			}
+			if (this.pos.x > 1000) {
+				this.dead = true;
+			}
+			if (this.pos.y < 0) {
+				this.dead = true;
+			}
+			if (this.pos.y > 1000) {
+				this.dead = true;
+			}
+		}
+		this.show = function() {
+			ctx.strokeStyle = "#FFFFFF";
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			ctx.moveTo(this.pos.x-this.v.x*2,this.pos.y-this.v.y*2);
+			ctx.lineTo(this.pos.x+this.v.x*2,this.pos.y+this.v.y*2);
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
 class Spaceship extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,5,2,0.1);
 		this.angle = 0;
+		this.reload = 30;
+		this.cooldown = 30;
 		this.ais = ["Charger","Circler","Coward","Hit n run","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		if(this.ai === "Circler") {
@@ -194,6 +225,13 @@ class Spaceship extends Entity {
 		} else if(this.ai === "Hit n run") {
 			this.mode = "idle";
 			this.modeLength = Math.random()*120;
+		}
+		this.shoot = function() {
+			if(this.cooldown >= this.reload) {
+				let angle = this.angle; 
+				entities.push(new Bullet(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5));
+				this.cooldown -= this.reload;
+			}
 		}
 		this.move = function() {
 			if(this.pos.x < 0) {
@@ -212,12 +250,15 @@ class Spaceship extends Entity {
 				this.pos.y = 1000;
 				this.v.y = -this.v.y * 1/2;
 			}
+			this.cooldown++;
 			if(this.ai === "Charger") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 				let angle = this.angle;
-				this.v.x += Math.sin(angle) * this.accel;
-				this.v.y += Math.cos(angle) * this.accel;
+				let rand = Math.random()-0.5*Math.PI/20;
+				this.v.x += Math.sin(angle+rand) * this.accel;
+				this.v.y += Math.cos(angle+rand) * this.accel;
 				this.pos.add(this.v);
+				this.shoot();
 			} else if(this.ai === "Circler") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 				let distance = Vector.sub(player.pos,this.pos).abs;
@@ -240,6 +281,7 @@ class Spaceship extends Entity {
 					this.modeLength = Math.random()*300;
 				}
 				this.pos.add(this.v);
+				this.shoot();
 			} else if(this.ai === "Coward") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 200) {
@@ -267,6 +309,7 @@ class Spaceship extends Entity {
 					let rand = Math.random()-0.5*Math.PI/20;
 					this.v.x += Math.sin((vangle+rand+this.angle)/2) * this.accel;
 					this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
+					this.shoot();
 					
 				}
 				this.pos.add(this.v);
@@ -290,9 +333,10 @@ class Spaceship extends Entity {
 						this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
 					}
 					
+					this.shoot();
 					this.modeLength--;
 				}
-				if(this.modelength <= 0 && this.mode === "idle") {
+				if(this.modeLength <= 0 && this.mode === "idle") {
 					this.mode = "hit";
 				}
 				if(this.mode === "hit") {
@@ -300,10 +344,11 @@ class Spaceship extends Entity {
 					let angle = this.angle;
 					this.v.x += Math.sin(angle) * this.accel;
 					this.v.y += Math.cos(angle) * this.accel;
+					this.shoot();
 				}
 				if(distance < 50 && this.mode === "hit") {
 					this.mode = "run";
-					this.modelength = Math.random()*60;
+					this.modeLength = Math.random()*60;
 				}
 				if(this.mode === "run") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
@@ -312,7 +357,7 @@ class Spaceship extends Entity {
 					this.v.y += Math.cos(angle) * this.accel;
 					this.modeLength--;
 				}
-				if(this.modelength <= 0 && this.mode === "run") {
+				if(this.modeLength <= 0 && this.mode === "run") {
 					this.mode = "idle";
 					this.modeLength = Math.random()*120;
 				}
@@ -331,6 +376,7 @@ class Spaceship extends Entity {
 				this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
 				
 				this.pos.add(this.v);
+				this.shoot();
 			}
 		}
 		this.show = function() {
