@@ -123,6 +123,7 @@ class Entity {
 		this.v = new Vector(vx,vy);
 		this.health = health;
 		this.speed = speed;
+		this.accel = accel;
 		this.dead = false;
 		this.move = function() {
 		
