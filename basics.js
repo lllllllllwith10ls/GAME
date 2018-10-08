@@ -211,12 +211,6 @@ class Spaceship extends Entity {
 				this.pos.y = 1000;
 				this.v.y = -this.v.y * 1/2;
 			}
-			if(this.v.x > this.speed) {
-				this.v.x = this.speed;
-			}
-			if(this.v.y > this.speed) {
-				this.v.y = this.speed;
-			}
 			if(this.ai === "Charger") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 				let angle = this.angle;
