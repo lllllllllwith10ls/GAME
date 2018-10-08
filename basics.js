@@ -158,10 +158,10 @@ class Bullet extends Entity {
 		}
 		this.show = function() {
 			ctx.strokeStyle = "#FFFFFF";
-			ctx.linewidth = 10;
 			ctx.beginPath();
 			ctx.moveTo(this.pos.x-this.v.x/2,this.pos.y-this.v.y/2);
 			ctx.lineTo(this.pos.x+this.v.x/2,this.pos.y-this.v.y/2);
+			ctx.linewidth = 10;
 			ctx.stroke();
 			ctx.closePath();
 		}
