@@ -186,8 +186,8 @@ const updateGame = () => {
 			mouse.pos.y = e.clientY - margin.top;
 		})
 		if(player.cooldown >= player.reload) {
-			let angle = Math.atan2(player.xPos-mouse.x,player.yPos-mouse.y); 
-			entities.push(new Bullet(player.xPos,player.yPos,-Math.sin(angle)*5,-Math.cos(angle)*5));
+			let angle = Math.atan2(player.pos.x-mouse.pos.x,player.pos.y-mouse.pos.y); 
+			entities.push(new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5));
 			player.cooldown -= player.reload;
 		}
 	}
