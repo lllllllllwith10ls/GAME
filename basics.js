@@ -162,7 +162,7 @@ class Bullet extends Entity {
 			ctx.lineWidth = 10;
 			ctx.beginPath();
 			ctx.moveTo(this.pos.x-this.v.x,this.pos.y-this.v.y);
-			ctx.lineTo(this.pos.x+this.v.x,this.pos.y-this.v.y);
+			ctx.lineTo(this.pos.x+this.v.x,this.pos.y+this.v.y);
 			ctx.stroke();
 			ctx.closePath();
 		}
