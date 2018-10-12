@@ -101,8 +101,8 @@ let player = {
 	collide: function() {
 		for(let i = 0; i < entities.length; i++) {
 			if(this.invincible) {
-				break;
 				this.iframe--;
+				break;
 			}
 			if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+5 && !entities[i].dead && !entities[i].friendly) {
 				this.health--;
