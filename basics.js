@@ -102,6 +102,7 @@ let player = {
 		} else {
 			clear();
 			ctx.font="10px Arial";
+			ctx.fillStyle="#FFFFFF";
 			ctx.fillText("you died lol",475,500);
 			stop();
 		}
