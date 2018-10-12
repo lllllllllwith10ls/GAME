@@ -26,6 +26,10 @@ Vector.prototype.sub = function(b) {
 	this.x -= b.x;
 	this.y -= b.y;
 };
+Vector.prototype.times = function(b) {
+	this.x *= b;
+	this.y *= b;
+};
 let player = {
 	pos: new Vector(500,500),
 	v: new Vector(0,0),
@@ -47,22 +51,11 @@ let player = {
 			vx += 1;
 		}
 		if(vy === 1 || vy === -1) {
-			if(player.v.y > 2) {
-				player.v.y = 2;
-			} else if(player.v.y < -2) {
-				player.v.y = -2;
-			} else {
-				 player.v.y += vy * 0.1;
-			}
+			player.v.y += vy * 0.1;
 		}
 		if(vx === 1 || vx === -1) {
-			if(player.v.x > 2) {
-				player.v.x = 2;
-			} else if(player.v.x < -2) {
-				player.v.x = -2;
-			} else {
-				 player.v.x += vx * 0.1;
-			}
+			
+			player.v.x += vx * 0.1;
 		}
 		if(vy === 0) {
 			if(player.v.y > 0) {
@@ -93,6 +86,12 @@ let player = {
 		if (player.pos.y > 1000) {
 			player.pos.y = 1000;
 			player.v.y = -player.v.y * 1/2;
+		}
+		if (this.v.abs > 2) {
+			let angle = -Math.atan2(this.v.y-this.pos.y,this.v.x-this.pos.x)-Math.PI/2;
+			this.v.x = Math.sin(angle)*2
+			this.v.y = Math.cos(angle)*2
+
 		}
 		player.pos.add(player.v);
 		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
@@ -135,15 +134,11 @@ class Entity {
 	}
 }
 Entity.prototype.update = function() {
-	if(this.v.y > this.speed) {
-		this.v.y = this.speed;
-	} else if(this.v.y < -this.speed) {
-		this.v.y = -this.speed;
-	}
-	if(this.v.x > this.speed) {
-		this.v.x = this.speed;
-	} else if(this.v.x < -this.speed) {
-		this.v.x = -this.speed;
+	if (this.v.abs > 2) {
+		let angle = -Math.atan2(this.v.y-this.pos.y,this.v.x-this.pos.x)-Math.PI/2;
+		this.v.x = Math.sin(angle)*2
+		this.v.y = Math.cos(angle)*2
+
 	}
 	this.move();
 	this.show();
