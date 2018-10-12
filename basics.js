@@ -88,13 +88,13 @@ let player = {
 			player.v.y = -player.v.y * 1/2;
 		}
 		if (this.v.abs > 2) {
-			let angle = -Math.atan2(this.v.y,this.v.x)-Math.PI/2;
+			let angle = -Math.atan2(this.v.y,this.v.x);
 			this.v.x = Math.sin(angle)*2
 			this.v.y = Math.cos(angle)*2
 
 		}
 		player.pos.add(player.v);
-		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x);
+		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
 		let angle = this.angle;
 		let x1 = Math.sin(angle)*5+this.pos.x;
 		let y1 = Math.cos(angle)*5+this.pos.y;
