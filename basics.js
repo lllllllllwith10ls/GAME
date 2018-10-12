@@ -374,7 +374,7 @@ class Spaceship extends Entity {
 				} else {
 					vangle = Math.atan2(this.v.x,this.v.y);
 				}
-				let rand = Math.random()-0.5*Math.PI/20;
+				let rand = Math.random()-0.5*Math.PI/5;
 				
 				this.v.x += Math.sin((vangle+rand+this.angle)/2) * this.accel;
 				this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
