@@ -100,10 +100,10 @@ let player = {
 			ctx.stroke();
 			ctx.closePath();
 		} else {
-			stop();
 			clear();
 			ctx.font="10px Arial";
 			ctx.fillText("you died lol",475,500);
+			stop();
 		}
 	},
 	collide: function() {
