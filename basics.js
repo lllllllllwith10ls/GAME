@@ -94,7 +94,7 @@ let player = {
 
 		}
 		player.pos.add(player.v);
-		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
+		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x);
 		let angle = this.angle;
 		let x1 = Math.sin(angle)*5+this.pos.x;
 		let y1 = Math.cos(angle)*5+this.pos.y;
