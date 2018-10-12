@@ -135,7 +135,7 @@ class Entity {
 }
 Entity.prototype.update = function() {
 	if (this.v.abs > this.accel) {
-		let angle = -Math.atan2(this.v.y,this.v.x)-Math.PI/2;
+		let angle = -Math.atan2(this.v.y,this.v.x);
 		this.v.x = Math.sin(angle)*2
 		this.v.y = Math.cos(angle)*2
 
