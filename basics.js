@@ -257,7 +257,7 @@ class Spaceship extends Entity {
 			if(this.ai === "Charger") {
 				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 				let angle = this.angle;
-				let rand = Math.random()-0.5*Math.PI/20;
+				let rand = Math.random()-0.5*Math.PI/5;
 				this.v.x += Math.sin(angle+rand) * this.accel;
 				this.v.y += Math.cos(angle+rand) * this.accel;
 				this.pos.add(this.v);
@@ -309,7 +309,7 @@ class Spaceship extends Entity {
 					} else {
 						vangle = Math.atan2(this.v.x,this.v.y);
 					}
-					let rand = Math.random()-0.5*Math.PI/20;
+					let rand = Math.random()-0.5*Math.PI/5;
 					this.v.x += Math.sin((vangle+rand+this.angle)/2) * this.accel;
 					this.v.y += Math.cos((vangle+rand+this.angle)/2) * this.accel;
 					this.shoot();
@@ -326,7 +326,7 @@ class Spaceship extends Entity {
 					} else {
 						vangle = Math.atan2(this.v.x,this.v.y);
 					}
-					let rand = Math.random()-0.5*Math.PI/20;
+					let rand = Math.random()-0.5*Math.PI/5;
 					if(distance < 100) {
 						this.v.x += Math.sin((vangle+rand+this.angle+Math.PI)/2) * this.accel;
 						this.v.y += Math.cos((vangle+rand+this.angle+Math.PI)/2) * this.accel;
@@ -345,8 +345,9 @@ class Spaceship extends Entity {
 				if(this.mode === "hit") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 					let angle = this.angle;
-					this.v.x += Math.sin(angle) * this.accel;
-					this.v.y += Math.cos(angle) * this.accel;
+					let rand = Math.random()-0.5*Math.PI/5;
+					this.v.x += Math.sin(angle+rand) * this.accel;
+					this.v.y += Math.cos(angle+rand) * this.accel;
 					this.shoot();
 				}
 				if(distance < 75 && this.mode === "hit") {
