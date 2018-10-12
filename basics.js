@@ -83,6 +83,9 @@ let player = {
 		let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
 		let x3 = Math.sin(angle-Math.PI/2)*10+x2;
 		let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+		if(this.iframe % 4 = 3 || this.iframe % 4 =2) {
+			ctx.fillStyle = "#111111";
+		}
 		ctx.fillStyle = "#FFFFFF";
 		ctx.lineWidth = 0.01;
 		ctx.beginPath();
@@ -99,7 +102,7 @@ let player = {
 		for(let i = 0; i < entities.length; i++) {
 			if(this.invincible) {
 				break;
-				this.invincible--;
+				this.iframe--;
 			}
 			if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+5 && !entities[i].dead && !entities[i].friendly) {
 				this.health--;
