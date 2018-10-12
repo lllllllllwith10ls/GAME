@@ -88,7 +88,7 @@ let player = {
 			player.v.y = -player.v.y * 1/2;
 		}
 		if (this.v.abs > 2) {
-			let angle = -Math.atan2(this.v.y,this.v.x);
+			let angle = -Math.atan2(this.v.y,this.v.x)+Math.PI/2;
 			this.v.x = Math.sin(angle)*2
 			this.v.y = Math.cos(angle)*2
 
@@ -135,7 +135,7 @@ class Entity {
 }
 Entity.prototype.update = function() {
 	if (this.v.abs > this.accel) {
-		let angle = -Math.atan2(this.v.y,this.v.x);
+		let angle = -Math.atan2(this.v.y,this.v.x)+Math.PI/2;
 		this.v.x = Math.sin(angle)*2
 		this.v.y = Math.cos(angle)*2
 
