@@ -35,43 +35,37 @@ let player = {
 	v: new Vector(0,0),
 	cooldown: 0,
 	reload: 10,
+	health: 5,
+	invincible: false,
+	iframe: 0,
 	show: function() {
-		let vx = 0;
-		let vy = 0;
 		if (keys[87]) {
-			vy -= 1;
+			this.v.y -= 0.1;
 		}
 		if (keys[65]) {
-			vx -= 1;
+			this.v.x -= 0.1;
 		} 
 		if (keys[83]) {
-			vy += 1;
+			this.v.y += 0.1;
 		}
 		if (keys[68]) {
-			vx += 1;
+			this.v.x += 0.1;
 		}
-		if(vy === 1 || vy === -1) {
-			player.v.y += vy * 0.1;
+		if (this.pos.x < 0) {
+			this.pos.x  = 0;
+			this.v.x = -this.v.x * 1/2;
 		}
-		if(vx === 1 || vx === -1) {
-			
-			player.v.x += vx * 0.1;
+		if (this.pos.x > 1000) {
+			this.pos.x  = 1000;
+			this.v.x = -this.v.x * 1/2;
 		}
-		if (player.pos.x < 0) {
-			player.pos.x  = 0;
-			player.v.x = -player.v.x * 1/2;
+		if (this.pos.y < 0) {
+			this.pos.y = 0;
+			this.v.y = -this.v.y * 1/2;
 		}
-		if (player.pos.x > 1000) {
-			player.pos.x  = 1000;
-			player.v.x = -player.v.x * 1/2;
-		}
-		if (player.pos.y < 0) {
-			player.pos.y = 0;
-			player.v.y = -player.v.y * 1/2;
-		}
-		if (player.pos.y > 1000) {
-			player.pos.y = 1000;
-			player.v.y = -player.v.y * 1/2;
+		if (this.pos.y > 1000) {
+			this.pos.y = 1000;
+			this.v.y = -player.v.y * 1/2;
 		}
 		if (this.v.abs > 2) {
 			let angle = -Math.atan2(this.v.y,this.v.x)+Math.PI/2;
@@ -79,7 +73,8 @@ let player = {
 			this.v.y = Math.cos(angle)*2
 
 		}
-		player.pos.add(player.v);
+		this.pos.add(player.v);
+		this.collide();
 		this.angle = -Math.atan2(this.pos.y-mouse.pos.y,this.pos.x-mouse.pos.x)-Math.PI/2;
 		let angle = this.angle;
 		let x1 = Math.sin(angle)*5+this.pos.x;
@@ -99,17 +94,38 @@ let player = {
 		ctx.fill();
 		ctx.stroke();
 		ctx.closePath();
+	},
+	collide: function() {
+		for(let i = 0; i < entities.length; i++) {
+			if(this.invincible) {
+				break;
+				this.invincible--;
+			}
+			if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+5 && !entities[i].dead && !entities[i].friendly) {
+				this.health--;
+				entities[i].health--;
+				this.invinicible = true;
+				this.iframe = 100;
+				
+			}
+		}
+		if(this.iframe <= 0) {
+			this.invincible = false;
+		}
 	}
 };
 let entities = [];
 class Entity {
-	constructor(x,y,vx,vy,health,speed,accel) {
+	constructor(x,y,vx,vy,health,speed,accel,radius) {
 		this.pos = new Vector(x,y);
 		this.v = new Vector(vx,vy);
 		this.health = health;
 		this.speed = speed;
 		this.accel = accel;
+		this.radius = radius;
 		this.dead = false;
+		this.friendly = false;
+		this.damagable = true;
 		this.move = function() {
 		
 		}
@@ -126,13 +142,29 @@ Entity.prototype.update = function() {
 		this.v.y = Math.cos(angle)*2
 
 	}
+	if (this.health <= 0) {
+		this.dead = true;
+	}
 	this.move();
 	this.show();
 	
 }
+Entity.prototype.update = function() {
+	for(let i = 0; i < entities.length; i++) {
+		if(this.friendly || this.dead || !this.damagable) {
+			break;
+		}
+		if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+this.radius && !entities[i].dead && entities[i].friendly) {
+			this.health--;
+			entities[i].health--;
+		}
+	}
+}
 class Bullet extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,1,5,0);
+		super(x,y,vx,vy,1,5,0,3);
+		this.friendly = true;
+		this.damagable = false;
 		this.move = function() {
 			this.pos.add(this.v);
 			if (this.pos.x < 0) {
@@ -152,8 +184,8 @@ class Bullet extends Entity {
 			ctx.strokeStyle = "#FFFFFF";
 			ctx.lineWidth = 1;
 			ctx.beginPath();
-			ctx.moveTo(this.pos.x-this.v.x,this.pos.y-this.v.y);
-			ctx.lineTo(this.pos.x+this.v.x,this.pos.y+this.v.y);
+			ctx.moveTo(this.pos.x-this.v.x*2,this.pos.y-this.v.y*2);
+			ctx.lineTo(this.pos.x+this.v.x*2,this.pos.y+this.v.y*2);
 			ctx.stroke();
 			ctx.closePath();
 		}
@@ -161,7 +193,8 @@ class Bullet extends Entity {
 }
 class EnemyBullet extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,1,5,0);
+		super(x,y,vx,vy,1,5,0,3);
+		this.damagable = false;
 		this.move = function() {
 			this.pos.add(this.v);
 			if (this.pos.x < 0) {
@@ -190,7 +223,7 @@ class EnemyBullet extends Entity {
 }
 class Spaceship extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,5,0.5,0.01);
+		super(x,y,vx,vy,5,0.5,0.1,5);
 		this.angle = 0;
 		this.reload = 120;
 		this.cooldown = 0;
