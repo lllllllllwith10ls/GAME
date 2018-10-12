@@ -64,13 +64,6 @@ let player = {
 				player.v.y += 0.1;
 			}
 		}
-		if(vx === 0) {
-			if(player.v.x > 0) {
-				player.v.x -= 0.1;
-			} else if(player.v.x < 0) {
-				player.v.x += 0.1;
-			}
-		}
 		if (player.pos.x < 0) {
 			player.pos.x  = 0;
 			player.v.x = -player.v.x * 1/2;
