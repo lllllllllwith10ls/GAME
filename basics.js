@@ -83,7 +83,7 @@ let player = {
 		let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
 		let x3 = Math.sin(angle-Math.PI/2)*10+x2;
 		let y3 = Math.cos(angle-Math.PI/2)*10+y2;
-		if(this.iframe % 4 = 3 || this.iframe % 4 =2) {
+		if(this.iframe % 4 <= 3 && this.iframe % 4 >= 2) {
 			ctx.fillStyle = "#111111";
 		}
 		ctx.fillStyle = "#FFFFFF";
@@ -148,11 +148,12 @@ Entity.prototype.update = function() {
 	if (this.health <= 0) {
 		this.dead = true;
 	}
+	this.collide();
 	this.move();
 	this.show();
 	
 }
-Entity.prototype.update = function() {
+Entity.prototype.collide = function() {
 	for(let i = 0; i < entities.length; i++) {
 		if(this.friendly || this.dead || !this.damagable) {
 			break;
