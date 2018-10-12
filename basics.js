@@ -101,6 +101,8 @@ let player = {
 			ctx.closePath();
 		} else {
 			clear();
+			ctx.fillStyle = "#000000";
+			ctx.fillRect(0,0,1000,1000);
 			ctx.font="10px Arial";
 			ctx.fillStyle="#FFFFFF";
 			ctx.fillText("you died lol",475,500);
