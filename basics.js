@@ -84,9 +84,10 @@ let player = {
 		let x3 = Math.sin(angle-Math.PI/2)*10+x2;
 		let y3 = Math.cos(angle-Math.PI/2)*10+y2;
 		if(this.iframe % 4 <= 3 && this.iframe % 4 >= 2) {
-			ctx.fillStyle = "#111111";
+			ctx.fillStyle = "#000000";
+		} else {
+			ctx.fillStyle = "#FFFFFF";	
 		}
-		ctx.fillStyle = "#FFFFFF";
 		ctx.lineWidth = 0.01;
 		ctx.beginPath();
 		ctx.moveTo(x1,y1);
