@@ -40,7 +40,10 @@
 				window.addEventListener('keyup', function (e) {
 					keys[e.keyCode] = false;
 				});
-				for(let i = 0; i < 10; i++) {
+				for(let i = 0; i < 5; i++) {
+					new Chargeship(Math.random()*1000,0,0,0);
+				}
+				for(let i = 0; i < 5; i++) {
 					new Spaceship(Math.random()*1000,0,0,0);
 				}
 			};
