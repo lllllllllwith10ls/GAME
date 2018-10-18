@@ -88,25 +88,15 @@ let player = {
 		} else {
 			ctx.fillStyle = "#FFFFFF";	
 		}
-		if(!this.health <= 0) {
-			ctx.lineWidth = 0.01;
-			ctx.beginPath();
-			ctx.moveTo(x1,y1);
-			ctx.lineTo(x2,y2);
-			ctx.lineTo(x3,y3);
-			ctx.lineTo(x1,y1);
-			ctx.fill();
-			ctx.stroke();
-			ctx.closePath();
-		} else {
-			clear();
-			ctx.fillStyle = "#000000";
-			ctx.fillRect(0,0,1000,1000);
-			ctx.font="10px Arial";
-			ctx.fillStyle="#FFFFFF";
-			ctx.fillText("you died lol",475,500);
-			stop();
-		}
+		ctx.lineWidth = 0.01;
+		ctx.beginPath();
+		ctx.moveTo(x1,y1);
+		ctx.lineTo(x2,y2);
+		ctx.lineTo(x3,y3);
+		ctx.lineTo(x1,y1);
+		ctx.fill();
+		ctx.stroke();
+		ctx.closePath();
 	},
 	collide: function() {
 		for(let i = 0; i < entities.length; i++) {
@@ -639,5 +629,14 @@ const updateGame = () => {
 		if(entities[i].dead) {
 			entities.splice(i,1);
 		}
+	}
+	if(player.health <= 0) {
+		clear();
+		stop();
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(0,0,1000,1000);
+		ctx.font="10px Arial";
+		ctx.fillStyle="#FFFFFF";
+		ctx.fillText("you died lol",475,500);
 	}
 };

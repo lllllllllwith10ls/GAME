@@ -21,8 +21,9 @@
 			let canvasW = 1000;
 			let canvasH = 1000;
 			let ctx = canvas.getContext("2d");
+			let interval;
 			function startGame() {
-				let interval = setInterval(updateGame, 20);
+				interval = setInterval(updateGame, 20);
 				window.addEventListener("mousedown", function (e) {
 					mouse.down = true;
 					let margin = document.getElementById("game area").getBoundingClientRect();
