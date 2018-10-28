@@ -803,22 +803,34 @@ class Snipeyship extends Entity {
 	}
 }
 class EnemyPoolItem {
-	constructor(enemy,amount) {
-		this.enemy = enemy;
-		this.amount = amount;
+	constructor(enemies) {
+		this.enemies = enemies;
+		enemyPool.push(this);
 	}
 	get value() {
-		switch(this.enemy) {
-			case "spaceship":
-				return 5*amount;
-			case "chargeship":
-				return 5*amount;
-			case "snipeyship":
-				return 10*amount;
+		let value = 0;
+		for(let i = 0; i < this.enemies.length; i++) {
+			let enemy = this.enemies[i];
+			switch(enemy) {
+				case "spaceship":
+					value += 5;
+					break;
+				case "chargeship":
+					value += 5;
+					break;
+				case "snipeyship":
+					value += 10;
+					break;
+			}
 		}
+		return value;
+		
 	};
 }
-let enemyPool = [new EnemyPoolItem("spaceship",1),new EnemyPoolItem("spaceship",1),new EnemyPoolItem("chargeship",1)];
+let enemyPool = [];
+new EnemyPoolItem(["spaceship"]);
+new EnemyPoolItem(["spaceship"]);
+new EnemyPoolItem(["chargeship"]);
 let enemyPoolPool = ["spaceship","chargeship","snipeyship"];
 let enemyPoints = 0;
 let difficulty = 0.01;
@@ -828,25 +840,27 @@ const addEnemy = () => {
 	difficulty += 0.01;
 	if(enemyPoints > select.value) {
 		enemyPoints -= select.value;
-		switch(select.enemy) {
-			case "spaceship":
-				for(let i = 0; i < select.amount; i++) {
+		for(let i = 0; i < this.enemies.length; i++) {
+			let enemy = select.enemies[i];
+			switch(enemy) {
+				case "spaceship":
 					new Spaceship(Math.random()*1000,0,0,0);
-				}
-				break;
-			case "chargeship":	
-				for(let i = 0; i < select.amount; i++) {
+					break;
+				case "chargeship":
 					new Chargeship(Math.random()*1000,0,0,0);
-				}
-				break;
-			case "snipeyship":
-				for(let i = 0; i < select.amount; i++) {
+					break;
+				case "snipeyship":
 					new Snipeyship(Math.random()*1000,0,0,0);
-				}
-				break;
+					break;
+			}
 		}
 		if(Math.random() > 0.5 || enemyPool.length <= 3 && !enemyPool.length >= 10) {
-			enemyPool.push(new EnemyPoolItem(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)],Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*2*difficulty*100)));
+			let number = Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*2*difficulty*100);
+			let enemies = [];
+			for (number; number > 0; number--) {
+				enemies.push(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)]);
+			}
+			new EnemyPoolItem(enemies);
 		} else if(Math.random() > 0.5 || enemyPool.length >= 10) {
 			enemyPool.splice(Math.floor(Math.random()*enemyPool.length), 1);
 		}
