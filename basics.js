@@ -196,8 +196,8 @@ class Bullet extends Entity {
 	}
 }
 class EnemyBullet extends Entity {
-	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,1,5,0,3);
+	constructor(x,y,vx,vy,h,s,a,r) {
+		super(x,y,vx,vy,h,s,a,r);
 		this.damagable = false;
 		this.move = function() {
 			this.pos.add(this.v);
@@ -215,6 +215,16 @@ class EnemyBullet extends Entity {
 			}
 		}
 		this.show = function() {
+		}
+	}
+}
+class LaserThing extends EnemyBullet {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,1,5,0,3);
+		this.move = function() {
+			super.move();
+		}
+		this.show = function() {
 			ctx.strokeStyle = "#FF0000";
 			ctx.lineWidth = 1;
 			ctx.beginPath();
@@ -225,12 +235,23 @@ class EnemyBullet extends Entity {
 		}
 	}
 }
+class LaserSegment extends EnemyBullet {
+	constructor(x,y) {
+		super(x,y,0,0,Infinity,0,0,3);
+		this.move = function() {
+			super.move();
+		}
+		this.show = function() {
+			this.health = 0;
+		}
+	}
+}
 class Spaceship extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,5,2,0.1,5);
 		this.angle = 0;
 		this.reload = 120;
-		this.cooldown = 0;
+		this.cooldown = Math.random()*120;
 		this.ais = ["Charger","Circler","Coward","Hit n run","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		if(this.ai === "Circler") {
@@ -247,7 +268,7 @@ class Spaceship extends Entity {
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				let angle = this.angle+Math.PI; 
-				entities.push(new EnemyBullet(this.pos.x,this.pos.y,-Math.sin(angle)*2,-Math.cos(angle)*2));
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*2,-Math.cos(angle)*2);
 				this.cooldown -= this.reload;
 			}
 		}
@@ -427,7 +448,7 @@ class Chargeship extends Entity {
 		super(x,y,vx,vy,5,2,0.1,5);
 		this.angle = 0;
 		this.reload = 300;
-		this.cooldown = 0;
+		this.cooldown = Math.random()*60;
 		this.ais = ["Predictor","Flanker","Dodgy","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		this.mode = "idle";
@@ -440,7 +461,7 @@ class Chargeship extends Entity {
 				this.v.y = -Math.cos(angle)*3;
 				this.cooldown -= this.reload;
 				this.mode = "charge!";
-				this.modeLength = 150
+				this.modeLength = 150;
 			}
 		}
 		this.minicharge = function() {
@@ -597,6 +618,124 @@ class Chargeship extends Entity {
 		}
 	}
 }
+class Snipeyship extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,5,2,0.1,5);
+		this.angle = 0;
+		this.reload = 200;
+		this.cooldown = Math.random*200;
+		this.ais = ["Skittish"];
+		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
+		this.shooting = 0;
+		if(this.ai === "Skittish") {
+			this.mode = "attack";
+			this.modeLength = 0;
+		}
+		this.shoot = function() {
+			if(this.cooldown >= this.reload) {
+				this.shooting = 20;
+				let angle = this.angle+Math.PI;
+				this.v.x += Math.sin(angle) * this.accel * 10;
+				this.v.y += Math.cos(angle) * this.accel * 10;
+				this.cooldown -= this.reload;
+			}
+			if(this.shooting > 0) {
+				let angle = this.angle+Math.PI;
+				let x = this.pos.x;
+				let y = this.pos.y;
+				while(y >= 0 && y <= 400 && x >= 0 && x <= 400) { 
+					new LaserSegment(x,y);
+					x += Math.sin(angle) * 3;
+					y += Math.cos(angle) * 3;
+				}
+				angle = this.angle;
+				
+				ctx.strokeStyle = "#FF0000";
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(this.pos.x,this.pos.y);
+				ctx.lineTo(this.pos.x+Math.sin(angle)*1000,this.pos.y+Math.cos(angle)*1000);
+				ctx.stroke();
+				ctx.closePath();
+				
+				this.shooting--;
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > 1000) {
+				this.pos.x  = 1000;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > 1000) {
+				this.pos.y = 1000;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+			if(this.ai === "Skittish") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 250) {
+					this.mode = "back away";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "back away") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
+					let angle = this.angle;
+					this.v.x += Math.sin(angle) * this.accel;
+					this.v.y += Math.cos(angle) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0) {
+					this.mode = "attack";
+				}
+				if(this.mode === "attack") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = Math.random()-0.5*Math.PI/5;
+					this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+					this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					
+				}
+				this.shoot();
+				this.pos.add(this.v);
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*5+this.pos.x;
+			let y1 = Math.cos(angle)*5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
+			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
 
 const updateGame = () => {
 	clear();
@@ -615,7 +754,7 @@ const updateGame = () => {
 		})
 		if(player.cooldown >= player.reload) {
 			let angle = Math.atan2(player.pos.x-mouse.pos.x,player.pos.y-mouse.pos.y); 
-			entities.push(new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*2.5,-Math.cos(angle)*2.5));
+			new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*2.5,-Math.cos(angle)*2.5);
 			player.cooldown -= player.reload;
 		}
 	}
