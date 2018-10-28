@@ -267,7 +267,7 @@ class Spaceship extends Entity {
 		}
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
-				let angle = this.angle+Math.PI; 
+				let angle = this.angle+Math.PI+Math.random()-0.5*Math.PI/5; 
 				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*2,-Math.cos(angle)*2);
 				this.cooldown -= this.reload;
 			}
@@ -818,7 +818,7 @@ const updateGame = () => {
 			mouse.pos.y = e.clientY - margin.top;
 		})
 		if(player.cooldown >= player.reload) {
-			let angle = Math.atan2(player.pos.x-mouse.pos.x,player.pos.y-mouse.pos.y); 
+			let angle = Math.atan2(player.pos.x-mouse.pos.x,player.pos.y-mouse.pos.y)+Math.random()-0.5*Math.PI/5; 
 			new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*2.5,-Math.cos(angle)*2.5);
 			player.cooldown -= player.reload;
 		}
