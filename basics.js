@@ -620,7 +620,7 @@ class Snipeyship extends Entity {
 		super(x,y,vx,vy,5,1.5,0.05,5);
 		this.angle = 0;
 		this.reload = 200;
-		this.cooldown = Math.random*200;
+		this.cooldown = Math.random()*200;
 		this.ais = ["Skittish"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		this.shooting = 0;
