@@ -855,7 +855,7 @@ const addEnemy = () => {
 			}
 		}
 		if(Math.random() > 0.5 || enemyPool.length <= 3 && enemyPool.length < 10) {
-			let number = Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*difficulty*50);
+			let number = Math.ceil(Math.random()*difficulty*100+(Math.random()-0.5)*difficulty*100);
 			console.log(number);
 			let enemies2 = [];
 			for (let i = 0; i < number; i++) {
