@@ -820,7 +820,7 @@ const updateGame = () => {
 		})
 		if(player.cooldown >= player.reload) {
 			let angle = Math.atan2(player.pos.x-mouse.pos.x,player.pos.y-mouse.pos.y)+(Math.random()-0.5)*Math.PI/180; 
-			new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+			new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*2.5,-Math.cos(angle)*2.5);
 			player.cooldown -= player.reload;
 		}
 	}
