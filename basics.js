@@ -676,8 +676,8 @@ class Snipeyship extends Entity {
 					let y = this.pos.y;
 					while(y >= 0 && y <= 1000 && x >= 0 && x <= 1000) { 
 						new LaserSegment(x,y);
-						x -= Math.sin(angle);
-						y -= Math.cos(angle);
+						x -= Math.sin(angle) * 3;
+						y -= Math.cos(angle) * 3;
 					}
 					angle = this.angle;
 
