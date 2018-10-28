@@ -668,7 +668,7 @@ class Snipeyship extends Entity {
 				let angle = this.angle+Math.PI;
 				let x = this.pos.x;
 				let y = this.pos.y;
-				while(y >= 0 && y <= 400 && x >= 0 && x <= 400) { 
+				while(y >= 0 && y <= 1000 && x >= 0 && x <= 1000) { 
 					new LaserSegment(x,y);
 					x -= Math.sin(angle);
 					y -= Math.cos(angle);
@@ -696,7 +696,7 @@ class Snipeyship extends Entity {
 				}
 				if(this.mode === "back away") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
-					let angle = this.angle;
+					let angle = this.angle+Math.PI;
 					let randy = Math.random()-0.5*Math.PI/5
 					this.v.x += Math.sin(angle+randy) * this.accel;
 					this.v.y += Math.cos(angle+randy) * this.accel;
