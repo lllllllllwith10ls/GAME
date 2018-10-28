@@ -840,7 +840,6 @@ const addEnemy = () => {
 	difficulty += 0.01;
 	if(enemyPoints >= select.value) {
 		enemyPoints -= select.value;
-		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 		for(let i = 0; i < select.enemies.length; i++) {
 			let enemy = select.enemies[i];
 			switch(enemy) {
@@ -865,6 +864,7 @@ const addEnemy = () => {
 		} else if(Math.random() > 0.5 || enemyPool.length >= 10) {
 			enemyPool.splice(Math.floor(Math.random()*enemyPool.length), 1);
 		}
+		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 	}
 }
 const updateGame = () => {
