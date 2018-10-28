@@ -808,7 +808,7 @@ class EnemyPoolItem {
 		this.amount = amount;
 	}
 	get value() {
-		switch(enemy) {
+		switch(this.enemy) {
 			case "spaceship":
 				return 5*amount;
 			case "chargeship":
