@@ -635,7 +635,7 @@ class Snipeyship extends Entity {
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				this.shooting = true;
-				this.shootLength = 20;
+				this.shootLength = 30;
 			}
 			
 		}
@@ -667,8 +667,8 @@ class Snipeyship extends Entity {
 				} else {
 					if(this.shootLength <= 16 && this.shootLength > 15) {
 						let angle = this.angle;
-						this.v.x += Math.sin(angle)*1.5;
-						this.v.y += Math.cos(angle)*1.5;
+						this.v.x += Math.sin(angle)*3;
+						this.v.y += Math.cos(angle)*3;
 						this.cooldown -= this.reload;
 					}
 					let angle = this.angle+Math.PI;
