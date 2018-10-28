@@ -827,6 +827,7 @@ const addEnemy() {
 	enemyPoints += difficulty;
 	dificulty += 0.01;
 	if(enemyPoints > select.value) {
+		enemyPoints -= select.value;
 		switch(select.enemy) {
 			case "spaceship":
 				for(let i = 0; i < select.amount; i++) {
