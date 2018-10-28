@@ -637,8 +637,8 @@ class Snipeyship extends Entity {
 				this.shooting = true;
 				this.shootLength = 20;
 				let angle = this.angle;
-				this.v.x += Math.sin(angle);
-				this.v.y += Math.cos(angle);
+				this.v.x += Math.sin(angle)*1.5;
+				this.v.y += Math.cos(angle)*1.5;
 				this.cooldown -= this.reload;
 			}
 			
@@ -670,8 +670,8 @@ class Snipeyship extends Entity {
 				let y = this.pos.y;
 				while(y >= 0 && y <= 400 && x >= 0 && x <= 400) { 
 					new LaserSegment(x,y);
-					x -= Math.sin(angle) * 3;
-					y -= Math.cos(angle) * 3;
+					x -= Math.sin(angle);
+					y -= Math.cos(angle);
 				}
 				angle = this.angle;
 				
@@ -697,8 +697,9 @@ class Snipeyship extends Entity {
 				if(this.mode === "back away") {
 					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 					let angle = this.angle;
-					this.v.x += Math.sin(angle) * this.accel;
-					this.v.y += Math.cos(angle) * this.accel;
+					let randy = Math.random()-0.5*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
 					this.modeLength--;
 				}
 				if(this.modeLength <= 0) {
