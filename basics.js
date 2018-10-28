@@ -237,9 +237,12 @@ class LaserThing extends EnemyBullet {
 class LaserSegment extends EnemyBullet {
 	constructor(x,y) {
 		super(x,y,0,0,Infinity,0,0,3);
-		
+		this.aliveForOneFrame = false;
 		this.show = function() {
-			this.health = 0;
+			this.aliveForOneFrame = true;
+			if(this.aliveForOneFrame) {
+				this.health = 0;
+			}
 		}
 	}
 }
@@ -623,7 +626,8 @@ class Snipeyship extends Entity {
 		this.cooldown = Math.random()*200;
 		this.ais = ["Skittish"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
-		this.shooting = 0;
+		this.shooting = false;
+		this.shootLength = 0;
 		if(this.ai === "Skittish") {
 			this.mode = "attack";
 			this.modeLength = 0;
@@ -631,32 +635,12 @@ class Snipeyship extends Entity {
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				this.shooting = 20;
-				let angle = this.angle+Math.PI;
+				let angle = this.angle;
 				this.v.x += Math.sin(angle) * this.accel * 10;
 				this.v.y += Math.cos(angle) * this.accel * 10;
 				this.cooldown -= this.reload;
 			}
-			if(this.shooting > 0) {
-				let angle = this.angle+Math.PI;
-				let x = this.pos.x;
-				let y = this.pos.y;
-				while(y >= 0 && y <= 400 && x >= 0 && x <= 400) { 
-					new LaserSegment(x,y);
-					x += Math.sin(angle) * 3;
-					y += Math.cos(angle) * 3;
-				}
-				angle = this.angle;
-				
-				ctx.strokeStyle = "#FF0000";
-				ctx.lineWidth = 1;
-				ctx.beginPath();
-				ctx.moveTo(this.pos.x,this.pos.y);
-				ctx.lineTo(this.pos.x+Math.sin(angle)*1000,this.pos.y+Math.cos(angle)*1000);
-				ctx.stroke();
-				ctx.closePath();
-				
-				this.shooting--;
-			}
+			
 		}
 		this.move = function() {
 			if(this.pos.x < 0) {
@@ -679,7 +663,27 @@ class Snipeyship extends Entity {
 			if(this.cooldown > this.reload) {
 				this.cooldown = this.reload;
 			}
-			if(this.ai === "Skittish") {
+			if(this.shooting > 0) {
+				let angle = this.angle+Math.PI;
+				let x = this.pos.x;
+				let y = this.pos.y;
+				while(y >= 0 && y <= 400 && x >= 0 && x <= 400) { 
+					new LaserSegment(x,y);
+					x += Math.sin(angle) * 3;
+					y += Math.cos(angle) * 3;
+				}
+				angle = this.angle;
+				
+				ctx.strokeStyle = "#FF0000";
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(this.pos.x,this.pos.y);
+				ctx.lineTo(this.pos.x+Math.sin(angle)*2000,this.pos.y+Math.cos(angle)*2000);
+				ctx.stroke();
+				ctx.closePath();
+				
+				this.shooting--;
+			} else if(this.ai === "Skittish") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 250) {
 					this.mode = "back away";
