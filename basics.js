@@ -200,6 +200,15 @@ class EnemyBullet extends Entity {
 		super(x,y,vx,vy,h,s,a,r);
 		this.damagable = false;
 		this.move = function() {
+		}
+		this.show = function() {
+		}
+	}
+}
+class LaserThing extends EnemyBullet {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,1,5,0,3);
+		this.move = function() {
 			this.pos.add(this.v);
 			if (this.pos.x < 0) {
 				this.dead = true;
@@ -215,16 +224,6 @@ class EnemyBullet extends Entity {
 			}
 		}
 		this.show = function() {
-		}
-	}
-}
-class LaserThing extends EnemyBullet {
-	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,1,5,0,3);
-		this.move = function() {
-			super.move();
-		}
-		this.show = function() {
 			ctx.strokeStyle = "#FF0000";
 			ctx.lineWidth = 1;
 			ctx.beginPath();
@@ -238,9 +237,7 @@ class LaserThing extends EnemyBullet {
 class LaserSegment extends EnemyBullet {
 	constructor(x,y) {
 		super(x,y,0,0,Infinity,0,0,3);
-		this.move = function() {
-			super.move();
-		}
+		
 		this.show = function() {
 			this.health = 0;
 		}
