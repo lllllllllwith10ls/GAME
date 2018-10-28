@@ -622,16 +622,15 @@ class Snipeyship extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,5,1.5,0.05,5);
 		this.angle = 0;
-		this.reload = 200;
-		this.cooldown = Math.random()*200;
-		this.ais = ["Skittish"];
+		this.reload = 300;
+		this.cooldown = Math.random()*300;
+		this.ais = ["Skittish","Random","Predictor"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		this.shooting = false;
 		this.shootLength = 0;
-		if(this.ai === "Skittish") {
-			this.mode = "attack";
-			this.modeLength = 0;
-		}
+		this.mode = "attack";
+		this.modeLength = 0;
+		
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				this.shooting = true;
@@ -666,7 +665,7 @@ class Snipeyship extends Entity {
 					this.pos.add(this.v);
 				} else {
 					if(this.shootLength <= 16 && this.shootLength > 15) {
-						let angle = this.angle;
+						let angle = this.angle + Math.PI;
 						this.v.x += Math.sin(angle)*3;
 						this.v.y += Math.cos(angle)*3;
 						this.cooldown -= this.reload;
@@ -723,6 +722,58 @@ class Snipeyship extends Entity {
 					let randy = Math.random()-0.5*Math.PI/5;
 					this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
 					this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					
+				}
+				this.shoot();
+				this.pos.add(this.v);
+			} else if(this.ai === "Random") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 300) {
+					this.mode = "back away";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "back away") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = Math.random()-0.5*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0) {
+					this.mode = "attack";
+				}
+				if(this.mode === "attack") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let randy = Math.random()-0.5*Math.PI/5;
+					this.v.x += Math.sin(randy+this.angle) * this.accel;
+					this.v.y += Math.cos(randy+this.angle) * this.accel;
+					
+				}
+				this.shoot();
+				this.pos.add(this.v);
+			} else if(this.ai === "Predictor") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 300) {
+					this.mode = "back away";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "back away") {
+					this.angle = Math.atan2(player.pos.x+player.v.x*10-this.pos.x,player.pos.y+player.v.y*10-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = Math.random()-0.5*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0) {
+					this.mode = "attack";
+				}
+				if(this.mode === "attack") {
+					this.angle = Math.atan2(player.pos.x+player.v.x*10-this.pos.x,player.pos.y+player.v.y*10-this.pos.y);
+					let randy = Math.random()-0.5*Math.PI/5;
+					this.v.x += Math.sin(randy+this.angle) * this.accel;
+					this.v.y += Math.cos(randy+this.angle) * this.accel;
 					
 				}
 				this.shoot();
