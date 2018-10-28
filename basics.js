@@ -856,11 +856,11 @@ const addEnemy = () => {
 		}
 		if(Math.random() > 0.5 || enemyPool.length <= 3 && !enemyPool.length >= 10) {
 			let number = Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*difficulty*100);
-			let enemies = [];
-			for (number; number > 0; number--) {
-				enemies.push(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)]);
+			let enemies2 = [];
+			for (let i = 0; i < number; i++) {
+				enemies2.push(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)]);
 			}
-			new EnemyPoolItem(enemies);
+			new EnemyPoolItem(enemies2);
 		} else if(Math.random() > 0.5 || enemyPool.length >= 10) {
 			enemyPool.splice(Math.floor(Math.random()*enemyPool.length), 1);
 		}
