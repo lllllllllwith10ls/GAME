@@ -782,10 +782,10 @@ class Snipeyship extends Entity {
 		}
 		this.show = function() {
 			let angle = this.angle;
-			let x1 = Math.sin(angle)*5+this.pos.x;
-			let y1 = Math.cos(angle)*5+this.pos.y;
-			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
-			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
+			let x1 = Math.sin(angle)*7.5+this.pos.x;
+			let y1 = Math.cos(angle)*7.5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)+y1;
 			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
 			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
 			ctx.fillStyle = "#FF0000";
