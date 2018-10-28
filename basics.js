@@ -617,7 +617,7 @@ class Chargeship extends Entity {
 }
 class Snipeyship extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,5,2,0.1,5);
+		super(x,y,vx,vy,5,1.5,0.05,5);
 		this.angle = 0;
 		this.reload = 200;
 		this.cooldown = Math.random*200;
@@ -686,7 +686,7 @@ class Snipeyship extends Entity {
 					this.modeLength = Math.random()*60;
 				}
 				if(this.mode === "back away") {
-					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
 					let angle = this.angle;
 					this.v.x += Math.sin(angle) * this.accel;
 					this.v.y += Math.cos(angle) * this.accel;
