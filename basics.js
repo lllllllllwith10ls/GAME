@@ -634,10 +634,11 @@ class Snipeyship extends Entity {
 		}
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
-				this.shooting = 20;
+				this.shooting = true;
+				this.shootLength = 20;
 				let angle = this.angle;
-				this.v.x += Math.sin(angle) * this.accel * 10;
-				this.v.y += Math.cos(angle) * this.accel * 10;
+				this.v.x += Math.sin(angle);
+				this.v.y += Math.cos(angle);
 				this.cooldown -= this.reload;
 			}
 			
@@ -663,14 +664,14 @@ class Snipeyship extends Entity {
 			if(this.cooldown > this.reload) {
 				this.cooldown = this.reload;
 			}
-			if(this.shooting > 0) {
+			if(this.shooting) {
 				let angle = this.angle+Math.PI;
 				let x = this.pos.x;
 				let y = this.pos.y;
 				while(y >= 0 && y <= 400 && x >= 0 && x <= 400) { 
 					new LaserSegment(x,y);
-					x += Math.sin(angle) * 3;
-					y += Math.cos(angle) * 3;
+					x -= Math.sin(angle) * 3;
+					y -= Math.cos(angle) * 3;
 				}
 				angle = this.angle;
 				
@@ -682,7 +683,11 @@ class Snipeyship extends Entity {
 				ctx.stroke();
 				ctx.closePath();
 				
-				this.shooting--;
+				this.shootLength--;
+				if(this.shootLength <= 0) {
+					this.shooting = false;
+				}
+				this.pos.add(this.v);
 			} else if(this.ai === "Skittish") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 250) {
