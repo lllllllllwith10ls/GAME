@@ -846,7 +846,7 @@ const addEnemy = () => {
 				break;
 		}
 		if(Math.random() > 0.5 || enemyPool.length <= 3 && !enemyPool.length >= 10) {
-			enemyPool.push(new EnemyPoolItem(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)],Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*2*difficulty*100));
+			enemyPool.push(new EnemyPoolItem(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)],Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*2*difficulty*100)));
 		} else if(Math.random() > 0.5 || enemyPool.length >= 10) {
 			enemyPool.splice(Math.floor(Math.random()*enemyPool.length), 1);
 		}
