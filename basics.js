@@ -825,7 +825,7 @@ let difficulty = 0.01;
 let select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 const addEnemy() {
 	enemyPoints += difficulty;
-	dificulty += 0.01;
+	difficulty += 0.01;
 	if(enemyPoints > select.value) {
 		enemyPoints -= select.value;
 		switch(select.enemy) {
