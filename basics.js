@@ -663,6 +663,7 @@ class Snipeyship extends Entity {
 			if(this.shooting) {
 				if(this.shootLength > 16) {
 					this.shootLength--;
+					this.pos.add(this.v);
 				} else {
 					if(this.shootLength <= 16 && this.shootLength > 15) {
 						let angle = this.angle;
