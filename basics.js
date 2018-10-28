@@ -802,7 +802,55 @@ class Snipeyship extends Entity {
 		}
 	}
 }
-
+class EnemyPoolItem {
+	constructor(enemy,amount) {
+		this.enemy = enemy;
+		this.amount = amount;
+	}
+	get value() {
+		switch(enemy) {
+			case "spaceship":
+				return 5*amount;
+			case "chargeship":
+				return 5*amount;
+			case "snipeyship":
+				return 10*amount;
+		}
+	};
+}
+let enemyPool = [new EnemyPoolItem("spaceship",1),new EnemyPoolItem("spaceship",1),new EnemyPoolItem("chargeship",1)];
+let enemyPoolPool = ["spaceship","chargeship","snipeyship"];
+let enemyPoints = 0;
+let difficulty = 0.01;
+let select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
+const addEnemy() {
+	enemyPoints += difficulty;
+	dificulty += 0.01;
+	if(enemyPoints > select.value) {
+		switch(select.enemy) {
+			case "spaceship":
+				for(let i = 0; i < select.amount; i++) {
+					new Spaceship(Math.random()*1000,0,0,0);
+				}
+				break;
+			case "chargeship":	
+				for(let i = 0; i < select.amount; i++) {
+					new Chargeship(Math.random()*1000,0,0,0);
+				}
+				break;
+			case "snipeyship":
+				for(let i = 0; i < select.amount; i++) {
+					new Snipeyship(Math.random()*1000,0,0,0);
+				}
+				break;
+		}
+		if(Math.random() > 0.5 || enemyPool.length <= 3 && !enemyPool.length >= 10) {
+			enemyPool.push(new EnemyPoolItem(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)],Math.ceil(Math.random*difficulty*100+(Math.random-0.5)*2*difficulty*100));
+		} else if(Math.random() > 0.5 || enemyPool.length >= 10) {
+			enemyPool.splice(Math.floor(Math.random()*enemyPool.length), 1);
+		}
+	}
+}
 const updateGame = () => {
 	clear();
 	ctx.fillStyle = "#000000";
@@ -844,4 +892,5 @@ const updateGame = () => {
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillText("you died lol",475,500);
 	}
+	addEnemy();
 };
