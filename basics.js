@@ -636,10 +636,6 @@ class Snipeyship extends Entity {
 			if(this.cooldown >= this.reload) {
 				this.shooting = true;
 				this.shootLength = 20;
-				let angle = this.angle;
-				this.v.x += Math.sin(angle)*1.5;
-				this.v.y += Math.cos(angle)*1.5;
-				this.cooldown -= this.reload;
 			}
 			
 		}
@@ -665,29 +661,39 @@ class Snipeyship extends Entity {
 				this.cooldown = this.reload;
 			}
 			if(this.shooting) {
-				let angle = this.angle+Math.PI;
-				let x = this.pos.x;
-				let y = this.pos.y;
-				while(y >= 0 && y <= 1000 && x >= 0 && x <= 1000) { 
-					new LaserSegment(x,y);
-					x -= Math.sin(angle);
-					y -= Math.cos(angle);
+				if(this.shootLength > 16) {
+					
+				} else {
+					if(this.shootLength <= 16 && this.shootLength > 15) {
+						let angle = this.angle;
+						this.v.x += Math.sin(angle)*1.5;
+						this.v.y += Math.cos(angle)*1.5;
+						this.cooldown -= this.reload;
+					}
+					let angle = this.angle+Math.PI;
+					let x = this.pos.x;
+					let y = this.pos.y;
+					while(y >= 0 && y <= 1000 && x >= 0 && x <= 1000) { 
+						new LaserSegment(x,y);
+						x -= Math.sin(angle);
+						y -= Math.cos(angle);
+					}
+					angle = this.angle;
+
+					ctx.strokeStyle = "#FF0000";
+					ctx.lineWidth = 1;
+					ctx.beginPath();
+					ctx.moveTo(this.pos.x,this.pos.y);
+					ctx.lineTo(this.pos.x+Math.sin(angle)*2000,this.pos.y+Math.cos(angle)*2000);
+					ctx.stroke();
+					ctx.closePath();
+
+					this.shootLength--;
+					if(this.shootLength <= 0) {
+						this.shooting = false;
+					}
+					this.pos.add(this.v);
 				}
-				angle = this.angle;
-				
-				ctx.strokeStyle = "#FF0000";
-				ctx.lineWidth = 1;
-				ctx.beginPath();
-				ctx.moveTo(this.pos.x,this.pos.y);
-				ctx.lineTo(this.pos.x+Math.sin(angle)*2000,this.pos.y+Math.cos(angle)*2000);
-				ctx.stroke();
-				ctx.closePath();
-				
-				this.shootLength--;
-				if(this.shootLength <= 0) {
-					this.shooting = false;
-				}
-				this.pos.add(this.v);
 			} else if(this.ai === "Skittish") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(distance < 250) {
