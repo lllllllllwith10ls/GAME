@@ -268,7 +268,7 @@ class Spaceship extends Entity {
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
-				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*2,-Math.cos(angle)*2);
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
 				this.cooldown -= this.reload;
 			}
 		}
