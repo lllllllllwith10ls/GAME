@@ -3,8 +3,9 @@
 	<head>
 	</head>
 	<body onload="startGame()">
-		<canvas id="game area" width="1000" height="1000" style="border:1px solid #c3c3c3;">
+		<canvas id="game area" width="500" height="500" style="border:1px solid #c3c3c3;">
 		</canvas>
+		
 		<script type="text/javascript" src="basics.js"></script>
 		<script>
 
@@ -17,15 +18,14 @@
 			let mouse = {
 				pos: new Vector(0,0)
 			}
-			let canvas = document.getElementById("game area");
-			let canvasW = 1000;
-			let canvasH = 1000;
 			let ctx = canvas.getContext("2d");
 			let interval;
 			function startGame() {
 				interval = setInterval(updateGame, 20);
 				window.addEventListener("mousedown", function (e) {
 					mouse.down = true;
+				});
+				window.addEventListener("mousemove", function (e) {
 					let margin = document.getElementById("game area").getBoundingClientRect();
 					mouse.pos.x = e.clientX - margin.left;
 					mouse.pos.y = e.clientY - margin.top;
@@ -43,7 +43,7 @@
 				});
 			};
 			function clear() {
-				ctx.clearRect(0, 0, 1000, 1000);
+				ctx.clearRect(0, 0, canvas.length, canvas.height);
 			};
 			function stop() {
 				clearInterval(interval);

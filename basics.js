@@ -30,8 +30,10 @@ Vector.prototype.times = function(b) {
 	this.x *= b;
 	this.y *= b;
 };
+
+let canvas = document.getElementById("game area");
 let player = {
-	pos: new Vector(500,500),
+	pos: new Vector(canvas.width/2,canvas.height/2),
 	v: new Vector(0,0),
 	cooldown: 0,
 	reload: 10,
@@ -55,16 +57,16 @@ let player = {
 			this.pos.x  = 0;
 			this.v.x = -this.v.x * 1/2;
 		}
-		if (this.pos.x > 1000) {
-			this.pos.x  = 1000;
+		if (this.pos.x > canvas.width) {
+			this.pos.x  = canvas.width;
 			this.v.x = -this.v.x * 1/2;
 		}
 		if (this.pos.y < 0) {
 			this.pos.y = 0;
 			this.v.y = -this.v.y * 1/2;
 		}
-		if (this.pos.y > 1000) {
-			this.pos.y = 1000;
+		if (this.pos.y > canvas.height) {
+			this.pos.y = canvas.height;
 			this.v.y = -player.v.y * 1/2;
 		}
 		if (this.v.abs > 2.5) {
@@ -174,13 +176,13 @@ class Bullet extends Entity {
 			if (this.pos.x < 0) {
 				this.dead = true;
 			}
-			if (this.pos.x > 1000) {
+			if (this.pos.x > canvas.width) {
 				this.dead = true;
 			}
 			if (this.pos.y < 0) {
 				this.dead = true;
 			}
-			if (this.pos.y > 1000) {
+			if (this.pos.y > canvas.height) {
 				this.dead = true;
 			}
 		}
@@ -213,13 +215,13 @@ class LaserThing extends EnemyBullet {
 			if (this.pos.x < 0) {
 				this.dead = true;
 			}
-			if (this.pos.x > 1000) {
+			if (this.pos.x > canvas.width) {
 				this.dead = true;
 			}
 			if (this.pos.y < 0) {
 				this.dead = true;
 			}
-			if (this.pos.y > 1000) {
+			if (this.pos.y > canvas.height) {
 				this.dead = true;
 			}
 		}
@@ -246,12 +248,44 @@ class LaserSegment extends EnemyBullet {
 		}
 	}
 }
+
+class Splitter extends EnemyBullet {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,1,7.5,0,3);
+		this.move = function() {
+			this.pos.add(this.v);
+			if (this.pos.x < 0) {
+				this.dead = true;
+				this.pos.x = 0;
+			}
+			if (this.pos.x > canvas.width) {
+				this.dead = true;
+				this.pos.x = canvas.width;
+			}
+			if (this.pos.y < 0) {
+				this.dead = true;
+				this.pos.y = 0;
+			}
+			if (this.pos.y > canvas.height) {
+				this.dead = true;
+				this.pos.y = canvas.height;
+			}
+		}
+		this.show = function() {
+			ctx.fillStyle = "#FF0000";
+			
+			ctx.beginPath();
+			ctx.arc(this.pos.x, this.pos.y, 5, 0, 2 * Math.PI);
+			ctx.fill();
+		}
+	}
+}
 class Spaceship extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,5,2,0.1,5);
 		this.angle = 0;
-		this.reload = 120;
-		this.cooldown = Math.random()*120;
+		this.reload = 60;
+		this.cooldown = Math.random()*60;
 		this.ais = ["Charger","Circler","Coward","Hit n run","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
 		if(this.ai === "Circler") {
@@ -277,16 +311,16 @@ class Spaceship extends Entity {
 				this.pos.x = 0;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if(this.pos.x > 1000) {
-				this.pos.x  = 1000;
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
 				this.v.x = -this.v.x * 1/2;
 			}
 			if(this.pos.y < 0) {
 				this.pos.y = 0;
 				this.v.y = -this.v.y * 1/2;
 			}
-			if(this.pos.y > 1000) {
-				this.pos.y = 1000;
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
 				this.v.y = -this.v.y * 1/2;
 			}
 			this.cooldown++;
@@ -448,7 +482,8 @@ class Chargeship extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,5,2,0.1,5);
 		this.angle = 0;
-		this.reload = 300;
+		this.reload = 60;
+		this.reload2 = 15;
 		this.cooldown = Math.random()*60;
 		this.ais = ["Predictor","Flanker","Dodgy","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
@@ -457,16 +492,16 @@ class Chargeship extends Entity {
 		this.charge = function() {
 			if(this.cooldown >= this.reload) {
 				let angle = this.angle+Math.PI;
-				this.speed = 3;
+				this.speed = 9;
 				this.v.x = -Math.sin(angle)*3;
 				this.v.y = -Math.cos(angle)*3;
 				this.cooldown -= this.reload;
 				this.mode = "charge!";
-				this.modeLength = 150;
+				this.modeLength = 50;
 			}
 		}
 		this.minicharge = function() {
-			if(this.cooldown >= this.reload) {
+			if(this.cooldown >= this.reload2) {
 				if(this.ai === "Dodgy" && this.dodge) {
 					let randy;
 					if(Math.random() < 0.5) {
@@ -476,21 +511,21 @@ class Chargeship extends Entity {
 					}
 					this.angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y)+Math.PI/2*randy;
 					let angle = this.angle+Math.PI;
-					this.speed = 3;
+					this.speed = 9;
 					this.v.x = -Math.sin(angle)*3;
 					this.v.y = -Math.cos(angle)*3;
-					this.cooldown -= 60;
+					this.cooldown -= this.reload2;
 					this.mode = "charge!";
-					this.modeLength = 30;
+					this.modeLength = 10;
 				} else {
 					this.angle += (Math.random()-0.5)*Math.PI;
 					let angle = this.angle+Math.PI;
-					this.speed = 3;
+					this.speed = 9;
 					this.v.x = -Math.sin(angle)*3;
 					this.v.y = -Math.cos(angle)*3;
-					this.cooldown -= 60;
+					this.cooldown -= this.reload2;
 					this.mode = "charge!";
-					this.modeLength = 30;
+					this.modeLength = 10;
 				}
 			}
 		}
@@ -499,16 +534,16 @@ class Chargeship extends Entity {
 				this.pos.x = 0;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if(this.pos.x > 1000) {
-				this.pos.x  = 1000;
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
 				this.v.x = -this.v.x * 1/2;
 			}
 			if(this.pos.y < 0) {
 				this.pos.y = 0;
 				this.v.y = -this.v.y * 1/2;
 			}
-			if(this.pos.y > 1000) {
-				this.pos.y = 1000;
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
 				this.v.y = -this.v.y * 1/2;
 			}
 			this.cooldown++;
@@ -635,7 +670,7 @@ class Snipeyship extends Entity {
 		this.shoot = function() {
 			if(this.cooldown >= this.reload) {
 				this.shooting = true;
-				this.shootLength = 30;
+				this.shootLength = 60;
 			}
 			
 		}
@@ -644,16 +679,16 @@ class Snipeyship extends Entity {
 				this.pos.x = 0;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if(this.pos.x > 1000) {
-				this.pos.x  = 1000;
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
 				this.v.x = -this.v.x * 1/2;
 			}
 			if(this.pos.y < 0) {
 				this.pos.y = 0;
 				this.v.y = -this.v.y * 1/2;
 			}
-			if(this.pos.y > 1000) {
-				this.pos.y = 1000;
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
 				this.v.y = -this.v.y * 1/2;
 			}
 			this.cooldown++;
@@ -664,6 +699,14 @@ class Snipeyship extends Entity {
 				if(this.shootLength > 16) {
 					this.shootLength--;
 					this.pos.add(this.v);
+					
+					ctx.strokeStyle = "#7F0000";
+					ctx.lineWidth = 1;
+					ctx.beginPath();
+					ctx.moveTo(this.pos.x,this.pos.y);
+					ctx.lineTo(this.pos.x+Math.sin(this.angle)*2000,this.pos.y+Math.cos(this.angle)*2000);
+					ctx.stroke();
+					ctx.closePath();
 				} else {
 					if(this.shootLength <= 16 && this.shootLength > 15) {
 						let angle = this.angle + Math.PI;
@@ -674,7 +717,7 @@ class Snipeyship extends Entity {
 					let angle = this.angle+Math.PI;
 					let x = this.pos.x;
 					let y = this.pos.y;
-					while(y >= 0 && y <= 1000 && x >= 0 && x <= 1000) { 
+					while(y >= 0 && y <= canvas.height && x >= 0 && x <= canvas.height) { 
 						new LaserSegment(x,y);
 						x -= Math.sin(angle) * 3;
 						y -= Math.cos(angle) * 3;
@@ -802,6 +845,736 @@ class Snipeyship extends Entity {
 		}
 	}
 }
+
+class Jerry extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,10,2,0.1,5);
+		this.angle = 0;
+		this.reload = 300;
+		this.reload2 = 15;
+		this.reload3 = 15;
+		this.cooldown = Math.random()*600;
+		this.cooldown2 = Math.random()*0;
+		this.mode = "idle";
+		this.modeLength = 0;
+		this.phase = 1;
+		this.attack = function() {
+			if(Math.random() < 0.5) {
+				this.charge(true);
+			} else {
+				this.charge2(true);
+			}
+		}
+		this.charge = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				let angle = this.angle+Math.PI;
+				this.speed = 9;
+				this.v.x = -Math.sin(angle)*3;
+				this.v.y = -Math.cos(angle)*3;
+				this.cooldown -= this.reload;
+				this.mode = "charge! and shoot";
+				this.modeLength = 100;
+			}
+		}
+		this.chargeForever = function() {
+			let number = Math.floor(Math.random()*4);
+			if(number === 0) {
+				this.pos.x = Math.random()*canvas.width;
+				this.pos.y = 0;
+			} else if(number === 1) {
+				this.pos.x = Math.random()*canvas.width;
+				this.pos.y = canvas.height;
+			} else if(number === 2) {
+				this.pos.x = canvas.width;
+				this.pos.y = Math.random()*canvas.height;
+			} else {
+				this.pos.x = 0;
+				this.pos.y = Math.random()*canvas.height;
+			}
+			this.angle = Math.atan2(player.pos.x+player.v.x*3-this.pos.x,player.pos.y+player.v.y*3-this.pos.y);
+			let angle = this.angle+Math.PI;
+			this.speed = 9;
+			this.v.x = -Math.sin(angle)*3;
+			this.v.y = -Math.cos(angle)*3;
+			this.mode = "charge! and shoot";
+			this.modeLength = 100000;
+		}
+		this.shoot = function() {
+			if(this.cooldown2 >= this.reload3) {
+				let angle = this.angle+Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+				let angle2 = this.angle-Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle2)*5,-Math.cos(angle2)*5);
+				this.cooldown2 -= this.reload3;
+			}
+		}
+		this.charge2 = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				let angle = this.angle+Math.PI;
+				this.speed = 9;
+				this.v.x = -Math.sin(angle)*3;
+				this.v.y = -Math.cos(angle)*3;
+				this.cooldown -= this.reload;
+				this.mode = "charge! but shoot at the end";
+				this.modeLength = 100;
+				this.circle();
+			}
+		}
+		this.circle = function() {
+			let amount = 16;
+			for(let i = 0; i < amount; i++) {
+				let angle = this.angle+Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+			}
+		}
+		this.minicharge = function() {
+			if(this.cooldown >= this.reload2) {
+				if(this.dodge) {
+					let randy;
+					if(Math.random() < 0.5) {
+						randy = 1;
+					} else {
+						randy = -1;
+					}
+					this.angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y)+Math.PI/2*randy;
+					let angle = this.angle+Math.PI;
+					this.speed = 9;
+					this.v.x = -Math.sin(angle)*3;
+					this.v.y = -Math.cos(angle)*3;
+					this.cooldown -= this.reload2;
+					this.mode = "charge!";
+					this.modeLength = 10;
+				} else {
+					this.angle += (Math.random()-0.5)*Math.PI;
+					let angle = this.angle+Math.PI;
+					this.speed = 9;
+					this.v.x = -Math.sin(angle)*3;
+					this.v.y = -Math.cos(angle)*3;
+					this.cooldown -= this.reload2;
+					this.mode = "charge!";
+					this.modeLength = 10;
+				}
+			}
+		}
+		this.move = function() {
+			if(this.phase === 4) {
+				if(this.pos.x < 0 || this.pos.x > canvas.width || this.pos.y < 0 || this.pos.y > canvas.height) {
+					this.chargeForever();
+				}
+				if(this.mode === "charge! and shoot") {
+					this.shoot();
+				} else {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = (Math.random()-0.5)*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+				}
+				this.pos.add(this.v);
+				
+				this.cooldown++;
+				this.cooldown2++;
+				if(this.cooldown > this.reload) {
+					this.cooldown = this.reload;
+				}
+				if(this.cooldown2 > this.reload3) {
+					this.cooldown2 = this.reload3;
+				}
+			} else {
+				if(this.pos.x < 0) {
+					this.pos.x = 0;
+					this.v.x = -this.v.x * 1/2;
+				}
+				if(this.pos.x > canvas.width) {
+					this.pos.x  = canvas.width;
+					this.v.x = -this.v.x * 1/2;
+				}
+				if(this.pos.y < 0) {
+					this.pos.y = 0;
+					this.v.y = -this.v.y * 1/2;
+				}
+				if(this.pos.y > canvas.height) {
+					this.pos.y = canvas.height;
+					this.v.y = -this.v.y * 1/2;
+				}
+				this.cooldown++;
+				this.cooldown2++;
+				if(this.cooldown > this.reload) {
+					this.cooldown = this.reload;
+				}
+				if(this.cooldown2 > this.reload3) {
+					this.cooldown2 = this.reload3;
+				}
+				if(this.mode === "charge!" || this.mode === "charge! and shoot" || this.mode === "charge! but shoot at the end") {
+					this.modeLength--;
+					this.pos.add(this.v);
+					if(this.mode === "charge! and shoot") {
+						
+						this.shoot();
+					}
+					if(this.modeLength <= 0) {
+						
+						this.speed = 2;
+						if(this.mode === "charge! but shoot at the end") {
+							
+							this.circle();
+						}
+						this.mode = "idle";
+						
+					}
+				} else {
+					this.angle = Math.atan2(player.pos.x+player.v.x*3-this.pos.x,player.pos.y+player.v.y*3-this.pos.y);
+					let angle = this.angle;
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.pos.add(this.v);
+					let dodge = false
+					for(let i = 0; i < entities.length; i++) {
+						if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+this.radius*5 && !entities[i].dead && entities[i].friendly) {
+							this.dodge = true;
+							dodge = true;
+							this.targ = entities[i];
+
+						}
+					}
+					if(dodge === false) {
+						this.dodge = false;
+					}
+					if(this.dodge) {
+						this.minicharge();
+					} else if(Math.random() < 0.001) {
+						this.minicharge();
+					} else if(this.phase === 3) {
+						if(Math.random() < 0.5) {
+							this.charge(false);
+						} else {
+							this.charge2(false);
+						}
+					}
+				}
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*5+this.pos.x;
+			let y1 = Math.cos(angle)*5+this.pos.y;
+			let x2 = Math.sin(angle-Math.PI*3/4)*Math.sqrt(50)+x1;
+			let y2 = Math.cos(angle-Math.PI*3/4)*Math.sqrt(50)+y1;
+			let x3 = Math.sin(angle-Math.PI)*10+x2;
+			let y3 = Math.cos(angle-Math.PI)*10+y2;
+			let x4 = Math.sin(angle+Math.PI/4)*Math.sqrt(50)+x3;
+			let y4 = Math.cos(angle+Math.PI/4)*Math.sqrt(50)+y3;
+			let x5 = Math.sin(angle+Math.PI*3/4)*Math.sqrt(50)+x4;
+			let y5 = Math.cos(angle+Math.PI*3/4)*Math.sqrt(50)+y4;
+			let x6 = Math.sin(angle)*10+x5;
+			let y6 = Math.cos(angle)*10+y5;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+
+
+class Steve extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,10,2,0.1,5);
+		this.angle = 0;
+		this.reload = 300;
+		this.reload2 = 20;
+		this.reload3 = 50;
+		this.cooldown = Math.random()*600;
+		this.cooldown2 = 20;
+		this.cooldown3 = 50;
+
+		this.phase = 1;
+
+		this.mode = "idle";
+		this.modeLength = 0;
+
+		this.attack = function() {
+			if(Math.random() < 0.5) {
+				this.predict(true);
+			} else {
+				this.spreader(true);
+			}
+		}
+		this.predict = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				this.cooldown -= this.reload;
+				this.mode = "predict";
+				this.modeLength = 150;
+			}
+		}
+		this.shoot = function() {
+			if(this.cooldown2 >= this.reload2) {
+				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+				this.cooldown2 -= this.reload2;
+			}
+		}
+		this.spreader = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				this.cooldown -= this.reload;
+				this.mode = "spreader";
+				this.modeLength = 150;
+			}
+		}
+		this.shoot2 = function() {
+			if(this.cooldown3 >= this.reload3) {
+				for(let i = 0; i < 5; i++) {
+					let angle = this.angle+Math.PI+Math.PI/8*(i-2)+(Math.random()-0.5)*Math.PI/60; 
+					new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+					
+				}
+				this.cooldown3 -= this.reload3;
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+			this.cooldown2++;
+			if(this.cooldown2 > this.reload2) {
+				this.cooldown2 = this.reload2;
+			}
+			this.cooldown3++;
+			if(this.cooldown3 > this.reload3) {
+				this.cooldown3 = this.reload3;
+			}
+			this.modeLength--;
+			if(this.phase === 4) {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+				this.shoot2();
+			} else {
+				if(this.mode === "predict") {
+					this.angle = Math.atan2(player.pos.x+player.v.x*50-this.pos.x,player.pos.y+player.v.y*50-this.pos.y);
+					this.shoot();
+					if(this.modeLength <= 0) {
+						this.mode = "idle";
+					}
+				} else {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				}
+				if(this.mode === "spreader") {
+					this.shoot2();
+					if(this.modeLength <= 0) {
+						this.mode = "idle";
+						
+					}
+				}
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+				
+				this.pos.add(this.v);
+				if(this.mode === "idle") {
+					if(this.phase === 3) {
+						if(Math.random() < 0.5) {
+							this.predict(false);
+						} else {
+							this.spreader(false);
+						}
+					}
+				}
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*5+this.pos.x;
+			let y1 = Math.cos(angle)*5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
+			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+
+class Kevin extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,10,1.5,0.05,5);
+		this.angle = 0;
+		this.reload = 300;
+		this.cooldown = Math.random()*600;
+		this.reload2 = 50;
+		this.cooldown2 = Math.random()*600;
+		this.shooting = false;
+		this.shootLength = 0;
+		this.mode = "idle";
+		this.modeLength = 0;
+		
+		this.phase = 1;
+
+		this.attack = function() {
+			if(Math.random() < 0.5) {
+				this.laser(true);
+			} else {
+				this.splitter(true);
+			}
+		}
+		this.laser = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				this.cooldown -= this.reload;
+				this.mode = "lasers yay";
+				this.modeLength = 150;
+			}
+		}
+		this.shoot = function() {
+			if(this.cooldown2 >= this.reload2) {
+				this.shooting = true;
+				this.shootLength = 45;
+			}
+		}
+		this.splitter = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				this.cooldown -= this.reload;
+				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
+				new Splitter(this.pos.x,this.pos.y,-Math.sin(angle)*7.5,-Math.cos(angle)*7.5);
+				
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+
+			this.cooldown2++;
+			if(this.cooldown2 > this.reload2) {
+				this.cooldown2 = this.reload2;
+			}
+			
+			this.modeLength--;
+			if(this.shooting) {
+				if(this.shootLength > 16) {
+					this.shootLength--;
+					this.pos.add(this.v);
+					
+					ctx.strokeStyle = "#7F0000";
+					ctx.lineWidth = 1;
+					ctx.beginPath();
+					ctx.moveTo(this.pos.x,this.pos.y);
+					ctx.lineTo(this.pos.x+Math.sin(this.angle)*2000,this.pos.y+Math.cos(this.angle)*2000);
+					ctx.stroke();
+					ctx.closePath();
+				} else {
+					if(this.shootLength <= 16 && this.shootLength > 15) {
+						let angle = this.angle + Math.PI;
+						this.v.x += Math.sin(angle)*3;
+						this.v.y += Math.cos(angle)*3;
+						this.cooldown -= this.reload;
+					}
+					let angle = this.angle+Math.PI;
+					let x = this.pos.x;
+					let y = this.pos.y;
+					while(y >= 0 && y <= canvas.height && x >= 0 && x <= canvas.height) { 
+						new LaserSegment(x,y);
+						x -= Math.sin(angle) * 3;
+						y -= Math.cos(angle) * 3;
+					}
+					angle = this.angle;
+
+					ctx.strokeStyle = "#FF0000";
+					ctx.lineWidth = 1;
+					ctx.beginPath();
+					ctx.moveTo(this.pos.x,this.pos.y);
+					ctx.lineTo(this.pos.x+Math.sin(angle)*2000,this.pos.y+Math.cos(angle)*2000);
+					ctx.stroke();
+					ctx.closePath();
+
+					this.shootLength--;
+					if(this.shootLength <= 0) {
+						this.shooting = false;
+					}
+					this.pos.add(this.v);
+				}
+			} else {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 250) {
+					this.mode = "back away";
+					this.modeLength = Math.random()*60;
+				}
+
+				if(this.mode === "back away") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = (Math.random()-0.5)*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+				}
+				if(this.modeLength <= 0) {
+
+					this.mode = "idle";
+				}
+				if(this.mode === "idle" || this.mode === "lasers yay") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+					this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					
+				}
+				if(this.mode === "lasers yay") {
+					this.shoot();
+				}
+				if((this.mode === "idle" || this.mode === "back away") && (this.phase === 3 || this.phase === 4)) {
+					if(Math.random() < 0.5) {
+						this.laser(false);
+					} else {
+						this.splitter(false);
+					}
+				}
+				if(this.phase === 4) {
+					this.reload = 60;
+				}
+				this.pos.add(this.v);
+			}
+
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*7.5+this.pos.x;
+			let y1 = Math.cos(angle)*7.5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)+y1;
+			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+
+class Kyle extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,10,4,0.1,5);
+		this.angle = 0;
+		this.reload = 300;
+		this.reload2 = 20;
+		this.cooldown = Math.random()*600;
+		this.cooldown2 = 20;
+
+		this.phase = 1;
+
+		this.mode = "idle";
+		this.modeLength = 0;
+
+		this.attack = function() {
+			this.charge(true);
+		}
+		this.shoot = function() {
+			if(this.cooldown2 >= this.reload2) {
+				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/30; 
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+				this.cooldown2 -= this.reload2;
+			}
+		}
+		this.charge = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				this.cooldown -= this.reload;
+				this.mode = "CHARGE";
+				this.modeLength = 150;
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+			this.cooldown2++;
+			if(this.cooldown2 > this.reload2) {
+				this.cooldown2 = this.reload2;
+			}
+			this.modeLength--;
+			if(this.mode === "CHARGE") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+				this.shoot();
+				if(this.modeLength <= 0) {
+
+					this.mode = "idle";
+				}
+			}
+			
+			if(this.mode === "idle") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+				
+				this.pos.add(this.v);
+				if(this.phase === 3) {
+					this.charge(false);
+				}
+			}
+			if(this.phase === 4) {
+				this.mode = "CHARGE";
+				this.modeLength = 10000;
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*5+this.pos.x;
+			let y1 = Math.cos(angle)*5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
+			let x3 = Math.sin(angle)*-2.5+this.pos.x;
+			let y3 = Math.cos(angle)*-2.5+this.pos.y;
+			let x4 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y4 = Math.cos(angle-Math.PI/2)*10+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+
+function circle(xPos,yPos,amount) {
+	let angle2 = Math.PI*2*Math.random();
+	for(let i = 0; i < amount; i++) {
+		let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+		new LaserThing(xPos+Math.sin(angle)*5,yPos+Math.cos(angle)*5,Math.sin(angle)*5,Math.cos(angle)*5);
+	}
+}
+
+let eliteFleet = [];
+
+function makeFleet() {
+	eliteFleet = [
+	new Jerry(Math.random()*500,0,0,0), 
+	new Steve(Math.random()*500,0,0,0), 
+	new Kevin(Math.random()*500,0,0,0), 
+	new Kyle(Math.random()*500,0,0,0)]
+	pickFleetAttack();
+
+}
+function pickFleetAttack() {
+	if(eliteFleet.length > 0) {
+		let attack = Math.floor(Math.random()*eliteFleet.length);
+		if(eliteFleet[attack].mode === "idle" || eliteFleet[attack].mode === "back away") {
+			eliteFleet[attack].attack();
+			queuedAttack = false;
+		} else {
+			setTimeout(pickFleetAttack, 10)
+		}
+	}
+
+}
 class EnemyPoolItem {
 	constructor(enemies) {
 		this.enemies = enemies;
@@ -827,6 +1600,7 @@ class EnemyPoolItem {
 		
 	};
 }
+let queuedAttack;
 let enemyPool = [];
 new EnemyPoolItem(["spaceship"]);
 new EnemyPoolItem(["spaceship"]);
@@ -844,13 +1618,13 @@ const addEnemy = () => {
 			let enemy = select.enemies[i];
 			switch(enemy) {
 				case "spaceship":
-					new Spaceship(Math.random()*1000,0,0,0);
+					new Spaceship(Math.random()*canvas.width,0,0,0);
 					break;
 				case "chargeship":
-					new Chargeship(Math.random()*1000,0,0,0);
+					new Chargeship(Math.random()*canvas.width,0,0,0);
 					break;
 				case "snipeyship":
-					new Snipeyship(Math.random()*1000,0,0,0);
+					new Snipeyship(Math.random()*canvas.width,0,0,0);
 					break;
 			}
 		}
@@ -868,21 +1642,17 @@ const addEnemy = () => {
 		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 	}
 }
+makeFleet();
 const updateGame = () => {
 	clear();
 	ctx.fillStyle = "#000000";
-	ctx.fillRect(0,0,1000,1000);
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 	
 	player.cooldown++;
 	if(player.cooldown > player.reload) {
 		player.cooldown = player.reload;
 	}
 	if (mouse.down === true) {
-		window.addEventListener("mousemove", function (e) {
-			let margin = document.getElementById("game area").getBoundingClientRect();
-			mouse.pos.x = e.clientX - margin.left;
-			mouse.pos.y = e.clientY - margin.top;
-		})
 		if(player.cooldown >= player.reload) {
 			let angle = Math.atan2(player.pos.x-mouse.pos.x,player.pos.y-mouse.pos.y)+(Math.random()-0.5)*Math.PI/60; 
 			new Bullet(player.pos.x,player.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
@@ -895,8 +1665,49 @@ const updateGame = () => {
 			entities[i].update();
 		}
 	}
+	let doingNothing = true;
+	for(let i = 0; i < eliteFleet.length; i++) {
+		if(eliteFleet[i].mode !== "idle" && eliteFleet[i].mode !== "back away") {
+			doingNothing = false;
+		}
+	}
+	if(doingNothing && eliteFleet[0] && !queuedAttack) {
+		if(eliteFleet[0].phase === 1) {
+			queuedAttack = true;
+			setTimeout(pickFleetAttack,5000);
+		} else if(eliteFleet[0].phase === 2) {
+			queuedAttack = true;
+			setTimeout(pickFleetAttack,5000);
+			setTimeout(pickFleetAttack,7500);
+		}
+	}
 	for(let i = entities.length-1; i >= 0; i--) {
 		if(entities[i].dead) {
+			if(entities[i] instanceof Splitter) {
+				circle(entities[i].pos.x,entities[i].pos.y,20)
+				
+			}
+			if(eliteFleet.includes(entities[i])) {
+				for(let j = 0; j < eliteFleet.length; j++) {
+					eliteFleet[j].phase++;
+					eliteFleet[j].hp += 10;
+					if(eliteFleet[j].hp > 25){
+						eliteFleet[j].hp = 25;
+					}
+					if(eliteFleet[j].phase === 4) {
+						eliteFleet[j].hp = 30;
+					}
+				}
+				if(eliteFleet[0].phase === 2) {
+					pickFleetAttack();
+				}
+				if(eliteFleet[0].phase === 3) {
+					for(let j = 0; j < eliteFleet.length; j++) {
+						eliteFleet[j].cooldown = Math.random()*200;
+					}
+				}
+				eliteFleet.splice(eliteFleet.indexOf(entities[i]),1);
+			}
 			entities.splice(i,1);
 		}
 	}
@@ -904,10 +1715,10 @@ const updateGame = () => {
 		clear();
 		stop();
 		ctx.fillStyle = "#000000";
-		ctx.fillRect(0,0,1000,1000);
+		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.font="10px Arial";
 		ctx.fillStyle="#FFFFFF";
-		ctx.fillText("you died lol",475,500);
+		ctx.fillText("you died lol",canvas.width/2-25,canvas.height/2);
 	}
-	addEnemy();
+	//addEnemy();
 };
