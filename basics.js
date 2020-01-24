@@ -1608,7 +1608,7 @@ new EnemyPoolItem(["chargeship"]);
 let enemyPoolPool = ["spaceship","chargeship","snipeyship"];
 let enemyPoints = 0;
 let difficulty = 0.01;
-let time = 0.01;
+let time = 1;
 let select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 function addEnemy() {
 	enemyPoints += difficulty;
