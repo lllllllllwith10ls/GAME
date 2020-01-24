@@ -492,9 +492,9 @@ class Chargeship extends Entity {
 		this.charge = function() {
 			if(this.cooldown >= this.reload) {
 				let angle = this.angle+Math.PI;
-				this.speed = 9;
-				this.v.x = -Math.sin(angle)*3;
-				this.v.y = -Math.cos(angle)*3;
+				this.speed = 4;
+				this.v.x = -Math.sin(angle)*4;
+				this.v.y = -Math.cos(angle)*4;
 				this.cooldown -= this.reload;
 				this.mode = "charge!";
 				this.modeLength = 50;
@@ -511,18 +511,18 @@ class Chargeship extends Entity {
 					}
 					this.angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y)+Math.PI/2*randy;
 					let angle = this.angle+Math.PI;
-					this.speed = 9;
-					this.v.x = -Math.sin(angle)*3;
-					this.v.y = -Math.cos(angle)*3;
+					this.speed = 4;
+					this.v.x = -Math.sin(angle)*4;
+					this.v.y = -Math.cos(angle)*4;
 					this.cooldown -= this.reload2;
 					this.mode = "charge!";
 					this.modeLength = 10;
 				} else {
 					this.angle += (Math.random()-0.5)*Math.PI;
 					let angle = this.angle+Math.PI;
-					this.speed = 9;
-					this.v.x = -Math.sin(angle)*3;
-					this.v.y = -Math.cos(angle)*3;
+					this.speed = 4;
+					this.v.x = -Math.sin(angle)*4;
+					this.v.y = -Math.cos(angle)*4;
 					this.cooldown -= this.reload2;
 					this.mode = "charge!";
 					this.modeLength = 10;
@@ -893,9 +893,9 @@ class Jerry extends Entity {
 			}
 			this.angle = Math.atan2(player.pos.x+player.v.x*3-this.pos.x,player.pos.y+player.v.y*3-this.pos.y);
 			let angle = this.angle+Math.PI;
-			this.speed = 9;
-			this.v.x = -Math.sin(angle)*3;
-			this.v.y = -Math.cos(angle)*3;
+			this.speed = 4;
+			this.v.x = -Math.sin(angle)*4;
+			this.v.y = -Math.cos(angle)*4;
 			this.mode = "charge! and shoot";
 			this.modeLength = 100000;
 		}
@@ -911,9 +911,9 @@ class Jerry extends Entity {
 		this.charge2 = function(force) {
 			if(this.cooldown >= this.reload || force) {
 				let angle = this.angle+Math.PI;
-				this.speed = 9;
-				this.v.x = -Math.sin(angle)*3;
-				this.v.y = -Math.cos(angle)*3;
+				this.speed = 4;
+				this.v.x = -Math.sin(angle)*4;
+				this.v.y = -Math.cos(angle)*4;
 				this.cooldown -= this.reload;
 				this.mode = "charge! but shoot at the end";
 				this.modeLength = 100;
@@ -938,18 +938,18 @@ class Jerry extends Entity {
 					}
 					this.angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y)+Math.PI/2*randy;
 					let angle = this.angle+Math.PI;
-					this.speed = 9;
-					this.v.x = -Math.sin(angle)*3;
-					this.v.y = -Math.cos(angle)*3;
+					this.speed = 4;
+					this.v.x = -Math.sin(angle)*4;
+					this.v.y = -Math.cos(angle)*4;
 					this.cooldown -= this.reload2;
 					this.mode = "charge!";
 					this.modeLength = 10;
 				} else {
 					this.angle += (Math.random()-0.5)*Math.PI;
 					let angle = this.angle+Math.PI;
-					this.speed = 9;
-					this.v.x = -Math.sin(angle)*3;
-					this.v.y = -Math.cos(angle)*3;
+					this.speed = 4;
+					this.v.x = -Math.sin(angle)*4;
+					this.v.y = -Math.cos(angle)*4;
 					this.cooldown -= this.reload2;
 					this.mode = "charge!";
 					this.modeLength = 10;
