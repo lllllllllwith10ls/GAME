@@ -1608,10 +1608,12 @@ new EnemyPoolItem(["chargeship"]);
 let enemyPoolPool = ["spaceship","chargeship","snipeyship"];
 let enemyPoints = 0;
 let difficulty = 0.01;
+let time = 0.01;
 let select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
-const addEnemy = () => {
+function addEnemy() {
 	enemyPoints += difficulty;
-	difficulty += 0.00001;
+	time += 0.00001;
+	difficulty = Math.log(time);
 	if(enemyPoints >= select.value) {
 		enemyPoints -= select.value;
 		for(let i = 0; i < select.enemies.length; i++) {
@@ -1642,8 +1644,7 @@ const addEnemy = () => {
 		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 	}
 }
-makeFleet();
-const updateGame = () => {
+function updateGame() {
 	clear();
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -1721,5 +1722,5 @@ const updateGame = () => {
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillText("you died lol",canvas.width/2-25,canvas.height/2);
 	}
-	//addEnemy();
+	addEnemy();
 };
