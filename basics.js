@@ -1613,7 +1613,7 @@ let select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 function addEnemy() {
 	enemyPoints += difficulty;
 	time += 0.00001;
-	difficulty = Math.log(time);
+	difficulty = Math.log10(time);
 	if(enemyPoints >= select.value) {
 		enemyPoints -= select.value;
 		for(let i = 0; i < select.enemies.length; i++) {
