@@ -1089,7 +1089,7 @@ class Jerry extends Entity {
 
 class Steve extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,10,3,0.5,5);
+		super(x,y,vx,vy,10,3,0.1,5);
 		this.angle = 0;
 		this.reload = 300;
 		this.reload2 = 20;
@@ -1357,7 +1357,7 @@ class Kevin extends Entity {
 				}
 			} else {
 				let distance = Vector.sub(player.pos,this.pos).abs;
-				if(distance < 250) {
+				if(distance < 250 && this.mode === "idle") {
 					this.mode = "back away";
 					this.modeLength = Math.random()*60;
 				}
