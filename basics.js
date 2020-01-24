@@ -1089,13 +1089,13 @@ class Jerry extends Entity {
 
 class Steve extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,10,2,0.1,5);
+		super(x,y,vx,vy,10,3,0.5,5);
 		this.angle = 0;
 		this.reload = 300;
 		this.reload2 = 20;
 		this.reload3 = 50;
 		this.cooldown = Math.random()*600;
-		this.cooldown2 = 20;
+		this.cooldown2 = 30;
 		this.cooldown3 = 50;
 
 		this.phase = 1;
@@ -1133,8 +1133,8 @@ class Steve extends Entity {
 		}
 		this.shoot2 = function() {
 			if(this.cooldown3 >= this.reload3) {
-				for(let i = 0; i < 5; i++) {
-					let angle = this.angle+Math.PI+Math.PI/8*(i-2)+(Math.random()-0.5)*Math.PI/60; 
+				for(let i = 0; i < 3; i++) {
+					let angle = this.angle+Math.PI+Math.PI/6*(i-1)+(Math.random()-0.5)*Math.PI/60; 
 					new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
 					
 				}
@@ -1278,7 +1278,7 @@ class Kevin extends Entity {
 		}
 		this.splitter = function(force) {
 			if(this.cooldown >= this.reload || force) {
-				this.cooldown -= this.reload;
+				this.cooldown -= this.reload*2;
 				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
 				new Splitter(this.pos.x,this.pos.y,-Math.sin(angle)*7.5,-Math.cos(angle)*7.5);
 				
@@ -1691,7 +1691,8 @@ const updateGame = () => {
 				for(let j = 0; j < eliteFleet.length; j++) {
 					eliteFleet[j].phase++;
 					eliteFleet[j].hp += 10;
-					if(eliteFleet[j].hp > 25){
+					eliteFleet[j].cooldown = Math.random()*eliteFleet[j].reload;
+					if(eliteFleet[j].hp < 25){
 						eliteFleet[j].hp = 25;
 					}
 					if(eliteFleet[j].phase === 4) {
