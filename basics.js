@@ -868,9 +868,9 @@ class Jerry extends Entity {
 		this.charge = function(force) {
 			if(this.cooldown >= this.reload || force) {
 				let angle = this.angle+Math.PI;
-				this.speed = 9;
-				this.v.x = -Math.sin(angle)*3;
-				this.v.y = -Math.cos(angle)*3;
+				this.speed = 4;
+				this.v.x = -Math.sin(angle)*4;
+				this.v.y = -Math.cos(angle)*4;
 				this.cooldown -= this.reload;
 				this.mode = "charge! and shoot";
 				this.modeLength = 100;
