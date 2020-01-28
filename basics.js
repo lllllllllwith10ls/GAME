@@ -1714,6 +1714,7 @@ function updateGame() {
 			entities.splice(i,1);
 		}
 	}
+	document.getElementById("hp").innerHTML = player.health;
 	if(player.health <= 0) {
 		clear();
 		stop();
