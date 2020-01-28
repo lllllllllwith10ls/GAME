@@ -1644,6 +1644,7 @@ function addEnemy() {
 		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 	}
 }
+makeFleet();
 function updateGame() {
 	clear();
 	ctx.fillStyle = "#000000";
@@ -1722,5 +1723,5 @@ function updateGame() {
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillText("you died lol",canvas.width/2-25,canvas.height/2);
 	}
-	addEnemy();
+	//addEnemy();
 };
