@@ -1543,6 +1543,85 @@ class Kyle extends Entity {
 		}
 	}
 }
+class BigBoi extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,100,2,0.1,15);
+		this.angle = 0;
+		this.reload = 300;
+		this.reload2 = 20;
+		this.cooldown = Math.random()*600;
+		this.cooldown2 = 20;
+
+		this.phase = 1;
+
+		this.mode = "idle";
+		this.modeLength = 0;
+
+		this.attack = function() {
+			this.charge(true);
+		}
+		this.shoot = function() {
+			if(this.cooldown2 >= this.reload2) {
+				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/30; 
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+				this.cooldown2 -= this.reload2;
+			}
+		}
+		this.charge = function(force) {
+			if(this.cooldown >= this.reload || force) {
+				this.cooldown -= this.reload;
+				this.mode = "CHARGE";
+				this.modeLength = 150;
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > player.pos.x) {
+				this.v.x -= this.accel;
+			}
+			if(this.pos.x < player.pos.x) {
+				this.v.x += this.accel;
+			}
+			if(this.pos.y > 0) {
+				this.v.y -= this.accel;
+			}
+			if(this.pos.y < 0) {
+				this.v.y += this.accel;
+			}
+		}
+		this.show = function() {
+			let x1 = this.pos+15;
+			let y1 = this.pos;
+			let x2 = this.pos+15;
+			let y2 = this.pos+5;
+			let x3 = this.pos;
+			let y3 = this.pos+10;
+			let x4 = this.pos-15;
+			let y4 = this.pos+5;
+			let x5 = this.pos-15;
+			let y5 = this.pos;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
 
 function circle(xPos,yPos,amount) {
 	let angle2 = Math.PI*2*Math.random();
@@ -1644,7 +1723,7 @@ function addEnemy() {
 		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 	}
 }
-makeFleet();
+//makeFleet();
 function updateGame() {
 	clear();
 	ctx.fillStyle = "#000000";
