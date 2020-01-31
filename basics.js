@@ -1616,9 +1616,22 @@ class BigBoi extends Entity {
 				this.shootOutBack();
 				if(this.pos.y > canvas.height+50) {
 					this.mode = "idle";
+					this.pos.y = -50;
 				}
 			}
 			this.pos.add(this.v);
+			this.attackCooldown++;
+			this.cooldown++;
+			this.cooldown2++;
+			if(this.attackCooldown > this.attackReload) {
+				this.attackCooldown = this.attackReload;
+			}
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+			if(this.cooldown2 > this.reload2) {
+				this.cooldown2 = this.reload2;
+			}
 		}
 		this.show = function() {
 			let x1 = this.pos.x+100;
