@@ -1595,17 +1595,18 @@ class BigBoi extends Entity {
 			if(this.pos.y < 0) {
 				this.v.y += this.accel;
 			}
+			this.pos.add(this.v);
 		}
 		this.show = function() {
-			let x1 = this.pos+15;
-			let y1 = this.pos;
-			let x2 = this.pos+15;
-			let y2 = this.pos+5;
-			let x3 = this.pos;
-			let y3 = this.pos+10;
-			let x4 = this.pos-15;
-			let y4 = this.pos+5;
-			let x5 = this.pos-15;
+			let x1 = this.pos.x+15;
+			let y1 = this.pos.y;
+			let x2 = this.pos.x+15;
+			let y2 = this.pos.y+5;
+			let x3 = this.pos.x;
+			let y3 = this.pos.y+10;
+			let x4 = this.pos.x-15;
+			let y4 = this.pos.y+5;
+			let x5 = this.pos.x-15;
 			let y5 = this.pos;
 			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
