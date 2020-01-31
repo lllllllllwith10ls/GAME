@@ -1564,18 +1564,18 @@ class BigBoi extends Entity {
 		this.modeLength = 0;
 
 		this.attack = function() {
-			if( this.attackCooldown >= this.attackReload) {
+			if(this.attackCooldown >= this.attackReload) {
 				this.charge(true);
 			}
 		}
 		this.shootOutBack = function() {
 			if(this.cooldown >= this.reload) {
-				let angle = Math.PI*1.5+(Math.random()-0.5)*Math.PI/2; 
+				let angle = Math.PI+(Math.random()-0.5)*Math.PI; 
 				new LaserThing(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
 				this.cooldown -= 10;
 			}
 			if(this.cooldown2 >= this.reload2) {
-				let angle = Math.PI*1.5+(Math.random()-0.5)*Math.PI/2; 
+				let angle = Math.PI*+(Math.random()-0.5)*Math.PI; 
 				new LaserThing(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
 				this.cooldown2 -= 10;
 			}
