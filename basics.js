@@ -1572,11 +1572,13 @@ class BigBoi extends Entity {
 			if(this.cooldown >= this.reload) {
 				let angle = -Math.PI+(Math.random()-0.5)*Math.PI; 
 				new LaserThing(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.sin(angle)*5,Math.cos(angle)*5);
+				new LaserThing(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,-5,0);
 				this.cooldown -= 3;
 			}
 			if(this.cooldown2 >= this.reload2) {
 				let angle = -Math.PI+(Math.random()-0.5)*Math.PI; 
-				new LaserThing(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.sin(angle)*5,Math.cos(angle)*5);
+				new LaserThing(this.pos.x+this.gunPo2s.x,this.pos.y+this.gunPos2.y,Math.sin(angle)*5,Math.cos(angle)*5);
+				new LaserThing(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,5,0);
 				this.cooldown2 -= 3;
 			}
 		}
