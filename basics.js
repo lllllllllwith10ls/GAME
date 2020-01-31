@@ -1545,7 +1545,7 @@ class Kyle extends Entity {
 }
 class BigBoi extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,100,2,0.1,15);
+		super(x,y,vx,vy,100,2,0.1,50);
 		this.angle = 0;
 		this.reload = 300;
 		this.reload2 = 20;
@@ -1598,16 +1598,16 @@ class BigBoi extends Entity {
 			this.pos.add(this.v);
 		}
 		this.show = function() {
-			let x1 = this.pos.x+15;
+			let x1 = this.pos.x+50;
 			let y1 = this.pos.y;
-			let x2 = this.pos.x+15;
-			let y2 = this.pos.y+5;
+			let x2 = this.pos.x+50;
+			let y2 = this.pos.y+10;
 			let x3 = this.pos.x;
-			let y3 = this.pos.y+10;
-			let x4 = this.pos.x-15;
-			let y4 = this.pos.y+5;
-			let x5 = this.pos.x-15;
-			let y5 = this.pos;
+			let y3 = this.pos.y+20;
+			let x4 = this.pos.x-50;
+			let y4 = this.pos.y+10;
+			let x5 = this.pos.x-50;
+			let y5 = this.pos.y;
 			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
 			ctx.beginPath();
