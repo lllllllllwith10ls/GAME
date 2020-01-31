@@ -1548,7 +1548,7 @@ class BigBoi extends Entity {
 		super(x,y,vx,vy,100,2,0.1,100);
 		this.angle = 0;
 		
-		this.attackReload = 300;
+		this.attackReload = 600;
 		this.reload = 20;
 		this.reload2 = 20;
 		this.attackCooldown = Math.random()*600;
@@ -1565,7 +1565,12 @@ class BigBoi extends Entity {
 
 		this.attack = function() {
 			if(this.attackCooldown >= this.attackReload) {
-				this.charge(true);
+				if(Math.random() > 0.5) {
+					this.charge();
+				} else {
+					
+					this.spread();
+				}
 			}
 		}
 		this.shootOutBack = function() {
@@ -1580,11 +1585,34 @@ class BigBoi extends Entity {
 				this.cooldown2 -= 3;
 			}
 		}
-		this.charge = function() {
-			if(this.attackCooldown >= this.attackReload) {
-				this.attackCooldown -= this.attackReload;
-				this.mode = "CHARGE";
+		
+		this.spreadShoot = function() {
+			if(this.cooldown >= this.reload) {
+				for(let i = 0; i < 5; i++) {
+					let angle = -Math.PI+Math.PI/6*(i-2)+(Math.random()-0.5)*Math.PI/60; 
+					new LaserThing(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.sin(angle)*5,Math.cos(angle)*5);
+					
+				}
+				this.cooldown -= this.reload;
 			}
+			if(this.cooldown2 >= this.reload2) {
+				for(let i = 0; i < 5; i++) {
+					let angle = -Math.PI+Math.PI/6*(i-2)+(Math.random()-0.5)*Math.PI/60; 
+					new LaserThing(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.sin(angle)*5,Math.cos(angle)*5);
+					
+				}
+				this.cooldown2 -= this.reload2;
+			}
+		}
+		this.charge = function() {
+			this.attackCooldown -= this.attackReload;
+			this.mode = "CHARGE";
+		}
+		this.spread = function() {
+			this.attackCooldown -= this.attackReload;
+			this.mode = "spreader";
+			this.cooldown - this.reload;
+			this.cooldown - this.reload/2;
 		}
 		this.move = function() {
 			if(this.pos.x < 0) {
