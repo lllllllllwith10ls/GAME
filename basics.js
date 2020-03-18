@@ -107,11 +107,15 @@ let player = {
 				break;
 			}
 			if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+5 && !entities[i].dead && !entities[i].friendly) {
-				this.health--;
-				entities[i].health--;
-				this.invincible = true;
-				this.iframe = 100;
-				
+				if(entities[i] instanceof Health) {
+					this.health++;
+					entities[i].health--;
+				} else {
+					this.health--;
+					entities[i].health--;
+					this.invincible = true;
+					this.iframe = 100;
+				}				
 			}
 		}
 		if(this.iframe <= 0) {
@@ -192,6 +196,84 @@ class Bullet extends Entity {
 			ctx.beginPath();
 			ctx.moveTo(this.pos.x-this.v.x*2,this.pos.y-this.v.y*2);
 			ctx.lineTo(this.pos.x+this.v.x*2,this.pos.y+this.v.y*2);
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+class Health extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,1,1,0,10);
+		this.friendly = false;
+		this.damagable = false;
+		let angle = Math.random()*2*Math.PI;
+		this.v.x = Math.sin(angle);
+		this.v.y = Math.cos(angle);
+		this.angle = Math.random()*2*Math.PI;
+		this.move = function() {
+			this.pos.add(this.v);
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y;
+			}
+			this.angle += Math.PI/100;
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle-Math.atan(5/1))*Math.sqrt(5**2+2.5**2)+this.pos.x;
+			let y1 = Math.cos(angle-Math.atan(5/1))*Math.sqrt(5**2+2.5**2)+this.pos.y;
+			let x2 = Math.sin(angle-Math.PI)*2.5+x1;
+			let y2 = Math.cos(angle-Math.PI)*2.5+y1;
+			let x3 = Math.sin(angle+Math.PI/2)*2.5+x2;
+			let y3 = Math.cos(angle+Math.PI/2)*2.5+y2;
+			let x4 = Math.sin(angle-Math.PI)*2.5+x3;
+			let y4 = Math.cos(angle-Math.PI)*2.5+y3;
+			let x5 = Math.sin(angle-Math.PI/2)*2.5+x4;
+			let y5 = Math.cos(angle-Math.PI/2)*2.5+y4;
+			let x6 = Math.sin(angle-Math.PI)*2.5+x5;
+			let y6 = Math.cos(angle-Math.PI)*2.5+y5;
+			let x7 = Math.sin(angle-Math.PI/2)*2.5+x6;
+			let y7 = Math.cos(angle-Math.PI/2)*2.5+y6;
+			let x8 = Math.sin(angle)*2.5+x7;
+			let y8 = Math.cos(angle)*2.5+y7;
+			let x9 = Math.sin(angle-Math.PI/2)*2.5+x8;
+			let y9 = Math.cos(angle-Math.PI/2)*2.5+y8;
+			let x10 = Math.sin(angle)*2.5+x9;
+			let y10 = Math.cos(angle)*2.5+y9;
+			let x11 = Math.sin(angle+Math.PI/2)*2.5+x10;
+			let y11 = Math.cos(angle+Math.PI/2)*2.5+y10;
+			let x12 = Math.sin(angle)*2.5+x11;
+			let y12 = Math.cos(angle)*2.5+y11;
+			ctx.fillStyle = "#00FF00";
+			
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
+			ctx.lineTo(x7,y7);
+			ctx.lineTo(x8,y8);
+			ctx.lineTo(x9,y9);
+			ctx.lineTo(x10,y10);
+			ctx.lineTo(x11,y11);
+			ctx.lineTo(x12,y12);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
 			ctx.stroke();
 			ctx.closePath();
 		}
@@ -471,6 +553,207 @@ class Spaceship extends Entity {
 			ctx.moveTo(x1,y1);
 			ctx.lineTo(x2,y2);
 			ctx.lineTo(x3,y3);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+class Fastship extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,3,3,0.2,5);
+		this.angle = 0;
+		this.reload = 90;
+		this.cooldown = Math.random()*90;
+		this.ais = ["Charger","Circler","Coward","Hit n run","Erratic"];
+		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
+		if(this.ai === "Circler") {
+			let array = ["clockwise","counterclockwise"];
+			this.mode = array[Math.floor(Math.random()*array.length)];
+			this.modeLength = Math.random()*300;
+		} else if(this.ai === "Coward") {
+			this.mode = "attack";
+			this.modeLength = 0;
+		} else if(this.ai === "Hit n run") {
+			this.mode = "idle";
+			this.modeLength = Math.random()*120;
+		}
+		this.shoot = function() {
+			if(this.cooldown >= this.reload) {
+				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
+				new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+				this.cooldown -= this.reload;
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+			if(this.ai === "Charger") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+				this.shoot();
+			} else if(this.ai === "Circler") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				let angle2;
+				if(this.mode === "clockwise") {
+					angle2 = this.angle+Math.PI/2;
+				} else {
+					angle2 = this.angle-Math.PI/2;
+				}
+				let angle = this.angle;
+				this.v.x += Math.sin(angle) * this.accel + Math.sin(angle2) * this.accel;
+				this.v.y += Math.cos(angle) * this.accel + Math.cos(angle2) * this.accel;
+				this.modeLength --;
+				if(this.modeLength <= 0) {
+					if(this.mode === "clockwise") {
+						this.mode = "counterclockwise";
+					} else {
+						this.mode = "clockwise";
+					}
+					this.modeLength = Math.random()*300;
+				}
+				this.pos.add(this.v);
+				this.shoot();
+			} else if(this.ai === "Coward") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 200) {
+					this.mode = "run";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "run") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = (Math.random()-0.5)*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0) {
+					this.mode = "attack";
+				}
+				if(this.mode === "attack") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+					this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					this.shoot();
+					
+				}
+				this.pos.add(this.v);
+			} else if( this.ai === "Hit n run") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(this.mode === "idle") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					if(distance < 100) {
+						this.v.x += Math.sin((vangle+randy+this.angle+Math.PI)/2) * this.accel;
+						this.v.y += Math.cos((vangle+randy+this.angle+Math.PI)/2) * this.accel;
+					} else {
+						
+						this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+						this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					}
+					
+					this.shoot();
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0 && this.mode === "idle") {
+					this.mode = "hit";
+				}
+				if(this.mode === "hit") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle;
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.shoot();
+				}
+				if(distance < 75 && this.mode === "hit") {
+					this.mode = "run";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "run") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
+					let angle = this.angle;
+					this.v.x += Math.sin(angle) * this.accel;
+					this.v.y += Math.cos(angle) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0 && this.mode === "run") {
+					this.mode = "idle";
+					this.modeLength = Math.random()*120;
+				}
+				this.pos.add(this.v);
+			} else if(this.ai === "Erratic") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+				
+				this.pos.add(this.v);
+				this.shoot();
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*5+this.pos.x;
+			let y1 = Math.cos(angle)*5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
+			let x3 = Math.sin(angle)*-2.5+this.pos.x;
+			let y3 = Math.cos(angle)*-2.5+this.pos.y;
+			let x4 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y4 = Math.cos(angle-Math.PI/2)*10+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
 			ctx.lineTo(x1,y1);
 			ctx.fill();
 			ctx.stroke();
@@ -1545,41 +1828,58 @@ class Kyle extends Entity {
 }
 class BigBoi extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,200,2,0.1,100);
+		super(x,y,vx,vy,250,2,0.1,100);
 		this.angle = 0;
 		
-		this.attackReload = 600;
+		this.attackReload = 500;
 		this.reload = 20;
 		this.reload2 = 20;
-		this.attackCooldown = Math.random()*600;
+		this.attackCooldown = Math.random()*200+300;
+		this.attackCooldown2 = 500;
 		this.cooldown = 20;
 		this.cooldown2 = 20;
 		
 		this.modeLength = 0;
+		this.modeLength2 = 0;
 		
-		this.gunPos = new Vector(50,0);
-		this.gunPos2 = new Vector(-50,0);
+		this.gunPos = new Vector(50,5);
+		this.gunPos2 = new Vector(-50,5);
 		this.gunAngle = 0;
 		this.gunAngle2 = 0;
 		
 		this.phase = 1;
 		
 		this.mode = "idle";
-		this.modeLength = 0;
+		this.mode2 = "idle";
 		
 		this.spamDir = 0;
 		this.spamDir2 = 0;
-		this.attack = function() {
-			if(this.attackCooldown >= this.attackReload) {
+		this.phase = 1;
+		this.attack = function(gun1,gun2) {
+			if(this.attackCooldown >= this.attackReload && this.phase === 1) {
 				let number = Math.random()*4;
 				if(number < 1) {
 					this.charge();
 				} else if(number < 2){
-					this.spread();
+					this.spread(true,true);
 				} else if(number < 3){
-					this.spam();
+					this.spam(true,true);
 				} else {
-					this.rocket();
+					this.rocket(true,true);
+				}
+			} else if(this.attackCooldown >= this.attackReload && this.phase === 2 && gun1) {
+				let number = Math.random()*3;
+				if(number < 1){
+					this.spread(true,false);
+				} else {
+					this.spam(true,false);
+				} 
+			} else if(this.attackCooldown2 >= this.attackReload && this.phase === 2 && gun2) {
+				let number = Math.random()*2;
+				if(number < 1){
+					this.spread(false,true);
+				} else {
+					this.spam(false,true);
 				}
 			}
 		}
@@ -1596,8 +1896,8 @@ class BigBoi extends Entity {
 			}
 		}
 		
-		this.spreadShoot = function() {
-			if(this.cooldown >= this.reload) {
+		this.spreadShoot = function(gun1,gun2) {
+			if(this.cooldown >= this.reload && gun1) {
 				for(let i = 0; i < 5; i++) {
 					let angle = this.gunAngle+Math.PI/8*(i-2)+(Math.random()-0.5)*Math.PI/60; 
 					new LaserThing(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.sin(angle)*5,Math.cos(angle)*5);
@@ -1605,7 +1905,7 @@ class BigBoi extends Entity {
 				}
 				this.cooldown -= this.reload;
 			}
-			if(this.cooldown2 >= this.reload2) {
+			if(this.cooldown2 >= this.reload2 && gun2) {
 				for(let i = 0; i < 5; i++) {
 					let angle = this.gunAngle2+Math.PI/8*(i-2)+(Math.random()-0.5)*Math.PI/60; 
 					new LaserThing(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.sin(angle)*5,Math.cos(angle)*5);
@@ -1614,14 +1914,14 @@ class BigBoi extends Entity {
 				this.cooldown2 -= this.reload2;
 			}
 		}
-		this.spamShoot = function() {
-			if(this.cooldown >= this.reload) {
+		this.spamShoot = function(gun1,gun2) {
+			if(this.cooldown >= this.reload && gun1) {
 				let angle = Math.sin(this.spamDir/10)*Math.PI/4+this.gunAngle+(Math.random()-0.5)*Math.PI/60; 
 				new LaserThing(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.sin(angle)*5,Math.cos(angle)*5);
 				
 				this.cooldown -= 7;
 			}
-			if(this.cooldown2 >= this.reload2) {
+			if(this.cooldown2 >= this.reload2 && gun2) {
 				let angle = Math.sin(this.spamDir2/10)*Math.PI/4+this.gunAngle2+(Math.random()-0.5)*Math.PI/60; 
 				new LaserThing(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.sin(angle)*5,Math.cos(angle)*5);
 				
@@ -1646,28 +1946,59 @@ class BigBoi extends Entity {
 			this.attackCooldown -= 400;
 			this.mode = "CHARGE";
 		}
-		this.spread = function() {
-			this.attackCooldown -= this.attackReload;
-			this.mode = "spreader";
-			this.cooldown -= this.reload;
-			this.cooldown2 -= this.reload2/2;
-			this.modeLength = 400;
+		this.spread = function(gun1, gun2) {
+			if(this.phase === 1) {
+				this.attackCooldown -= this.attackReload;
+				this.mode = "spreader";
+				this.cooldown -= this.reload;
+				this.cooldown2 -= this.reload2/2;
+				this.modeLength = 400;
+			} else if(gun1) {
+				this.attackCooldown -= this.attackReload/5+Math.random()*100;
+				this.mode = "spreader";
+				this.cooldown -= this.reload;
+				this.modeLength = 200;
+			} else if(gun2) {
+				this.attackCooldown2 -= this.attackReload/5+Math.random()*100;
+				this.mode2 = "spreader";
+				this.cooldown2 -= this.reload2/2;
+				this.modeLength2 = 200;
+			}
 		}
 		this.rocket = function() {
-			this.attackCooldown -= this.attackReload;
-			this.mode = "rocket";
-			this.cooldown -= 100;
-			this.cooldown2 -= 50;
-			this.modeLength = 400;
+			if(this.phase === 1) {
+				this.attackCooldown -= this.attackReload;
+				this.mode = "rocket";
+				this.cooldown -= 100;
+				this.cooldown2 -= 50;
+				this.modeLength = 400;
+			}
 		}
-		this.spam = function() {
-			this.attackCooldown -= this.attackReload;
-			this.mode = "spam";
-			this.cooldown -= 1;
-			this.cooldown2 -= 2;
-			this.spamDir = Math.random()*20*Math.PI;
-			this.spamDir2 = Math.random()*20*Math.PI;
-			this.modeLength = 400;
+		this.spam = function(gun1, gun2) {
+			if(this.phase === 1) {
+				this.attackCooldown -= this.attackReload;
+			
+				this.mode = "spam";
+				this.cooldown -= 1;
+				this.cooldown2 -= 2;
+				this.spamDir = Math.random()*20*Math.PI;
+				this.spamDir2 = Math.random()*20*Math.PI;
+				this.modeLength = 400;
+			} else if(gun1) {
+				this.attackCooldown -= this.attackReload/5+Math.random()*100;
+			
+				this.mode = "spam";
+				this.cooldown -= 1;
+				this.spamDir = Math.random()*20*Math.PI;
+				this.modeLength = 200;
+			} else if(gun2) {
+				this.attackCooldown2 -= this.attackReload/5+Math.random()*100;
+			
+				this.mode2 = "spam";
+				this.cooldown2 -= 1;
+				this.spamDir2 = Math.random()*20*Math.PI;
+				this.modeLength2 = 200;
+			}
 		}
 		this.move = function() {
 			if(this.pos.x < 0) {
@@ -1678,7 +2009,7 @@ class BigBoi extends Entity {
 				this.pos.x  = canvas.width;
 				this.v.x = -this.v.x * 1/2;
 			}
-			if(this.mode === "idle" || this.mode === "spreader" || this.mode === "spam" || this.mode === "rocket") {
+			if(this.phase === 2 || this.mode === "idle" || this.mode === "spreader" || this.mode === "spam" || this.mode === "rocket") {
 				this.gunAngle = Math.atan2(player.pos.x-(this.pos.x+this.gunPos.x),player.pos.y-(this.pos.y+this.gunPos.y));
 				this.gunAngle2 = Math.atan2(player.pos.x-(this.pos.x+this.gunPos2.x),player.pos.y-(this.pos.y+this.gunPos2.y));
 				this.speed = 2;
@@ -1694,28 +2025,63 @@ class BigBoi extends Entity {
 				if(this.pos.y < 0) {
 					this.v.y += this.accel;
 				}
-				if(this.mode === "spreader") {
-					this.spreadShoot();
-					this.modeLength--;
-					if(this.modeLength <= 0) {
-						this.mode = "idle";
+				if(this.phase === 1) {
+					if(this.mode === "spreader") {
+						this.spreadShoot(true,true);
+						this.modeLength--;
+						if(this.modeLength <= 0) {
+							this.mode = "idle";
+						}
+					} else if(this.mode === "rocket") {
+						this.makeRocket();
+						this.modeLength--;
+						if(this.modeLength <= 0) {
+							this.mode = "idle";
+						}
+					} else if(this.mode === "spam") {
+						this.spamShoot(true,true);
+						this.modeLength--;
+						this.spamDir++;
+						this.spamDir2++;
+						if(this.modeLength <= 0) {
+							this.mode = "idle";
+						}
+					} else {
+						this.attack();
 					}
-				} else if(this.mode === "rocket") {
-					this.makeRocket();
-					this.modeLength--;
-					if(this.modeLength <= 0) {
-						this.mode = "idle";
+				} else if(this.phase === 2) {
+					if(this.mode === "spreader") {
+						this.spreadShoot(true,false);
+						this.modeLength--;
+						if(this.modeLength <= 0) {
+							this.mode = "idle";
+						}
+					} else if(this.mode === "spam") {
+						this.spamShoot(true,false);
+						this.modeLength--;
+						this.spamDir++;
+						if(this.modeLength <= 0) {
+							this.mode = "idle";
+						}
+					} else {
+						this.attack(true,false);
 					}
-				} else if(this.mode === "spam") {
-					this.spamShoot();
-					this.modeLength--;
-					this.spamDir++;
-					this.spamDir2++;
-					if(this.modeLength <= 0) {
-						this.mode = "idle";
+					if(this.mode2 === "spreader") {
+						this.spreadShoot(false,true);
+						this.modeLength2--;
+						if(this.modeLength2 <= 0) {
+							this.mode2 = "idle";
+						}
+					} else if(this.mode2 === "spam") {
+						this.spamShoot(false,true);
+						this.modeLength2--;
+						this.spamDir2++;
+						if(this.modeLength2 <= 0) {
+							this.mode2 = "idle";
+						}
+					} else {
+						this.attack(false,true);
 					}
-				} else {
-					this.attack();
 				}
 			} else if(this.mode === "CHARGE") {
 				this.speed = 4;
@@ -1728,6 +2094,9 @@ class BigBoi extends Entity {
 			}
 			this.pos.add(this.v);
 			this.attackCooldown++;
+			if(this.phase === 2) {
+				this.attackCooldown2++;
+			}
 			this.cooldown++;
 			this.cooldown2++;
 			if(this.attackCooldown > this.attackReload) {
@@ -1738,6 +2107,9 @@ class BigBoi extends Entity {
 			}
 			if(this.cooldown2 > this.reload2) {
 				this.cooldown2 = this.reload2;
+			}
+			if(this.health < 50 && this.phase < 2) {
+				this.phase = 2;
 			}
 		}
 		this.show = function() {
@@ -1866,76 +2238,71 @@ function pickFleetAttack() {
 	}
 
 }
-class EnemyPoolItem {
-	constructor(enemies) {
-		this.enemies = enemies;
-		enemyPool.push(this);
-	}
-	get value() {
-		let value = 0;
-		for(let i = 0; i < this.enemies.length; i++) {
-			let enemy = this.enemies[i];
-			switch(enemy) {
-				case "spaceship":
-					value += 5;
-					break;
-				case "chargeship":
-					value += 5;
-					break;
-				case "snipeyship":
-					value += 10;
-					break;
-			}
-		}
-		return value;
-		
-	};
-}
 let queuedAttack;
-let enemyPool = [];
-new EnemyPoolItem(["spaceship"]);
-new EnemyPoolItem(["spaceship"]);
-new EnemyPoolItem(["chargeship"]);
-let enemyPoolPool = ["spaceship","chargeship","snipeyship"];
-let enemyPoints = 0;
-let difficulty = 0.01;
-let time = 1;
-let select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
+function noEnemies() {
+	for(let i = 0; i < entities.length; i++) {
+		if(entities[i].friendly === false && !(entities[i] instanceof Health)) {
+			return false;
+		}
+	}
+	return true;
+}
+let waveNum = 0;
+const waves = [
+	[],
+	["spaceship"],
+	["spaceship","spaceship"],
+	["spaceship","spaceship","spaceship","spaceship"],
+	["spaceship","spaceship","chargeship"],
+	["snipeyship","snipeyship"],
+	["spaceship","chargeship","chargeship","chargeship"],
+	["spaceship","chargeship","snipeyship","spaceship"],
+	["fastship","fastship","fastship"],
+	["fastship","chargeship","fastship"],
+	["snipeyship","snipeyship","snipeyship","snipeyship"],
+	["spaceship","chargeship","snipeyship","fastship","chargeship"],
+	["spaceship","spaceship","spaceship","spaceship","spaceship","spaceship"],
+	["chargeship","spaceship","spaceship","snipeyship","snipeyship","snipeyship"],
+	["chargeship","chargeship","fastship","fastship","fastship","snipeyship"],
+	["fleet"]
+	];
 function addEnemy() {
-	enemyPoints += difficulty;
-	time += 0.00001;
-	difficulty = Math.log10(time);
-	if(enemyPoints >= select.value) {
-		enemyPoints -= select.value;
-		for(let i = 0; i < select.enemies.length; i++) {
-			let enemy = select.enemies[i];
-			switch(enemy) {
-				case "spaceship":
-					new Spaceship(Math.random()*canvas.width,0,0,0);
-					break;
-				case "chargeship":
-					new Chargeship(Math.random()*canvas.width,0,0,0);
-					break;
-				case "snipeyship":
-					new Snipeyship(Math.random()*canvas.width,0,0,0);
-					break;
+	if(noEnemies()) {
+		waveNum++;
+		if(waveNum < waves.length) {
+			if(player.health < 5 && Math.random() > 0.25) {
+				waves[waveNum].push("health");
 			}
+			
+			for(let i = 0; i < waves[waveNum].length; i++) {
+				let enemy = waves[waveNum][i];
+				switch(enemy) {
+					case "spaceship":
+						new Spaceship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "chargeship":
+						new Chargeship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "snipeyship":
+						new Snipeyship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "fastship":
+						new Fastship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "health":
+						new Health(Math.random()*canvas.width,0,0,0);
+						break;
+					case "fleet":
+						makeFleet();
+						break;
+					default:
+						break;
+				}
+			}	
 		}
-		if(Math.random() > 0.5 || enemyPool.length <= 3 && enemyPool.length < 10) {
-			let number = Math.ceil(Math.random()*difficulty*10);
-			console.log(number);
-			let enemies2 = [];
-			for (let i = 0; i < number; i++) {
-				enemies2.push(enemyPoolPool[Math.floor(Math.random()*enemyPoolPool.length)]);
-			}
-			new EnemyPoolItem(enemies2);
-		} else if(Math.random() > 0.5 || enemyPool.length >= 10) {
-			enemyPool.splice(Math.floor(Math.random()*enemyPool.length), 1);
-		}
-		select = enemyPool[Math.floor(Math.random()*enemyPool.length)];
 	}
 }
-new BigBoi(Math.random()*500,-100,0,0);
+//new Health(Math.random()*500,0,0,0);
 function updateGame() {
 	clear();
 	ctx.fillStyle = "#000000";
@@ -2010,6 +2377,7 @@ function updateGame() {
 		}
 	}
 	document.getElementById("hp").innerHTML = player.health;
+	document.getElementById("wave").innerHTML = waveNum;
 	if(player.health <= 0) {
 		clear();
 		stop();
@@ -2019,5 +2387,5 @@ function updateGame() {
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillText("you died lol",canvas.width/2-25,canvas.height/2);
 	}
-	//addEnemy();
+	addEnemy();
 };
