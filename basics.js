@@ -2965,5 +2965,5 @@ function updateGame() {
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillText("you died lol",canvas.width/2-25,canvas.height/2);
 	}
-	//addEnemy();
+	addEnemy();
 };
