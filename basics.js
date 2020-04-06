@@ -910,11 +910,9 @@ class Swarmship extends Entity {
 		this.angle = 0;
 		this.reload = 90;
 		this.cooldown = Math.random()*90;
-		this.ais = ["Dodger","Flanker","Chaser","Erratic","Charger"];
+		this.ais = ["Flanker","Chaser","Erratic","Charger"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
-		if(this.ai === "Dodger") {
-			this.mode = "attack";
-		} else if(this.ai === "Charger") {
+		if(this.ai === "Charger") {
 			this.mode = "idle";
 		}
 		this.move = function() {
@@ -976,32 +974,6 @@ class Swarmship extends Entity {
         }
         this.pos.add(this.v);
 				
-			} else if(this.ai === "Dodger") {
-				this.pos.add(this.v);
-				let dodge = false;
-				for(let i = 0; i < entities.length; i++) {
-					if(Vector.sub(entities[i].pos,this.pos).abs <= entities[i].radius+this.radius*10 && !entities[i].dead && entities[i].friendly) {
-						this.dodge = true;
-						dodge = true;
-						this.targ = entities[i];
-
-					}
-				}
-				if(dodge === false) {
-					this.dodge = false;
-				}
-				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
-				let angle = this.angle;
-				let randy = (Math.random()-0.5)*Math.PI/5;
-				
-				if(this.dodge) {
-					angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y);
-					this.v.x += Math.sin(angle+randy+Math.PI) * this.accel;
-					this.v.y += Math.cos(angle+randy+Math.PI) * this.accel;
-				} else {
-					this.v.x += Math.sin(angle+randy) * this.accel;
-					this.v.y += Math.cos(angle+randy) * this.accel;
-				}
 			} else if( this.ai === "Charger") {
 				let distance = Vector.sub(player.pos,this.pos).abs;
 				if(this.mode === "idle") {
@@ -1817,6 +1789,13 @@ class Jerry extends Entity {
 			let y5 = Math.cos(angle+Math.PI*3/4)*Math.sqrt(50)+y4;
 			let x6 = Math.sin(angle)*10+x5;
 			let y6 = Math.cos(angle)*10+y5;
+      
+			let x7 = Math.sin(angle-Math.PI)*7.5+this.pos.x;
+			let y7 = Math.cos(angle-Math.PI)*7.5+this.pos.y;
+			let x8 = Math.sin(angle+Math.atan2(-2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.x;
+			let y8 = Math.cos(angle+Math.atan2(-2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.y;
+			let x9 = Math.sin(angle+Math.atan2(2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.x;
+			let y9 = Math.cos(angle+Math.atan2(2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.y;
 			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
 			ctx.beginPath();
@@ -1827,6 +1806,15 @@ class Jerry extends Entity {
 			ctx.lineTo(x5,y5);
 			ctx.lineTo(x6,y6);
 			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+      
+			ctx.beginPath();
+			ctx.moveTo(x7,y7);
+			ctx.lineTo(x8,y8);
+			ctx.lineTo(x9,y9);
+			ctx.lineTo(x7,y7);
 			ctx.fill();
 			ctx.stroke();
 			ctx.closePath();
@@ -1975,6 +1963,12 @@ class Steve extends Entity {
 			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
 			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
 			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+			let x4 = Math.sin(angle-Math.PI)*12.5+this.pos.x;
+			let y4 = Math.cos(angle-Math.PI)*12.5+this.pos.y;
+			let x5 = Math.sin(angle+Math.atan2(-2.5,-7.5))*Math.sqrt(7.5**2+2.5**2)+this.pos.x;
+			let y5 = Math.cos(angle+Math.atan2(-2.5,-7.5))*Math.sqrt(7.5**2+2.5**2)+this.pos.y;
+			let x6 = Math.sin(angle+Math.atan2(2.5,-7.5))*Math.sqrt(7.5**2+2.5**2)+this.pos.x;
+			let y6 = Math.cos(angle+Math.atan2(2.5,-7.5))*Math.sqrt(7.5**2+2.5**2)+this.pos.y;
 			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
 			ctx.beginPath();
@@ -1983,7 +1977,14 @@ class Steve extends Entity {
 			ctx.lineTo(x3,y3);
 			ctx.lineTo(x1,y1);
 			ctx.fill();
-			ctx.stroke();
+			ctx.closePath();
+      
+			ctx.beginPath();
+			ctx.moveTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
+			ctx.lineTo(x4,y4);
+			ctx.fill();
 			ctx.closePath();
 		}
 	}
@@ -2159,6 +2160,12 @@ class Kevin extends Entity {
 			let y2 = Math.cos(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)+y1;
 			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
 			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+			let x4 = Math.sin(angle-Math.PI)*15+this.pos.x;
+			let y4 = Math.cos(angle-Math.PI)*15+this.pos.y;
+			let x5 = Math.sin(angle+Math.atan2(-2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.x;
+			let y5 = Math.cos(angle+Math.atan2(-2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.y;
+			let x6 = Math.sin(angle+Math.atan2(2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.x;
+			let y6 = Math.cos(angle+Math.atan2(2.5,-10))*Math.sqrt(10**2+2.5**2)+this.pos.y;
 			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
 			ctx.beginPath();
@@ -2166,6 +2173,15 @@ class Kevin extends Entity {
 			ctx.lineTo(x2,y2);
 			ctx.lineTo(x3,y3);
 			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+      
+			ctx.beginPath();
+			ctx.moveTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
+			ctx.lineTo(x4,y4);
 			ctx.fill();
 			ctx.stroke();
 			ctx.closePath();
@@ -2272,11 +2288,15 @@ class Kyle extends Entity {
 			let x1 = Math.sin(angle)*5+this.pos.x;
 			let y1 = Math.cos(angle)*5+this.pos.y;
 			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
-			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
-			let x3 = Math.sin(angle)*-2.5+this.pos.x;
-			let y3 = Math.cos(angle)*-2.5+this.pos.y;
-			let x4 = Math.sin(angle-Math.PI/2)*10+x2;
-			let y4 = Math.cos(angle-Math.PI/2)*10+y2;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1
+			let x3 = Math.sin(angle+Math.atan2(2,-5))*Math.sqrt(2**2+5**2)+this.pos.x;
+			let y3 = Math.cos(angle+Math.atan2(2,-5))*Math.sqrt(2**2+5**2)+this.pos.y;
+			let x4 = Math.sin(angle)*-7.5+this.pos.x;
+			let y4 = Math.cos(angle)*-7.5+this.pos.y;
+			let x5 = Math.sin(angle+Math.atan2(-2,-5))*Math.sqrt(2**2+5**2)+this.pos.x;
+			let y5 = Math.cos(angle+Math.atan2(-2,-5))*Math.sqrt(2**2+5**2)+this.pos.y;
+			let x6 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y6 = Math.cos(angle-Math.PI/2)*10+y2;
 			ctx.fillStyle = "#FF0000";
 			ctx.lineWidth = 0.01;
 			ctx.beginPath();
@@ -2284,6 +2304,8 @@ class Kyle extends Entity {
 			ctx.lineTo(x2,y2);
 			ctx.lineTo(x3,y3);
 			ctx.lineTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
 			ctx.lineTo(x1,y1);
 			ctx.fill();
 			ctx.stroke();
@@ -2757,10 +2779,11 @@ const waves = [
 function addEnemy() {
 	if(noEnemies()) {
 		waveNum++;
-		if(waveNum < waves.length) {
+		
+    if(waveNum < waves.length) {
 			if(player.health < 5 && Math.random() > 0.25) {
-				waves[waveNum].push("health");
-			}
+        waves[waveNum].push("health");
+      }
 			
 			for(let i = 0; i < waves[waveNum].length; i++) {
 				let enemy = waves[waveNum][i];
@@ -2802,7 +2825,59 @@ function addEnemy() {
 						break;
 				}
 			}	
-		}
+		} else {
+      if(player.health < 5 && Math.random() > 0.25) {
+        new Health(Math.random()*canvas.width,0,0,0);
+      }
+      let points = waveNum*2;
+      let enemyNames = ["spaceship","chargeship","snipeyship","fastship","missile","spawnship","splittyship"];
+      let enemyCosts = [5          ,5           ,10          ,10        ,5        ,15         ,10];
+      while(points > 0) {
+        let enemyNum = Math.floor(Math.random()*enemyNames.length);
+        if(enemyCosts[enemyNum] <= points) {
+          points -= enemyCosts[enemyNum];
+          switch(enemyNames[enemyNum]) {
+            case "spaceship":
+              new Spaceship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "chargeship":
+              new Chargeship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "snipeyship":
+              new Snipeyship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "fastship":
+              new Fastship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "health":
+              new Health(Math.random()*canvas.width,0,0,0);
+              break;
+            case "fleet":
+              makeFleet();
+              break;
+            case "missile":
+              new Missile(Math.random()*canvas.width,0,0,0);
+              break;
+            case "swarmship":
+              new Swarmship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "spawnship":
+              new Spawnship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "splittyship":
+              new Splittyship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "bigboi":
+              new BigBoi(Math.random()*canvas.width,-50,0,0);
+              break;
+            default:
+              break;
+          }
+        } else {
+          break;
+        }
+      }
+    }
 	}
 }
 //new Health(Math.random()*500,0,0,0);
@@ -2890,5 +2965,5 @@ function updateGame() {
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillText("you died lol",canvas.width/2-25,canvas.height/2);
 	}
-	addEnemy();
+	//addEnemy();
 };
