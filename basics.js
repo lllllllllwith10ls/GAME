@@ -3915,10 +3915,10 @@ function checkpoint() {
   let code = document.getElementById("code").value;
   stop();
   if(code === "you ever just realize that the bosses spawn at multiples of 15?") {
-    waveNum = 45;
+    waveNum = 40;
   } else if(code === "these enemy types are getting more unoriginal") {
     waveNum = 35;
-  } else if(code === "omgmorelevels") {
+  } else if(code === "omg more levels") {
     waveNum = 30;
   } else if(code === "oh balls") {
     waveNum = 25;
