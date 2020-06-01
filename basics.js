@@ -1,3 +1,4 @@
+let hell = false;
 class Vector {
 	constructor(x,y) {
 		this.x = x;
@@ -3690,7 +3691,14 @@ const waves = [
   ["bully"]
 	];
 function addEnemy() {
-	if(noEnemies()) {
+  if(hell && entities.length < 1000) {
+    makeFleet();
+    for(let i = 0; i < eliteFleet.length; i++) {
+      eliteFleet[i].phase = 3;
+    }
+    new BigBoi(Math.random()*canvas.width,-50,0,0);
+    new Bully(Math.random()*canvas.width,0,0,0);
+  } else if(noEnemies()) {
 		waveNum++;
 		
     if(waveNum < waves.length) {
@@ -3911,6 +3919,9 @@ function updateGame() {
 	}
 	addEnemy();
 };
+function hard() {
+  hell = true;
+}
 function checkpoint() {
   let code = document.getElementById("code").value;
   stop();
