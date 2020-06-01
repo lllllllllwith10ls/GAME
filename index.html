@@ -34,7 +34,6 @@
 
 				});
 				window.addEventListener('keydown', function (e) {
-					e.preventDefault();
 					keys[e.keyCode] = true;
 				});
 				window.addEventListener('keyup', function (e) {
@@ -50,5 +49,9 @@
 		</script>
 		<p>Health: <span id="hp">5</span></p>
 		<p>Wave: <span id="wave">5</span></p>
+		<p>Code for checkpoint: <span id="checkpoint">N/A</span></p>
+    <input type="text" id="code" onfocus="stop()"></input>
+    <p>Insert code to go to checkpoint (case sensitive)</p>
+    <button onclick="checkpoint()">Submit</button>
 	</body>
 </html>

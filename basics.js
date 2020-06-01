@@ -291,7 +291,7 @@ class EnemyBullet extends Entity {
 }
 class LaserThing extends EnemyBullet {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,1,5,0,3);
+		super(x,y,vx,vy,1,Infinity,0,3);
 		this.move = function() {
 			this.pos.add(this.v);
 			if (this.pos.x < 0) {
@@ -331,9 +331,92 @@ class LaserSegment extends EnemyBullet {
 	}
 }
 
+class DelayBullet extends EnemyBullet {
+	constructor(x,y,vx,vy,angle,life) {
+		super(x,y,vx,vy,1,Infinity,0,3);
+    this.angle = angle;
+    this.life = life;
+		this.move = function() {
+			this.pos.add(this.v);
+			if (this.pos.x < 0) {
+				this.dead = true;
+			}
+			if (this.pos.x > canvas.width) {
+				this.dead = true;
+			}
+			if (this.pos.y < 0) {
+				this.dead = true;
+			}
+			if (this.pos.y > canvas.height) {
+				this.dead = true;
+			}
+      this.life--;
+      if(this.life <= 0) {
+        new LaserThing(this.pos.x, this.pos.y, Math.sin(this.angle)*5, Math.cos(this.angle)*5);
+				this.dead = true;
+      }
+		}
+		this.show = function() {
+			ctx.strokeStyle = "#FF0000";
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			ctx.moveTo(this.pos.x-(this.v.x/this.v.abs)*10,this.pos.y-(this.v.y/this.v.abs)*10);
+			ctx.lineTo(this.pos.x+(this.v.x/this.v.abs)*10,this.pos.y+(this.v.y/this.v.abs)*10);
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+class Skimmer extends EnemyBullet {
+	constructor(x,y,vx,vy,reload) {
+		super(x,y,vx,vy,1,Infinity,0,3);
+    this.angle = Math.atan2(this.v.x,this.v.y);
+    this.reload = reload;
+    this.cooldown = 0;
+		this.move = function() {
+			this.pos.add(this.v);
+			if (this.pos.x < 0) {
+				this.dead = true;
+			}
+			if (this.pos.x > canvas.width) {
+				this.dead = true;
+			}
+			if (this.pos.y < 0) {
+				this.dead = true;
+			}
+			if (this.pos.y > canvas.height) {
+				this.dead = true;
+			}
+      this.cooldown++;
+      if(this.cooldown >= this.reload) {
+        new LaserThing(this.pos.x, this.pos.y, Math.sin(this.angle+Math.PI/2)*5, Math.cos(this.angle+Math.PI/2)*5);
+        new LaserThing(this.pos.x, this.pos.y, Math.sin(this.angle-Math.PI/2)*5, Math.cos(this.angle-Math.PI/2)*5);
+        this.cooldown = 0;
+      }
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*3+this.pos.x;
+			let y1 = Math.cos(angle)*3+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(8/2))*Math.sqrt(9+144)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(8/2))*Math.sqrt(9+144)+y1;
+			let x3 = Math.sin(angle-Math.PI/2)*24+x2;
+			let y3 = Math.cos(angle-Math.PI/2)*24+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.closePath();
+		}
+	}
+}
 class Splitter extends EnemyBullet {
 	constructor(x,y,vx,vy,bullets) {
-		super(x,y,vx,vy,1,7.5,0,3);
+		super(x,y,vx,vy,1,Infinity,0,3);
     this.bullets = bullets;
 		this.move = function() {
 			this.pos.add(this.v);
@@ -360,6 +443,56 @@ class Splitter extends EnemyBullet {
 			ctx.beginPath();
 			ctx.arc(this.pos.x, this.pos.y, 5, 0, 2 * Math.PI);
 			ctx.fill();
+		}
+	}
+}
+class Mine extends Entity {
+	constructor(x,y,vx,vy,bullets) {
+		super(x,y,vx,vy,1,2,0,5);
+    this.angle = Math.random()*Math.PI*2;
+    this.bullets = bullets;
+		this.move = function() {
+			this.pos.add(this.v);
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y;
+			}
+			this.angle += Math.PI/100;
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle+Math.PI/4)*Math.sqrt(50)+this.pos.x;
+			let y1 = Math.cos(angle+Math.PI/4)*Math.sqrt(50)+this.pos.y;
+			let x2 = Math.sin(angle+3*Math.PI/4)*Math.sqrt(50)+this.pos.x;
+			let y2 = Math.cos(angle+3*Math.PI/4)*Math.sqrt(50)+this.pos.y;
+			let x3 = Math.sin(angle+5*Math.PI/4)*Math.sqrt(50)+this.pos.x;
+			let y3 = Math.cos(angle+5*Math.PI/4)*Math.sqrt(50)+this.pos.y;
+			let x4 = Math.sin(angle+7*Math.PI/4)*Math.sqrt(50)+this.pos.x;
+			let y4 = Math.cos(angle+7*Math.PI/4)*Math.sqrt(50)+this.pos.y;
+			ctx.fillStyle = "#FF0000";
+			
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
 		}
 	}
 }
@@ -704,7 +837,7 @@ class Spawnship extends Entity {
 }
 class Fastship extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,3,3,0.2,5);
+		super(x,y,vx,vy,3,3,0.1,5);
 		this.angle = 0;
 		this.reload = 90;
 		this.cooldown = Math.random()*90;
@@ -1566,6 +1699,495 @@ class Splittyship extends Entity {
 	}
 }
 
+class Tripleship extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,5,1.5,0.05,10);
+		this.angle = 0;
+		this.reload = 120;
+		this.cooldown = Math.random()*120;
+		this.ais = ["Charger","Circler","Coward","Hit n run","Erratic"];
+		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
+		if(this.ai === "Circler") {
+			let array = ["clockwise","counterclockwise"];
+			this.mode = array[Math.floor(Math.random()*array.length)];
+			this.modeLength = Math.random()*300;
+		} else if(this.ai === "Coward") {
+			this.mode = "attack";
+			this.modeLength = 0;
+		} else if(this.ai === "Hit n run") {
+			this.mode = "idle";
+			this.modeLength = Math.random()*120;
+		}
+		this.shoot = function() {
+			if(this.cooldown >= this.reload) {
+				for(let i = 0; i < 3; i++) {
+					let angle = this.angle+Math.PI+Math.PI/6*(i-1)+(Math.random()-0.5)*Math.PI/60; 
+					new LaserThing(this.pos.x,this.pos.y,-Math.sin(angle)*5,-Math.cos(angle)*5);
+					
+				}
+				this.cooldown -= this.reload;
+			}
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}
+			if(this.ai === "Charger") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+				this.shoot();
+			} else if(this.ai === "Circler") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				let angle2;
+				if(this.mode === "clockwise") {
+					angle2 = this.angle+Math.PI/2;
+				} else {
+					angle2 = this.angle-Math.PI/2;
+				}
+				let angle = this.angle;
+				this.v.x += Math.sin(angle) * this.accel + Math.sin(angle2) * this.accel;
+				this.v.y += Math.cos(angle) * this.accel + Math.cos(angle2) * this.accel;
+				this.modeLength --;
+				if(this.modeLength <= 0) {
+					if(this.mode === "clockwise") {
+						this.mode = "counterclockwise";
+					} else {
+						this.mode = "clockwise";
+					}
+					this.modeLength = Math.random()*300;
+				}
+				this.pos.add(this.v);
+				this.shoot();
+			} else if(this.ai === "Coward") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 200) {
+					this.mode = "run";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "run") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = (Math.random()-0.5)*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0) {
+					this.mode = "attack";
+				}
+				if(this.mode === "attack") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+					this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					this.shoot();
+					
+				}
+				this.pos.add(this.v);
+			} else if( this.ai === "Hit n run") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(this.mode === "idle") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					if(distance < 100) {
+						this.v.x += Math.sin((vangle+randy+this.angle+Math.PI)/2) * this.accel;
+						this.v.y += Math.cos((vangle+randy+this.angle+Math.PI)/2) * this.accel;
+					} else {
+						
+						this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+						this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					}
+					
+					this.shoot();
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0 && this.mode === "idle") {
+					this.mode = "hit";
+				}
+				if(this.mode === "hit") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle;
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.shoot();
+				}
+				if(distance < 75 && this.mode === "hit") {
+					this.mode = "run";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "run") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y)+Math.PI;
+					let angle = this.angle;
+					this.v.x += Math.sin(angle) * this.accel;
+					this.v.y += Math.cos(angle) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0 && this.mode === "run") {
+					this.mode = "idle";
+					this.modeLength = Math.random()*120;
+				}
+				this.pos.add(this.v);
+			} else if(this.ai === "Erratic") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+				
+				this.pos.add(this.v);
+				this.shoot();
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle)*5+this.pos.x;
+			let y1 = Math.cos(angle)*5+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/12.5))*Math.sqrt(156.25+25)+y1;
+			let x3 = Math.sin(angle-Math.PI/2)*10+x2;
+			let y3 = Math.cos(angle-Math.PI/2)*10+y2;
+      let x4 = Math.sin(angle-Math.PI)*7.5+this.pos.x;
+			let y4 = Math.cos(angle-Math.PI)*7.5+this.pos.y;
+			let x5 = Math.sin(angle+Math.atan2(-2,-10))*Math.sqrt(10**2+2**2)+this.pos.x;
+			let y5 = Math.cos(angle+Math.atan2(-2,-10))*Math.sqrt(10**2+2**2)+this.pos.y;
+			let x6 = Math.sin(angle+Math.atan2(2,-10))*Math.sqrt(10**2+2**2)+this.pos.x;
+			let y6 = Math.cos(angle+Math.atan2(2,-10))*Math.sqrt(10**2+2**2)+this.pos.y;
+			
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+      
+			ctx.beginPath();
+			ctx.moveTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
+			ctx.lineTo(x4,y4);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+
+class Wallship extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,15,1.5,0.05,10);
+		this.angle = 0;
+		this.ais = ["Chaser","Erratic","Protector"];
+		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			
+      if(this.ai === "Chaser") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+			} else if(this.ai === "Protector") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let angle = this.angle;
+        let protect = false;
+        for(let i = 0; i < entities.length; i++) {
+          if((Vector.sub(entities[i].pos,this.pos).abs <= this.radius*10) && !entities[i].dead && !(entities[i] instanceof Wallship) && !entities[i].friendly && entities[i].damagable) {
+            this.protect = true;
+            protect = true;
+            this.targ = entities[i];
+
+          }
+        }
+        
+        if(protect === false) {
+          this.protect = false;
+        }
+				if(this.protect) {
+          angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y);
+				}
+        let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+			} else if(this.ai === "Erratic") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				let angle = this.angle;
+				if(this.dodge) {
+          angle = Math.atan2(this.targ.pos.x-this.pos.x,this.targ.pos.y-this.pos.y);
+          this.v.x += Math.sin(angle+randy+Math.PI) * this.accel;
+          this.v.y += Math.cos(angle+randy+Math.PI) * this.accel;
+        } else {
+          this.v.x += Math.sin((vangle/2+randy+this.angle)/1.5) * this.accel;
+          this.v.y += Math.cos((vangle/2+randy+this.angle)/1.5) * this.accel;
+        }
+				this.pos.add(this.v);
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+      let x1 = Math.sin(angle+Math.atan2(-10,2))*Math.sqrt(10**2+2**2)+this.pos.x;
+			let y1 = Math.cos(angle+Math.atan2(-10,2))*Math.sqrt(10**2+2**2)+this.pos.y;
+      let x2 = Math.sin(angle+Math.atan2(10,2))*Math.sqrt(10**2+2**2)+this.pos.x;
+			let y2 = Math.cos(angle+Math.atan2(10,2))*Math.sqrt(10**2+2**2)+this.pos.y;
+      let x3 = Math.sin(angle+Math.atan2(10,-2))*Math.sqrt(10**2+2**2)+this.pos.x;
+			let y3 = Math.cos(angle+Math.atan2(10,-2))*Math.sqrt(10**2+2**2)+this.pos.y;
+      let x4 = Math.sin(angle+Math.atan2(-10,-2))*Math.sqrt(10**2+2**2)+this.pos.x;
+      let y4 = Math.cos(angle+Math.atan2(-10,-2))*Math.sqrt(10**2+2**2)+this.pos.y;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+class Mineship extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,10,1,0.1,10);
+		this.angle = 0;
+		this.reload = 300;
+		this.cooldown = Math.random()*300;
+		this.ais = ["Circler","Coward","Erratic"];
+		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
+		if(this.ai === "Circler") {
+			let array = ["clockwise","counterclockwise"];
+			this.mode = array[Math.floor(Math.random()*array.length)];
+			this.modeLength = Math.random()*300;
+		} else if(this.ai === "Coward") {
+			this.mode = "attack";
+			this.modeLength = 0;
+		}
+		this.shoot = function() {
+			if(this.cooldown >= this.reload) { 
+				if(this.canMakeMine()) {
+          new Mine(this.pos.x,this.pos.y,Math.sin(this.angle+Math.PI),Math.cos(this.angle+Math.PI),10);
+				}
+        this.cooldown -= this.reload;
+			}
+		}
+    this.canMakeMine = function() {
+      let mines = 0;
+      for(let i = 0; i < entities.length; i++) {
+        if(entities[i] instanceof Mineship) {
+          mines += 3;
+        }
+      }
+      mines = Math.sqrt(mines);
+      
+      for(let i = 0; i < entities.length; i++) {
+        if(entities[i] instanceof Mine) {
+          mines--;
+        }
+      }
+      if(mines <= 0) {
+        return false;
+      }
+      return true;
+    }
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.height) {
+				this.pos.y = canvas.height;
+				this.v.y = -this.v.y * 1/2;
+			}
+			this.cooldown++;
+			if(this.cooldown > this.reload) {
+				this.cooldown = this.reload;
+			}if(this.ai === "Circler") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				let angle2;
+				if(this.mode === "clockwise") {
+					angle2 = this.angle+Math.PI/2;
+				} else {
+					angle2 = this.angle-Math.PI/2;
+				}
+				let angle = this.angle;
+				this.v.x += Math.sin(angle) * this.accel + Math.sin(angle2) * this.accel;
+				this.v.y += Math.cos(angle) * this.accel + Math.cos(angle2) * this.accel;
+				this.modeLength --;
+				if(this.modeLength <= 0) {
+					if(this.mode === "clockwise") {
+						this.mode = "counterclockwise";
+					} else {
+						this.mode = "clockwise";
+					}
+					this.modeLength = Math.random()*300;
+				}
+				this.pos.add(this.v);
+				this.shoot();
+			} else if(this.ai === "Coward") {
+				let distance = Vector.sub(player.pos,this.pos).abs;
+				if(distance < 200) {
+					this.mode = "run";
+					this.modeLength = Math.random()*60;
+				}
+				if(this.mode === "run") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let angle = this.angle+Math.PI;
+					let randy = (Math.random()-0.5)*Math.PI/5
+					this.v.x += Math.sin(angle+randy) * this.accel;
+					this.v.y += Math.cos(angle+randy) * this.accel;
+					this.modeLength--;
+				}
+				if(this.modeLength <= 0) {
+					this.mode = "attack";
+				}
+				if(this.mode === "attack") {
+					this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+					let vangle;
+					if(this.v.x === 0 && this.v.y === 0) {
+						vangle = Math.random()*Math.PI*2;
+					} else {
+						vangle = Math.atan2(this.v.x,this.v.y);
+					}
+					let randy = (Math.random()-0.5)*Math.PI/5;
+					this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+					this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+					this.shoot();
+					
+				}
+				this.pos.add(this.v);
+			} else if(this.ai === "Erratic") {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+				
+				this.pos.add(this.v);
+				this.shoot();
+			}
+		}
+		this.show = function() {
+			let angle = this.angle;
+			let x1 = Math.sin(angle+Math.atan2(-7.5,-7.5))*Math.sqrt(7.5**2+7.5**2)+this.pos.x;
+			let y1 = Math.cos(angle+Math.atan2(-7.5,-7.5))*Math.sqrt(7.5**2+7.5**2)+this.pos.y;
+			let x2 = Math.sin(angle+Math.atan2(-7.5,4.5))*Math.sqrt(4.5**2+7.5**2)+this.pos.x;
+			let y2 = Math.cos(angle+Math.atan2(-7.5,4.5))*Math.sqrt(4.5**2+7.5**2)+this.pos.y;
+			let x3 = Math.sin(angle+Math.atan2(7.5,4.5))*Math.sqrt(4.5**2+7.5**2)+this.pos.x;
+			let y3 = Math.cos(angle+Math.atan2(7.5,4.5))*Math.sqrt(4.5**2+7.5**2)+this.pos.y;
+			let x4 = Math.sin(angle+Math.atan2(7.5,-7.5))*Math.sqrt(7.5**2+7.5**2)+this.pos.x;
+			let y4 = Math.cos(angle+Math.atan2(7.5,-7.5))*Math.sqrt(7.5**2+7.5**2)+this.pos.y;
+			let x5 = Math.sin(angle+Math.atan2(3,-7.5))*Math.sqrt(7.5**2+3**2)+this.pos.x;
+			let y5 = Math.cos(angle+Math.atan2(3,-7.5))*Math.sqrt(7.5**2+3**2)+this.pos.y;
+			let x6 = Math.sin(angle+Math.atan2(3,0))*Math.sqrt(3**2)+this.pos.x;
+			let y6 = Math.cos(angle+Math.atan2(3,0))*Math.sqrt(3**2)+this.pos.y;
+			let x7 = Math.sin(angle+Math.atan2(-3,0))*Math.sqrt(3**2)+this.pos.x;
+			let y7 = Math.cos(angle+Math.atan2(-3,0))*Math.sqrt(3**2)+this.pos.y;
+			let x8 = Math.sin(angle+Math.atan2(-3,-7.5))*Math.sqrt(7.5**2+3**2)+this.pos.x;
+			let y8 = Math.cos(angle+Math.atan2(-3,-7.5))*Math.sqrt(7.5**2+3**2)+this.pos.y;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
+			ctx.lineTo(x4,y4);
+			ctx.lineTo(x5,y5);
+			ctx.lineTo(x6,y6);
+			ctx.lineTo(x7,y7);
+			ctx.lineTo(x8,y8);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
 class Jerry extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,10,2,0.1,5);
@@ -2343,7 +2965,7 @@ class BigBoi extends Entity {
 		this.spamDir2 = 0;
 		this.phase = 1;
 		this.attack = function(gun1,gun2) {
-			if(this.attackCooldown >= this.attackReload && this.phase === 1) {
+			if(this.attackCooldown >= this.attackReload && this.phase === 1 && this.noMinions()) {
 				let number = Math.random()*5;
 				if(number < 1) {
 					this.charge();
@@ -2356,14 +2978,14 @@ class BigBoi extends Entity {
 				} else {
 					this.spawn();
 				}
-			} else if(this.attackCooldown >= this.attackReload && this.phase === 2 && gun1) {
+			} else if(this.attackCooldown >= this.attackReload && this.phase === 2 && gun1 && this.noMinions()) {
 				let number = Math.random()*3;
 				if(number < 1){
 					this.spread(true,false);
 				} else {
 					this.spam(true,false);
 				} 
-			} else if(this.attackCooldown2 >= this.attackReload && this.phase === 2 && gun2) {
+			} else if(this.attackCooldown2 >= this.attackReload && this.phase === 2 && gun2 && this.noMinions()) {
 				let number = Math.random()*2;
 				if(number < 1){
 					this.spread(false,true);
@@ -2371,6 +2993,15 @@ class BigBoi extends Entity {
 					this.spam(false,true);
 				}
 			}
+		}
+    
+		this.noMinions = function() {
+			for(let i = 0; i < entities.length; i++) {
+        if(entities[i] instanceof Spaceship) {
+          return false;
+        }
+      }
+      return true;
 		}
 		this.shootOutBack = function() {
 			if(this.cooldown >= this.reload) {
@@ -2605,6 +3236,7 @@ class BigBoi extends Entity {
 			}
 			if(this.health < 50 && this.phase < 2) {
 				this.phase = 2;
+        this.attackCooldown = 500;
 			}
 		}
 		this.show = function() {
@@ -2626,6 +3258,270 @@ class BigBoi extends Entity {
 			ctx.lineTo(x3,y3);
 			ctx.lineTo(x4,y4);
 			ctx.lineTo(x5,y5);
+			ctx.lineTo(x1,y1);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+}
+
+
+class Bully extends Entity {
+	constructor(x,y,vx,vy) {
+		super(x,y,vx,vy,250,1,0.05,20);
+		this.angle = 0;
+		
+		this.attackReload = 100;
+		this.attackCooldown = Math.random()*100;
+		this.spreadCooldown = 30;
+		this.cooldown = 100;
+		this.reload = 100;
+		this.shots = 0;
+		
+		this.modeLength = 0;
+		
+		this.mode = "idle";
+		this.phase = 1;
+		
+		this.numMines = function() {
+      let result = 0;
+			for(let i = 0; i < entities.length; i++) {
+        if(entities[i] instanceof Mine) {
+          result++;
+        }
+      }
+      return result;
+		}
+    this.attack = function() {
+      if(this.attackCooldown >= this.attackReload) {
+				let number = Math.random()*4;
+				if(number < 1){
+					this.parallelBullets();
+				} else if(number < 2){
+					this.split();
+				} else if(number < 3){
+					this.skim();
+				} else if(this.numMines() < 3) {
+					this.mines();
+				}
+			}
+		}
+    this.attack2 = function() {
+      if(this.attackCooldown >= this.attackReload) {
+				let number = Math.random()*4;
+        let angle = this.facingAngle+(Math.random()-0.5)*Math.PI/60; 
+				if(number < 1){
+					new Splitter(this.pos.x,this.pos.y,Math.sin(angle)*7.5,Math.cos(angle)*7.5,10)
+          this.attackCooldown = 0;
+				} else if(number < 2){
+          new Skimmer(this.pos.x,this.pos.y,Math.sin(angle)*5,Math.cos(angle)*5,10);
+          this.attackCooldown = 0;
+				} else if(number < 3){
+					for(let i = -3; i <= 3; i++) {
+            angle = this.facingAngle+(Math.random()-0.5)*Math.PI/60; 
+            new DelayBullet(this.pos.x,this.pos.y,Math.sin(angle+Math.PI/2)*i*1.5,Math.cos(angle+Math.PI/2)*i*1.5,angle,30);
+            
+          }
+          this.attackCooldown = 0;
+				} else if(this.numMines() < 3) {
+					this.mines();
+				}
+			}
+		}
+    this.attack3 = function() {
+      if(this.attackCooldown >= this.attackReload) {
+				let number = Math.random()*4;
+				let angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y); 
+        let angle2 = Math.random()*Math.PI*2; 
+				if(number < 1){
+					new Splitter(this.pos.x,this.pos.y,Math.sin(angle2)*7.5,Math.cos(angle2)*7.5,12)
+          this.attackCooldown = 0;
+				} else if(number < 2){
+          new Skimmer(this.pos.x,this.pos.y,Math.sin(angle2)*5,Math.cos(angle2)*5,10);
+          this.attackCooldown = 0;
+				} else if(number < 3){
+					for(let i = -3; i <= 3; i++) {
+            angle = angle2+(Math.random()-0.5)*Math.PI/60; 
+            new DelayBullet(this.pos.x,this.pos.y,Math.sin(angle+Math.PI/2)*i*1.5,Math.cos(angle+Math.PI/2)*i*1.5,angle,30);
+            
+          }
+          this.attackCooldown = 0;
+				} else if(this.numMines() < 3) {
+					this.mines();
+				}
+			}
+		}
+    
+		this.parallelShoot = function() {
+			if(this.cooldown >= this.reload) {
+        for(let i = -5; i <= 5; i++) {
+          let angle = this.facingAngle+(Math.random()-0.5)*Math.PI/60; 
+          new DelayBullet(this.pos.x,this.pos.y,Math.sin(angle+Math.PI/2)*i*1.5,Math.cos(angle+Math.PI/2)*i*1.5,angle,30);
+          
+        }
+        this.cooldown -= 150;
+        this.modeLength -= 1;
+      }
+    }
+		this.skimmer = function() {
+			if(this.cooldown >= this.reload) {
+        let angle = this.facingAngle+(Math.random()-0.5)*Math.PI/60; 
+        new Skimmer(this.pos.x,this.pos.y,Math.sin(angle)*5,Math.cos(angle)*5,10);
+        
+        this.cooldown -= 150;
+        this.modeLength -= 1;
+      }
+    }
+		this.splitShoot = function() {
+			if(this.cooldown >= this.reload) {
+				let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
+        new Splitter(this.pos.x,this.pos.y,-Math.sin(angle)*7.5,-Math.cos(angle)*7.5,8);
+				
+        this.shots++;
+				this.cooldown -= 10;
+        if(this.shots >= 3) {
+          this.shots = 0;
+          this.cooldown -= 140;          
+          this.modeLength -= 1;
+        }
+			}
+		}
+		this.mines = function() {
+      for(let i = 0; i < 2; i++) {
+        let angle = Math.random()*Math.PI*2; 
+        new Mine(this.pos.x,this.pos.y,Math.sin(angle),Math.cos(angle),12);
+        if(this.numMines() >= 3) {
+          break;
+        }
+      }
+      this.attackCooldown = 0;
+      this.shots = 0;
+		}
+		this.split = function() {
+      this.mode = "split";
+      this.modeLength = 3;
+      this.attackCooldown = 0;
+      this.shots = 0;
+		}
+		this.skim = function() {
+      this.mode = "skim";
+      this.modeLength = 3;
+      this.attackCooldown = 0;
+      this.shots = 0;
+		}
+		this.parallelBullets = function() {
+      this.mode = "parallel";
+      this.modeLength = 3;
+      this.attackCooldown = 0;
+      this.shots = 0;
+      
+		}
+		this.move = function() {
+			if(this.pos.x < 0) {
+				this.pos.x = 0;
+				this.v.x = -this.v.x * 1/2;
+			}
+			if(this.pos.x > canvas.width) {
+				this.pos.x  = canvas.width;
+				this.v.x = -this.v.x * 1/2;
+			}
+      if(this.pos.y < 0) {
+				this.pos.y = 0;
+				this.v.y = -this.v.y * 1/2;
+			}
+			if(this.pos.y > canvas.width) {
+				this.pos.y  = canvas.width;
+				this.v.y = -this.v.y * 1/2;
+			}
+      if(this.phase === 1) {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+				
+        this.facingAngle = this.angle;
+        let vangle;
+				if(this.v.x === 0 && this.v.y === 0) {
+					vangle = Math.random()*Math.PI*2;
+				} else {
+					vangle = Math.atan2(this.v.x,this.v.y);
+				}
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				
+				this.v.x += Math.sin((vangle+randy+this.angle)/2) * this.accel;
+				this.v.y += Math.cos((vangle+randy+this.angle)/2) * this.accel;
+				
+				this.pos.add(this.v);
+				if(this.mode === "idle") {
+          this.attackCooldown++;
+          this.attack();
+        }
+        if(this.mode === "split") {
+          this.cooldown++;
+          this.splitShoot();
+          if(this.modeLength <= 0) {
+            this.mode = "idle";
+          }
+        }
+        if(this.mode === "parallel") {
+          this.cooldown++;
+          this.parallelShoot();
+          if(this.modeLength <= 0) {
+            this.mode = "idle";
+          }
+        }
+        if(this.mode === "skim") {
+          this.cooldown++;
+          this.skimmer();
+          if(this.modeLength <= 0) {
+            this.mode = "idle";
+          }
+        }
+        if(this.health < 125) {
+          this.phase = 2;
+          this.mode = "idle";
+          this.attackReload = 125;
+          this.attackCooldown = 0;
+        }
+      }
+      if(this.phase === 2) {
+				this.angle = Math.atan2(player.pos.x-this.pos.x,player.pos.y-this.pos.y);
+        this.facingAngle = this.angle;
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(angle+randy) * this.accel;
+				this.v.y += Math.cos(angle+randy) * this.accel;
+				this.pos.add(this.v);
+        this.attackCooldown++;
+        this.attack2();
+        if(this.health < 50) {
+          this.phase = 3;
+          this.attackReload = 75;
+          this.attackCooldown = 0;
+        }
+      }
+      if(this.phase === 3) {
+				let angle = this.angle;
+				let randy = (Math.random()-0.5)*Math.PI/5;
+				this.v.x += Math.sin(Math.atan2(this.v.x,this.v.y)+randy) * this.accel;
+				this.v.y += Math.cos(Math.atan2(this.v.x,this.v.y)+randy) * this.accel;
+				this.pos.add(this.v);
+        this.attackCooldown++;
+        this.attack3();
+      }
+		}
+		this.show = function() {
+			let angle = this.facingAngle;
+			let x1 = Math.sin(angle)*15+this.pos.x;
+			let y1 = Math.cos(angle)*15+this.pos.y;
+			let x2 = Math.sin(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)*2+x1;
+			let y2 = Math.cos(angle+Math.PI-Math.atan(5/15))*Math.sqrt(225+56.25)*2+y1;
+			let x3 = Math.sin(angle-Math.PI/2)*20+x2;
+			let y3 = Math.cos(angle-Math.PI/2)*20+y2;
+			ctx.fillStyle = "#FF0000";
+			ctx.lineWidth = 0.01;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.lineTo(x3,y3);
 			ctx.lineTo(x1,y1);
 			ctx.fill();
 			ctx.stroke();
@@ -2705,8 +3601,10 @@ class Missile extends Entity {
 function circle(xPos,yPos,amount) {
 	let angle2 = Math.atan2(player.pos.x-xPos,player.pos.y-yPos);
 	for(let i = 0; i < amount; i++) {
-		let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
-		new LaserThing(xPos+Math.sin(angle)*5,yPos+Math.cos(angle)*5,Math.sin(angle)*5,Math.cos(angle)*5);
+    let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+		if(xPos+Math.sin(angle)*5 >= 0 && yPos+Math.cos(angle)*5 >= 0 && xPos+Math.sin(angle)*5 <= canvas.width && yPos+Math.cos(angle)*5 <= canvas.height) {
+      new LaserThing(xPos+Math.sin(angle)*5,yPos+Math.cos(angle)*5,Math.sin(angle)*5,Math.cos(angle)*5);
+    }
 	}
 }
 
@@ -2774,7 +3672,22 @@ const waves = [
 	["missile","missile","chargeship","chargeship","chargeship"],
 	["spaceship","spaceship","spaceship","spaceship","spaceship","spaceship","spaceship","spaceship"],
 	["spaceship","fastship","chargeship","snipeyship","missile","splittyship","spawnship"],
-	["bigboi"]
+	["bigboi"],
+	["tripleship","tripleship","spaceship","spaceship"],
+	["tripleship","tripleship","fastship","fastship"],
+	["tripleship","tripleship","tripleship"],
+	["tripleship","tripleship","tripleship","snipeyship","snipeyship"],
+	["tripleship","tripleship","spawnship","swarmship","swarmship",],
+	["spawnship","spawnship","spawnship","wallship","wallship","wallship"],
+	["snipeyship","snipeyship","snipeyship","wallship","wallship","wallship"],
+	["snipeyship","snipeyship","snipeyship","wallship","wallship","wallship","wallship","wallship","wallship"],
+	["tripleship","tripleship","tripleship","wallship","wallship","wallship","wallship","wallship","wallship"],
+	["mineship","mineship","mineship","wallship","wallship","wallship","wallship","wallship"],
+	["mineship","mineship","snipeyship","snipeyship","wallship","wallship","wallship","wallship"],
+	["wallship","wallship","wallship","wallship","wallship","wallship","wallship","wallship","wallship","wallship","wallship","wallship"],
+	["missile","missile","missile","missile","missile","missile","missile","missile"],
+  ["tripleship","tripleship","tripleship","tripleship","tripleship"],
+  ["bully"]
 	];
 function addEnemy() {
 	if(noEnemies()) {
@@ -2820,6 +3733,18 @@ function addEnemy() {
 						break;
 					case "bigboi":
 						new BigBoi(Math.random()*canvas.width,-50,0,0);
+						break;
+					case "tripleship":
+						new Tripleship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "wallship":
+						new Wallship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "mineship":
+						new Mineship(Math.random()*canvas.width,0,0,0);
+						break;
+					case "bully":
+						new Bully(Math.random()*canvas.width,0,0,0);
 						break;
 					default:
 						break;
@@ -2921,14 +3846,14 @@ function updateGame() {
 	}
 	for(let i = entities.length-1; i >= 0; i--) {
 		if(entities[i].dead) {
-			if(entities[i] instanceof Splitter) {
-				circle(entities[i].pos.x,entities[i].pos.y,entities[i].bullets)
-				
-			}
-			if(entities[i] instanceof Missile) {
-				circle(entities[i].pos.x,entities[i].pos.y,6)
-				
-			}
+      if(entities[i] instanceof Splitter || entities[i] instanceof Mine) {
+        circle(entities[i].pos.x,entities[i].pos.y,entities[i].bullets)
+        
+      }
+      if(entities[i] instanceof Missile) {
+        circle(entities[i].pos.x,entities[i].pos.y,6)
+        
+      }
 			if(eliteFleet.includes(entities[i])) {
 				for(let j = 0; j < eliteFleet.length; j++) {
 					eliteFleet[j].phase++;
@@ -2956,6 +3881,13 @@ function updateGame() {
 	}
 	document.getElementById("hp").innerHTML = player.health;
 	document.getElementById("wave").innerHTML = waveNum;
+	if(waveNum > 30) {
+    document.getElementById("checkpoint").innerHTML = "omgmorelevels";
+  } else if(waveNum > 15) {
+    document.getElementById("checkpoint").innerHTML = "firstboss!!!1!";
+  } else {
+    document.getElementById("checkpoint").innerHTML = "N/A";
+  }
 	if(player.health <= 0) {
 		clear();
 		stop();
@@ -2967,3 +3899,16 @@ function updateGame() {
 	}
 	addEnemy();
 };
+function checkpoint() {
+  let code = document.getElementById("code").value;
+  if(code === "omgmorelevels") {
+    waveNum = 30;
+  } else if(code === "firstboss!!!1!") {
+    waveNum = 15;
+  } else {
+    waveNum = 0;
+  }
+  entities = [];
+  player.health = 5;
+  startGame();
+}
