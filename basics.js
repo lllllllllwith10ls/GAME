@@ -3881,10 +3881,22 @@ function updateGame() {
 	}
 	document.getElementById("hp").innerHTML = player.health;
 	document.getElementById("wave").innerHTML = waveNum;
-	if(waveNum > 30) {
-    document.getElementById("checkpoint").innerHTML = "omgmorelevels";
+	if(waveNum > 40) {
+    document.getElementById("checkpoint").innerHTML = "you ever just realize that the bosses spawn at multiples of 15?";
+  } else if(waveNum > 35) {
+    document.getElementById("checkpoint").innerHTML = "these enemy types are getting more unoriginal";
+  } else if(waveNum > 30) {
+    document.getElementById("checkpoint").innerHTML = "omg more levels";
+  } else if(waveNum > 25) {
+    document.getElementById("checkpoint").innerHTML = "oh balls";
+  } else if(waveNum > 20) {
+    document.getElementById("checkpoint").innerHTML = "swarmy dudes";
   } else if(waveNum > 15) {
-    document.getElementById("checkpoint").innerHTML = "firstboss!!!1!";
+    document.getElementById("checkpoint").innerHTML = "#firstboss!!!1!";
+  } else if(waveNum > 10) {
+    document.getElementById("checkpoint").innerHTML = "i hate the fast bois";
+  } else if(waveNum > 5) {
+    document.getElementById("checkpoint").innerHTML = "FIRING MA DEAD MEME!";
   } else {
     document.getElementById("checkpoint").innerHTML = "N/A";
   }
@@ -3902,10 +3914,22 @@ function updateGame() {
 function checkpoint() {
   let code = document.getElementById("code").value;
   stop();
-  if(code === "omgmorelevels") {
+  if(code === "you ever just realize that the bosses spawn at multiples of 15?") {
+    waveNum = 45;
+  } else if(code === "these enemy types are getting more unoriginal") {
+    waveNum = 35;
+  } else if(code === "omgmorelevels") {
     waveNum = 30;
-  } else if(code === "firstboss!!!1!") {
+  } else if(code === "oh balls") {
+    waveNum = 25;
+  } else if(code === "swarmy dudes") {
+    waveNum = 20;
+  } else if(code === "#firstboss!!!1!") {
     waveNum = 15;
+  } else if(code === "i hate the fast bois") {
+    waveNum = 10;
+  } else if(code === "FIRING MA DEAD MEME!") {
+    waveNum = 5;
   } else {
     waveNum = 0;
   }
