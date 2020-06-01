@@ -3901,6 +3901,7 @@ function updateGame() {
 };
 function checkpoint() {
   let code = document.getElementById("code").value;
+  stop();
   if(code === "omgmorelevels") {
     waveNum = 30;
   } else if(code === "firstboss!!!1!") {
