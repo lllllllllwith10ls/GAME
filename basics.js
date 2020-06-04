@@ -2966,7 +2966,7 @@ class BigBoi extends Entity {
 		this.spamDir2 = 0;
 		this.phase = 1;
 		this.attack = function(gun1,gun2) {
-			if(this.attackCooldown >= this.attackReload && this.phase === 1 && this.noMinions()) {
+			if(this.attackCooldown >= this.attackReload && this.phase === 1 && (this.noMinions() || hell)) {
 				let number = Math.random()*5;
 				if(number < 1) {
 					this.charge();
@@ -3763,8 +3763,8 @@ function addEnemy() {
         new Health(Math.random()*canvas.width,0,0,0);
       }
       let points = waveNum*2;
-      let enemyNames = ["spaceship","chargeship","snipeyship","fastship","missile","spawnship","splittyship"];
-      let enemyCosts = [5          ,5           ,10          ,10        ,5        ,15         ,10];
+      let enemyNames = ["spaceship","chargeship","snipeyship","fastship","missile","spawnship","splittyship","tripleship","wallship","mineship"];
+      let enemyCosts = [5          ,5           ,10          ,10        ,5        ,15         ,10           ,20          ,15        ,15];
       while(points > 0) {
         let enemyNum = Math.floor(Math.random()*enemyNames.length);
         if(enemyCosts[enemyNum] <= points) {
@@ -3799,6 +3799,14 @@ function addEnemy() {
               break;
             case "splittyship":
               new Splittyship(Math.random()*canvas.width,0,0,0);
+            case "tripleship":
+              new Tripleship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "wallship":
+              new Wallship(Math.random()*canvas.width,0,0,0);
+              break;
+            case "mineship":
+              new Mineship(Math.random()*canvas.width,0,0,0);
               break;
             case "bigboi":
               new BigBoi(Math.random()*canvas.width,-50,0,0);
