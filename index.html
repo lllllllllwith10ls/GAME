@@ -1,58 +1,48 @@
 <!DOCTYPE html>
-<html>
-	<head>
-	</head>
-	<body onload="startGame()">
-		<canvas id="game area" width="500" height="500" style="border:1px solid #c3c3c3;">
-		</canvas>
-		<script type="text/javascript" src="basics.js"></script>
-		<script>
-
-			let keys = {
-				87: false,
-				65: false,
-				83: false,
-				68: false
-			}
-			let mouse = {
-				pos: new Vector(0,0)
-			}
-			let ctx = canvas.getContext("2d");
-			let interval;
-			function startGame() {
-				interval = setInterval(updateGame, 20);
-				window.addEventListener("mousedown", function (e) {
-					mouse.down = true;
-				});
-				window.addEventListener("mousemove", function (e) {
-					let margin = document.getElementById("game area").getBoundingClientRect();
-					mouse.pos.x = e.clientX - margin.left;
-					mouse.pos.y = e.clientY - margin.top;
-				});
-				window.addEventListener("mouseup", function (e) {
-					mouse.down = false;
-
-				});
-				window.addEventListener('keydown', function (e) {
-					keys[e.keyCode] = true;
-				});
-				window.addEventListener('keyup', function (e) {
-					keys[e.keyCode] = false;
-				});
-			};
-			function clear() {
-				ctx.clearRect(0, 0, canvas.length, canvas.height);
-			};
-			function stop() {
-				clearInterval(interval);
-			};
-		</script>
-		<p>Health: <span id="hp">5</span></p>
-		<p>Wave: <span id="wave">5</span></p>
-		<p>Code for checkpoint: <span id="checkpoint">N/A</span></p>
-    <input type="text" id="code" onfocus="stop()"></input>
-    <p>Insert code to go to checkpoint (case sensitive)</p>
-    <button onclick="checkpoint()">Submit</button>
-    <button onclick="hard()">Hard Mode</button>
-	</body>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      .stats {
+        float: left;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="entity.js"></script>
+    <script src="player.js"></script>
+    <script src="bullet.js"></script>
+    <script src="spaceship.js"></script>
+    <script src="chargeship.js"></script>
+    <script src="snipeyship.js"></script>
+    <script src="swarmship.js"></script>
+    <script src="spawnship.js"></script>
+    <script src="teleship.js"></script>
+    <script src="elitefleet.js"></script>
+    <script src="bigboi.js"></script>
+    <script src="bully.js"></script>
+    <script src="enemySpawn.js"></script>
+    <table>
+      <tr>
+        <td>
+          <div id="stats">
+            <p>Health: <span id="hp">5</span></p>
+            <p>Wave: <span id="wave">5</span></p>
+            <p>Code for checkpoint: <span id="checkpoint">N/A</span></p>
+            <input type="text" id="code" onfocus="stop()"></input>
+            <div>
+              <p>Insert code to go to checkpoint (case sensitive)</p>
+              <button onclick="checkpoint()">Submit</button>
+            </div>
+            <button onclick="hard()">Hard Mode</button>
+          </div>
+        </td>
+        <td id="canvasArea">
+        </td>
+      </tr>
+    </table>
+    <script src="sketch.js"></script>
+  </body>
 </html>
