@@ -40,7 +40,7 @@ class BigBoi extends Entity {
       } else if(number < 4){
         this.rocket(true,true);
       } else {
-        this.spawn();
+        this.split(true,true);
       }
     } else if(this.attackCooldown >= this.attackReload && this.phase === 2 && gun1 && this.noMinions()) {
       let number = Math.random()*3;
@@ -112,6 +112,20 @@ class BigBoi extends Entity {
       this.cooldown2 -= 7;
     }
   }
+  splitShoot(gun1,gun2) {
+    if(this.cooldown >= this.reload && gun1) {
+      let angle = this.gunAngle+(Math.random()-0.5)*Math.PI/60; 
+      new Splitter(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.cos(angle)*5,Math.sin(angle)*5,20);
+      
+      this.cooldown -= 100;
+    }
+    if(this.cooldown2 >= this.reload2 && gun2) {
+      let angle = this.gunAngle2+(Math.random()-0.5)*Math.PI/60; 
+      new Splitter(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.cos(angle)*5,Math.sin(angle)*5,20);
+      
+      this.cooldown2 -= 100;
+    }
+  }
   makeRocket() {
     if(this.cooldown >= this.reload) {
       let angle = -Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
@@ -130,11 +144,14 @@ class BigBoi extends Entity {
     this.attackCooldown -= 400;
     this.mode = "CHARGE";
   }
-  spawn() {
-    this.attackCooldown -= 400;
-    new Spaceship(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,0,0);
-    new Spaceship(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,0,0);
-    new Spaceship(this.pos.x,this.pos.y,0,0);
+  split() {
+    if(this.phase === 1) {
+      this.attackCooldown -= this.attackReload;
+      this.mode = "splitter";
+      this.cooldown -= 100;
+      this.cooldown2 -= 50;
+      this.modeLength = 400;
+    }
   }
 	spread(gun1, gun2) {
     if(this.phase === 1) {
@@ -164,7 +181,7 @@ class BigBoi extends Entity {
       this.modeLength = 400;
     }
   }
-  spam = function(gun1, gun2) {
+  spam(gun1, gun2) {
     if(this.phase === 1) {
       this.attackCooldown -= this.attackReload;
     
@@ -200,7 +217,7 @@ class BigBoi extends Entity {
       this.pos.x  = canvasX;
       this.v.x = -this.v.x * 1/2;
     }
-    if(this.phase === 2 || this.mode === "idle" || this.mode === "spreader" || this.mode === "spam" || this.mode === "rocket") {
+    if(this.phase === 2 || this.mode === "idle" || this.mode === "spreader" || this.mode === "spam" || this.mode === "rocket" || this.mode === "splitter") {
       this.gunAngle = p5.Vector.sub(player.pos,p5.Vector.add(this.pos,this.gunPos)).heading();
       this.gunAngle2 = p5.Vector.sub(player.pos,p5.Vector.add(this.pos,this.gunPos2)).heading();
       this.speed = 2;
@@ -234,6 +251,12 @@ class BigBoi extends Entity {
           this.modeLength--;
           this.spamDir++;
           this.spamDir2++;
+          if(this.modeLength <= 0) {
+            this.mode = "idle";
+          }
+        } else if(this.mode === "splitter") {
+          this.splitShoot(true,true);
+          this.modeLength--;
           if(this.modeLength <= 0) {
             this.mode = "idle";
           }

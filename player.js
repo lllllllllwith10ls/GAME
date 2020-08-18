@@ -20,7 +20,7 @@ class Player extends Entity {
       this.v.y += this.accel;
     }
     if (keys[68]) {
-      this.v.x += 0.1;
+      this.v.x += this.accel;
     }
     if (this.pos.x < 0) {
       this.pos.x = 0;
