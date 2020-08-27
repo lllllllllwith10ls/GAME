@@ -8,6 +8,11 @@
       .stats {
         float: left;
       }
+      table {
+        table-layout: fixed;
+        width: 100%;
+      }
+      
     </style>
   </head>
   <body>
@@ -25,6 +30,10 @@
     <script src="bully.js"></script>
     <script src="enemySpawn.js"></script>
     <table>
+      <colgroup>
+        <col span="1" style="width: 30%;"></col>
+        <col span="1" style="width: 70%;"></col>
+      </colgroup>
       <tr>
         <td>
           <div id="stats">
