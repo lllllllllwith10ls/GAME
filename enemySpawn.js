@@ -59,7 +59,7 @@ const waves = [
   ["bully"]
 	];
 function addEnemy() {
-  if(hell && entities.length < 1000) {
+  if(hell && entities.length < 75) {
     makeFleet();
     for(let i = 0; i < eliteFleet.length; i++) {
       eliteFleet[i].phase = 3;
