@@ -82,10 +82,7 @@ function draw() {
       timeUntilAttack2 = Infinity;
     }
     for(let i = entities.length-1; i >= 0; i--) {
-      if(entities[i].dead) {
-        if(entities[i] instanceof Splitter || entities[i] instanceof Mine || entities[i] instanceof Missile) {
-          bulletCircle(entities[i].pos.x,entities[i].pos.y,entities[i].bullets);          
-        }       
+      if(entities[i].dead) {      
         if(eliteFleet.includes(entities[i])) {
           for(let j = 0; j < eliteFleet.length; j++) {
             eliteFleet[j].phase++;
@@ -139,7 +136,8 @@ function draw() {
       document.getElementById("checkpoint").innerHTML = "N/A";
     }
   } else {  
-    fill(255, 255, 255);
+    fill(255, 255, 255, 255);
+    noStroke();
     text("you died lol",canvasX/2-25,canvasY/2);
   }
 }

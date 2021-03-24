@@ -26,6 +26,9 @@ class FriendlyBullet extends Bullet {
   }
   move() {
     super.move();
+    if(this.dead) {
+      new Particle(this.pos.x,this.pos.y,30,20);
+    }
   }
   show() {
     strokeWeight(1);
@@ -37,21 +40,102 @@ class FriendlyBullet extends Bullet {
     pop();
   }
 }
+
 class EnemyBullet extends Bullet {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy);
 		this.friendly = false;
+    this.age = 0;
   }
   move() {
     super.move();
+    this.age++;
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,20);
+    }
   }
   show() {
     strokeWeight(1);
-    stroke(255,0,0);
+    stroke(255,255*Math.sin(this.age*Math.PI/5),0);
     push();
     translate(this.pos.x,this.pos.y);
     
     line(-this.v.x*2,-this.v.y*2,this.v.x*2,this.v.y*2);
+    pop();
+  }
+}
+
+
+class Particle extends Entity {
+	constructor(x,y,time,size) {
+		super(x,y,0,0,1,Infinity,0,3);
+		this.friendly = true;
+    this.invincible = true;
+    this.age = 0;
+    this.time = time;
+    this.size = size;
+  }
+  move() {
+    this.age++;
+    if(this.age > this.time) {
+       this.dead = true;
+    }
+  }
+  show() {
+    noStroke();
+    fill(255,255,255,255-this.age*255/this.time);
+    push();
+    translate(this.pos.x,this.pos.y);
+    circle(0, 0, this.age/this.time*this.size);
+    pop();
+  }
+}
+
+class RedParticle extends Particle {
+	constructor(x,y,time,size) {
+		super(x,y,time,size);
+  }
+  move() {
+    this.age++;
+    if(this.age > this.time) {
+       this.dead = true;
+    }
+  }
+  show() {
+    noStroke();
+    if(this.age < this.time/2) {
+      fill(255,255-this.age*255/this.time*2,0);
+    } else {
+      fill(255,0,0,255-(this.age-this.time/2)*255/this.time*2);
+    }
+    push();
+    translate(this.pos.x,this.pos.y);
+    circle(0, 0, this.age/this.time*this.size);
+    pop();
+  }
+}
+
+
+class BlueParticle extends Particle {
+	constructor(x,y,time,size) {
+		super(x,y,time,size);
+  }
+  move() {
+    this.age++;
+    if(this.age > this.time) {
+       this.dead = true;
+    }
+  }
+  show() {
+    noStroke();
+    if(this.age < this.time/2) {
+      fill(0,255-this.age*255/this.time*2,255);
+    } else {
+      fill(0,0,255,255-(this.age-this.time/2)*255/this.time*2);
+    }
+    push();
+    translate(this.pos.x,this.pos.y);
+    circle(0, 0, this.age/this.time*this.size);
     pop();
   }
 }
@@ -76,7 +160,50 @@ class LaserSegment extends Entity {
 class Splitter extends EnemyBullet {
 	constructor(x,y,vx,vy,bullets) {
 		super(x,y,vx,vy);
+    this.age = 0;
     this.bullets = bullets;
+  }
+  move() {
+    this.pos.add(this.v);
+    this.age++;
+    if (this.pos.x < 0) {
+      this.dead = true;
+      this.pos.x = 0;
+    }
+    if (this.pos.x > canvasX) {
+      this.dead = true;
+      this.pos.x = canvasX;
+    }
+    if (this.pos.y < 0) {
+      this.dead = true;
+      this.pos.y = 0;
+    }
+    if (this.pos.y > canvasY) {
+      this.dead = true;
+      this.pos.y = canvasY;
+    }
+    if(this.dead) {
+      bulletCircle(this.pos.x,this.pos.y,this.bullets);
+      new RedParticle(this.pos.x,this.pos.y,30,50);
+    }
+  }
+  show() {
+    noStroke();
+    fill(255,255*Math.sin(this.age*Math.PI/5),0);
+    push();
+    translate(this.pos.x,this.pos.y);
+    circle(0, 0, 10);
+    pop();
+	}
+}
+
+class Telebullet extends EnemyBullet {
+	constructor(x,y,vx,vy,owner,targ) {
+		super(x,y,vx,vy);
+		this.owner = owner;
+		this.targ = targ;
+    this.countdown = Infinity;
+    this.age = 0;
   }
   move() {
     this.pos.add(this.v);
@@ -96,41 +223,27 @@ class Splitter extends EnemyBullet {
       this.dead = true;
       this.pos.y = canvasY;
     }
-  }
-  show() {
-    noStroke();
-    fill(255,0,0);
-    push();
-    translate(this.pos.x,this.pos.y);
-    circle(0, 0, 10);
-    pop();
-	}
-}
-
-class Telebullet extends EnemyBullet {
-	constructor(x,y,vx,vy,owner,targ) {
-		super(x,y,vx,vy);
-		this.owner = owner;
-		this.targ = targ;
-    this.countdown = Infinity;
-  }
-  move() {
-    super.move();
     if(this.dead) {
+      new BlueParticle(this.owner.pos.x,this.owner.pos.y,30,50);
       this.owner.pos = this.pos.copy();
     }
     if(p5.Vector.sub(this.targ,this.pos).mag() <= 5+this.radius) {
       this.countdown = 5
     }
     if(this.countdown <= 0) {
+      new BlueParticle(this.owner.pos.x,this.owner.pos.y,30,50);
       this.owner.pos = this.targ.copy();
       this.dead = true;
     }
+    if(this.dead) {
+      new BlueParticle(this.pos.x,this.pos.y,30,50);
+    }
+    this.age++;
     this.countdown--;
   }
   show() {
     noStroke();
-    fill(0,0,255);
+    fill(0,255*Math.sin(this.age*Math.PI/20),255);
     push();
     translate(this.pos.x,this.pos.y);
     circle(0, 0, 10);
@@ -174,6 +287,7 @@ class Skimmer extends EnemyBullet {
     this.reload = reload;
     this.cooldown = 0;
     this.pos.add(this.v);
+    this.age = 0;
   }
   move() {
     super.move();
@@ -199,9 +313,10 @@ class Skimmer extends EnemyBullet {
       new EnemyBullet(this.pos.x, this.pos.y, Math.cos(this.angle-Math.PI/2)*5, Math.sin(this.angle-Math.PI/2)*5);
       this.cooldown = 0;
     }
+    this.age++;
   }
   show() {
-    fill(255,0,0);	
+    fill(255,255*Math.sin(this.age*Math.PI/5),0);
     noStroke();
     let angle = this.angle;      
     push();
@@ -221,6 +336,7 @@ class Mine extends Entity {
 		super(x,y,vx,vy,1,2,0,5);
     this.angle = Math.random()*Math.PI*2;
     this.bullets = bullets;
+    this.age = 0;
   }
   move() {
     super.move();
@@ -241,9 +357,14 @@ class Mine extends Entity {
       this.v.y = -this.v.y;
     }
     this.angle += Math.PI/100;
+    if(this.dead) {
+      bulletCircle(this.pos.x,this.pos.y,this.bullets);
+      new RedParticle(this.pos.x,this.pos.y,30,50);
+    }
+    this.age++;
   }
   show() {
-    fill(255,0,0);	
+    fill(255,255*Math.sin(this.age*Math.PI/5),0);	
     noStroke();
     let angle = this.angle;      
     push();
@@ -289,7 +410,7 @@ class DelayBullet extends EnemyBullet {
   
   show() {
     strokeWeight(1);
-    stroke(255,0,0);
+    stroke(255,255*Math.sin(this.life*Math.PI/5),0);
     push();
     translate(this.pos.x,this.pos.y);
     
@@ -304,6 +425,7 @@ class Missile extends Entity {
 		this.angle = new p5.Vector(vx,vy).heading();
 		this.vangle = Math.PI/60;
     this.bullets = bullets;
+    this.age = 0;
 	}
   move() {
     super.move();
@@ -329,9 +451,14 @@ class Missile extends Entity {
     if (this.pos.y > canvasY) {
       this.dead = true;
     }
+    this.age++;
+    if(this.dead) {
+      bulletCircle(this.pos.x,this.pos.y,this.bullets);
+      new RedParticle(this.pos.x,this.pos.y,30,50);
+    }
   }
   show() {
-    fill(255,0,0);	
+    fill(255,255*Math.sin(this.age*Math.PI/5),0);
     noStroke();
     let angle = this.angle;      
     push();

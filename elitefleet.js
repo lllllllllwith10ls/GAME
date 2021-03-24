@@ -242,6 +242,9 @@ class Jerry extends Entity {
         this.v.add(steer);
       }        
     }
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,75);
+    }
   }
   show() {
     
@@ -401,6 +404,9 @@ class Steve extends Entity {
     steer.limit(this.accel);
     steer.rotate((Math.random()-0.5)*Math.PI/4);
     this.v.add(steer);
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,75);
+    }
   }
   show() {
     fill(255,0,0);	
@@ -526,7 +532,7 @@ class Kevin extends Entity {
         angle = this.angle;
 
         strokeWeight(1);
-        stroke(255,0,0);
+        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
         push();
         translate(this.pos.x,this.pos.y);
         
@@ -582,6 +588,9 @@ class Kevin extends Entity {
       steer.limit(this.accel);
       steer.rotate((Math.random()-0.5)*Math.PI/4);
       this.v.add(steer);
+    }
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,75);
     }
   }
   show() {
@@ -707,6 +716,9 @@ class Kyle extends Entity {
     steer.limit(this.accel);
     steer.rotate((Math.random()-0.5)*Math.PI/4);
     this.v.add(steer);
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,75);
+    }
   }
   show() {
     fill(255,0,0);	

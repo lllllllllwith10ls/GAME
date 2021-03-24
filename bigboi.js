@@ -1,6 +1,6 @@
 class BigBoi extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,250,2,0.1,100);
+		super(x,y,vx,vy,250,2,0.1,75);
 		this.angle = 0;
 		
 		this.attackReload = 500;
@@ -324,6 +324,9 @@ class BigBoi extends Entity {
     if(this.health < 50 && this.phase < 2) {
       this.phase = 2;
       this.attackCooldown = 500;
+    }
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,120,200);
     }
   }
   show() {

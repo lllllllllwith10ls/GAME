@@ -133,6 +133,9 @@ class Chargeship extends Entity {
       steer.rotate((Math.random()-0.5)*Math.PI/4);
       this.v.add(steer);
     }
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,50);
+    }
   }
 	show() {
     fill(255,0,0);	

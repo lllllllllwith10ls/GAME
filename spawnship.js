@@ -48,9 +48,9 @@ class Spawnship extends Entity {
       let mag = difference.mag();
       let angle2;
       if(this.mode === "clockwise") {
-        difference.rotate(Math.PI/2);
+        difference.rotate(Math.PI/4);
       } else {
-        difference.rotate(-Math.PI/2);
+        difference.rotate(-Math.PI/4);
       }
       difference.limit(mag-5);
       this.target = p5.Vector.add(this.pos,difference);
@@ -113,6 +113,9 @@ class Spawnship extends Entity {
     steer.limit(this.accel);
     steer.rotate((Math.random()-0.5)*Math.PI/4);
     this.v.add(steer);
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,75);
+    }
   }
   show() {
     fill(255,0,0);	
@@ -201,9 +204,9 @@ class Mineship extends Entity {
       let mag = difference.mag();
       let angle2;
       if(this.mode === "clockwise") {
-        difference.rotate(Math.PI/2);
+        difference.rotate(Math.PI/4);
       } else {
-        difference.rotate(-Math.PI/2);
+        difference.rotate(-Math.PI/4);
       }
       difference.limit(mag-5);
       this.target = p5.Vector.add(this.pos,difference);
@@ -266,6 +269,9 @@ class Mineship extends Entity {
     steer.limit(this.accel);
     steer.rotate((Math.random()-0.5)*Math.PI/4);
     this.v.add(steer);
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,50);
+    }
   }
   show() {
     fill(255,0,0);	

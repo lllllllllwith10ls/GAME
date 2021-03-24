@@ -1,6 +1,6 @@
 class Bully extends Entity {
 	constructor(x,y,vx,vy) {
-		super(x,y,vx,vy,300,1,0.05,20);
+		super(x,y,vx,vy,250,1,0.05,20);
 		this.angle = 0;
 		
 		this.attackReload = 120;
@@ -59,14 +59,14 @@ class Bully extends Entity {
   parallelShoot() {
     for(let i = -5; i <= 5; i++) {
       let angle = this.angle+(Math.random()-0.5)*Math.PI/60; 
-      new DelayBullet(this.pos.x,this.pos.y,Math.cos(angle+Math.PI/2)*i*1.5,Math.sin(angle+Math.PI/2)*i*1.5,angle,30);
+      new DelayBullet(this.pos.x,this.pos.y,Math.cos(angle+Math.PI/2)*i*1.5,Math.sin(angle+Math.PI/2)*i*1.5,angle,45);
       
     }
     this.attackCooldown = 0;
   }
   skimmer() {
     let angle = this.angle+(Math.random()-0.5)*Math.PI/60; 
-    new Skimmer(this.pos.x,this.pos.y,Math.cos(angle)*5,Math.sin(angle)*5,10);
+    new Skimmer(this.pos.x,this.pos.y,Math.cos(angle)*5,Math.sin(angle)*5,15);
     
     this.attackCooldown = 0;
   }
@@ -77,7 +77,7 @@ class Bully extends Entity {
       new Skimmer(this.pos.x,this.pos.y,Math.cos(angle)*5,Math.sin(angle)*5,20);
       
     }
-    this.attackCooldown = 0;
+    this.attackCooldown = -30;
   }
   splitSpread() {
     let angle = this.angle+(Math.random()-0.5)*Math.PI/60; 
@@ -86,15 +86,15 @@ class Bully extends Entity {
       new Splitter(this.pos.x,this.pos.y,Math.cos(angle)*7.5,Math.sin(angle)*7.5,8);
       
     }
-    this.attackCooldown = 0;
+    this.attackCooldown = -30;
   }
   splitShoot = function() {
     if(this.cooldown >= this.reload) {
       let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
-      new Splitter(this.pos.x,this.pos.y,-Math.cos(angle)*7.5,-Math.sin(angle)*7.5,8);
+      new Splitter(this.pos.x,this.pos.y,-Math.cos(angle)*7.5,-Math.sin(angle)*7.5,10);
       
       this.modeLength--;
-      this.cooldown -= 10;
+      this.cooldown = this.reload-10;
     }
   }
   mines() {
@@ -165,7 +165,6 @@ class Bully extends Entity {
         if(this.modeLength === 16) {
           let angle = this.angle+Math.PI;
           this.v.add(p5.Vector.fromAngle(angle).mult(3));
-          this.cooldown -= this.reload;
         }
         let angle = this.angle;
         let x = this.pos.x;
@@ -175,13 +174,13 @@ class Bully extends Entity {
           x += Math.cos(angle) * 3;
           y += Math.sin(angle) * 3;
         }
-        if(this.modeLength === 16) {
+        if(this.modeLength%5 === 1) {
           new Splitter(x,y,0,0,20);
         }
         angle = this.angle;
 
         strokeWeight(5);
-        stroke(255,0,0);
+        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
         push();
         translate(this.pos.x,this.pos.y);
         
@@ -212,7 +211,6 @@ class Bully extends Entity {
         if(modeLength2 === 16) {
           let angle = this.angle+Math.PI;
           this.v.add(p5.Vector.fromAngle(angle).mult(3));
-          this.cooldown -= this.reload;
         }
         let angle = this.angle;
         let x = this.pos.x;
@@ -223,12 +221,12 @@ class Bully extends Entity {
           y += Math.sin(angle) * 3;
         }
         if(modeLength2 === 16) {
-          new Splitter(x,y,0,0,12);
+          new Splitter(x,y,0,0,16);
         }
         angle = this.angle;
 
         strokeWeight(5);
-        stroke(255,0,0);
+        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
         push();
         translate(this.pos.x,this.pos.y);
         
@@ -272,10 +270,13 @@ class Bully extends Entity {
       if(this.health < 50) {
         this.phase = 3;
         this.attackReload = 90;
-      } else if(this.health < 150) {
+      } else if(this.health < 125) {
         this.phase = 2;
         this.attackReload = 90;
       }
+    }
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,60,100);
     }
   }
   show() {

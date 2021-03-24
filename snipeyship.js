@@ -44,7 +44,6 @@ class Snipeyship extends Entity {
     if(this.shooting) {    
       this.shootLength--;
       if(this.shootLength > 16) {
-        
         strokeWeight(1);
         stroke(127,0,0);
         push();
@@ -69,7 +68,7 @@ class Snipeyship extends Entity {
         angle = this.angle;
 
         strokeWeight(1);
-        stroke(255,0,0);
+        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
         push();
         translate(this.pos.x,this.pos.y);
         
@@ -167,6 +166,9 @@ class Snipeyship extends Entity {
       steer.limit(this.accel);
       steer.rotate((Math.random()-0.5)*Math.PI/4);
       this.v.add(steer);
+    }
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,50);
     }
   }
   show() {
@@ -315,6 +317,10 @@ class Splittyship extends Entity {
     steer.limit(this.accel);
     steer.rotate((Math.random()-0.5)*Math.PI/4);
     this.v.add(steer);
+    
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,50);
+    }
   }
   show() {
     fill(255,0,0);	

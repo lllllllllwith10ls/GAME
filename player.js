@@ -53,10 +53,6 @@ class Player extends Entity {
       if(p5.Vector.sub(entities[i].pos,this.pos).mag() <= entities[i].radius+this.radius && !entities[i].dead && entities[i] instanceof Health) {
         this.health++;
         entities[i].health--;
-        if(entities[i] instanceof Player) {
-          entities[i].invincible = true;
-          entities[i].iframe = 100;
-        }
       }
     }
   }
@@ -92,7 +88,7 @@ class Player extends Entity {
 class Health extends Entity {
 	constructor(x,y,vx,vy) {
 		super(x,y,vx,vy,1,1,0,10);
-		this.friendly = false;
+		this.friendly = true;
 		this.damagable = false;
 		let angle = Math.random()*2*Math.PI;
 		this.v.x = Math.sin(angle);

@@ -172,6 +172,9 @@ class Teleship extends Entity {
         this.target = p5.Vector.add(p5.Vector.fromAngle((this.angle+vangle)/2, this.accel),this.pos);
       }
       this.shoot();
+      if(this.dead) {
+        new RedParticle(this.pos.x,this.pos.y,30,50);
+      }
     }
     
     let desired = p5.Vector.sub(this.target,this.pos);

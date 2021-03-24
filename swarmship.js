@@ -47,6 +47,9 @@ class Swarmship extends Entity {
     steer.limit(this.accel);
     steer.rotate((Math.random()-0.5)*Math.PI/4);
     this.v.add(steer);
+    if(this.dead) {
+      new RedParticle(this.pos.x,this.pos.y,30,20);
+    }
   }
   show() {
     fill(255,0,0);	

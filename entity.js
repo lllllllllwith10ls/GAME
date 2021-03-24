@@ -21,10 +21,10 @@ class Entity {
   }
 }
 Entity.prototype.update = function() {
-	if (this.health <= 0) {
+	this.collide();
+  if (this.health <= 0) {
 		this.dead = true;
 	}
-	this.collide();
 	this.move();
 	this.show();
 	
@@ -34,7 +34,9 @@ Entity.prototype.collide = function() {
 		if(this.friendly || this.dead) {
 			break;
 		}
-		if(p5.Vector.sub(entities[i].pos,this.pos).mag() <= entities[i].radius+this.radius && !entities[i].dead && entities[i].friendly && !(entities[i] instanceof Health) && !entities[i].invincible && !(!this.damagable && !entities[i].damagable)) {
+		if(p5.Vector.sub(entities[i].pos,this.pos).mag() <= entities[i].radius+this.radius && 
+    !entities[i].dead && entities[i].friendly && !(entities[i] instanceof Health) && 
+    !entities[i].invincible && !(!this.damagable && !entities[i].damagable)) {
 			this.health--;
 			entities[i].health--;
       if(entities[i] instanceof Player) {
