@@ -4,7 +4,7 @@ class Chargeship extends Entity {
 		super(x,y,vx,vy,5,2,0.1,5);
 		this.angle = 0;
 		this.reload = 60;
-		this.reload2 = 15;
+		this.reload2 = 30;
 		this.cooldown = Math.random()*60;
 		this.ais = ["Predictor","Flanker","Dodgy","Erratic"];
 		this.ai = this.ais[Math.floor(Math.random()*this.ais.length)];
@@ -34,14 +34,14 @@ class Chargeship extends Entity {
         let angle = this.angle;
         this.speed = 4;
         this.v = p5.Vector.fromAngle(this.angle).mult(this.speed);
-        this.cooldown -= this.reload2;
+        this.cooldown = 0;
         this.mode = "charge!";
         this.modeLength = 10;
       } else {
         this.speed = 4;
         this.angle = Math.PI*2*Math.random();
         this.v = p5.Vector.fromAngle(this.angle).mult(this.speed);
-        this.cooldown -= this.reload;
+        this.cooldown -= this.reload2;
         this.mode = "charge!";
         this.modeLength = 10;
       }

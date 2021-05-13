@@ -34,7 +34,7 @@ class Jerry extends Entity {
 		super(x,y,vx,vy,10,2,0.1,5);
 		this.angle = 0;
 		this.reload = 300;
-		this.reload2 = 15;
+		this.reload2 = 30;
 		this.reload3 = 15;
 		this.reload4 = 60;
 		this.cooldown = Math.random()*600;
@@ -128,7 +128,7 @@ class Jerry extends Entity {
         this.speed = 4;
         this.angle = Math.PI*2*Math.random();
         this.v = p5.Vector.fromAngle(this.angle).mult(this.speed);
-        this.cooldown -= this.reload;
+        this.cooldown -= this.reload3;
         this.mode = "charge!";
         this.modeLength = 10;
       }

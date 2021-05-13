@@ -221,7 +221,7 @@ class Bully extends Entity {
           y += Math.sin(angle) * 3;
         }
         if(modeLength2 === 16) {
-          new Splitter(x,y,0,0,16);
+          new Splitter(x,y,0,0,10);
         }
         angle = this.angle;
 

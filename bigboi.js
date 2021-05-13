@@ -4,12 +4,12 @@ class BigBoi extends Entity {
 		this.angle = 0;
 		
 		this.attackReload = 500;
-		this.reload = 20;
-		this.reload2 = 20;
+		this.reload = 30;
+		this.reload2 = 30;
 		this.attackCooldown = Math.random()*200+300;
 		this.attackCooldown2 = 500;
-		this.cooldown = 20;
-		this.cooldown2 = 20;
+		this.cooldown = 30;
+		this.cooldown2 = 30;
 		
 		this.modeLength = 0;
 		this.modeLength2 = 0;
@@ -29,7 +29,7 @@ class BigBoi extends Entity {
 		this.phase = 1;
 	}
   attack(gun1,gun2) {
-    if(this.attackCooldown >= this.attackReload && this.phase === 1 && (this.noMinions() || hell)) {
+    if(this.attackCooldown >= this.attackReload && this.phase === 1) {
       let number = Math.random()*5;
       if(number < 1) {
         this.charge();
@@ -42,41 +42,41 @@ class BigBoi extends Entity {
       } else {
         this.split(true,true);
       }
-    } else if(this.attackCooldown >= this.attackReload && this.phase === 2 && gun1 && this.noMinions()) {
-      let number = Math.random()*3;
+    } else if(this.attackCooldown >= this.attackReload && this.phase === 2 && gun1) {
+      let number = Math.random()*4;
       if(number < 1){
         this.spread(true,false);
-      } else {
+      } else if(number < 2){
         this.spam(true,false);
-      } 
-    } else if(this.attackCooldown2 >= this.attackReload && this.phase === 2 && gun2 && this.noMinions()) {
-      let number = Math.random()*2;
+      } else if(number < 3){
+        this.rocket(true,false);
+      } else {
+        this.split(true,false);
+      }
+    } else if(this.attackCooldown2 >= this.attackReload && this.phase === 2 && gun2) {
+      let number = Math.random()*4;
       if(number < 1){
         this.spread(false,true);
-      } else {
+      } else if(number < 2){
         this.spam(false,true);
-      }
+      } else if(number < 3){
+        this.rocket(false,true);
+      } else {
+        this.split(false,true);
+      } 
     }
   }
     
-  noMinions() {
-    for(let i = 0; i < entities.length; i++) {
-      if(entities[i] instanceof Spaceship) {
-        return false;
-      }
-    }
-    return true;
-  }
   shootOutBack() {
     if(this.cooldown >= this.reload) {
       let angle = -Math.PI/2+(Math.random()-0.5)*Math.PI*1.4; 
       new EnemyBullet(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.cos(angle)*5,Math.sin(angle)*5);
-      this.cooldown -= 3;
+      this.cooldown -= 5;
     }
     if(this.cooldown2 >= this.reload2) {
       let angle = -Math.PI/2+(Math.random()-0.5)*Math.PI*1.4; 
       new EnemyBullet(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.cos(angle)*5,Math.sin(angle)*5);
-      this.cooldown2 -= 3;
+      this.cooldown2 -= 5;
     }
   }
 		
@@ -103,54 +103,64 @@ class BigBoi extends Entity {
       let angle = Math.sin(this.spamDir/10)*Math.PI/4+this.gunAngle+(Math.random()-0.5)*Math.PI/60; 
       new EnemyBullet(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.cos(angle)*5,Math.sin(angle)*5);
       
-      this.cooldown -= 7;
+      this.cooldown -= 10;
     }
     if(this.cooldown2 >= this.reload2 && gun2) {
       let angle = Math.sin(this.spamDir2/10)*Math.PI/4+this.gunAngle2+(Math.random()-0.5)*Math.PI/60; 
       new EnemyBullet(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.cos(angle)*5,Math.sin(angle)*5);
       
-      this.cooldown2 -= 7;
+      this.cooldown2 -= 10;
     }
   }
   splitShoot(gun1,gun2) {
     if(this.cooldown >= this.reload && gun1) {
       let angle = this.gunAngle+(Math.random()-0.5)*Math.PI/60; 
-      new Splitter(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.cos(angle)*5,Math.sin(angle)*5,20);
+      new Splitter(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,Math.cos(angle)*5,Math.sin(angle)*5,16);
       
-      this.cooldown -= 100;
+      this.cooldown -= 150;
     }
     if(this.cooldown2 >= this.reload2 && gun2) {
       let angle = this.gunAngle2+(Math.random()-0.5)*Math.PI/60; 
-      new Splitter(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.cos(angle)*5,Math.sin(angle)*5,20);
+      new Splitter(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,Math.cos(angle)*5,Math.sin(angle)*5,16);
       
-      this.cooldown2 -= 100;
+      this.cooldown2 -= 150;
     }
   }
-  makeRocket() {
-    if(this.cooldown >= this.reload) {
+  makeRocket(gun1, gun2) {
+    if(this.cooldown >= this.reload && gun1) {
       let angle = -Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
       new Missile(this.pos.x+this.gunPos.x,this.pos.y+this.gunPos.y,0,4,6);
       
-      this.cooldown -= 100;
+      this.cooldown -= 150;
     }
-    if(this.cooldown2 >= this.reload2) {
+    if(this.cooldown2 >= this.reload2 && gun2) {
       let angle = -Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
       new Missile(this.pos.x+this.gunPos2.x,this.pos.y+this.gunPos2.y,0,4,6);
       
-      this.cooldown2 -= 100;
+      this.cooldown2 -= 150;
     }
   }
   charge() {
     this.attackCooldown -= 400;
     this.mode = "CHARGE";
   }
-  split() {
+  split(gun1, gun2) {
     if(this.phase === 1) {
       this.attackCooldown -= this.attackReload;
       this.mode = "splitter";
-      this.cooldown -= 100;
-      this.cooldown2 -= 50;
+      this.cooldown -= 150;
+      this.cooldown2 -= 75;
       this.modeLength = 400;
+    } else if(gun1) {
+      this.attackCooldown -= this.attackReload/5+Math.random()*100;
+      this.mode = "splitter";
+      this.cooldown -= 150;
+      this.modeLength = 200;
+    } else if(gun2) {
+      this.attackCooldown2 -= this.attackReload/5+Math.random()*100;
+      this.mode2 = "splitter";
+      this.cooldown2 -= 75;
+      this.modeLength2 = 200;
     }
   }
 	spread(gun1, gun2) {
@@ -172,13 +182,23 @@ class BigBoi extends Entity {
       this.modeLength2 = 200;
     }
   }
-  rocket() {
+  rocket(gun1, gun2) {
     if(this.phase === 1) {
       this.attackCooldown -= this.attackReload;
       this.mode = "rocket";
-      this.cooldown -= 100;
-      this.cooldown2 -= 50;
+      this.cooldown -= 150;
+      this.cooldown2 -= 75;
       this.modeLength = 400;
+    } else if(gun1) {
+      this.attackCooldown -= this.attackReload/5+Math.random()*100;
+      this.mode = "rocket";
+      this.cooldown -= 150;
+      this.modeLength = 200;
+    } else if(gun2) {
+      this.attackCooldown2 -= this.attackReload/5+Math.random()*100;
+      this.mode2 = "rocket";
+      this.cooldown2 -= 75;
+      this.modeLength2 = 200;
     }
   }
   spam(gun1, gun2) {
@@ -277,6 +297,18 @@ class BigBoi extends Entity {
           if(this.modeLength <= 0) {
             this.mode = "idle";
           }
+        } else if(this.mode === "rocket") {
+          this.makeRocket(true,false);
+          this.modeLength--;
+          if(this.modeLength <= 0) {
+            this.mode = "idle";
+          }
+        } else if(this.mode === "splitter") {
+          this.splitShoot(true,false);
+          this.modeLength--;
+          if(this.modeLength <= 0) {
+            this.mode = "idle";
+          }
         } else {
           this.attack(true,false);
         }
@@ -290,6 +322,18 @@ class BigBoi extends Entity {
           this.spamShoot(false,true);
           this.modeLength2--;
           this.spamDir2++;
+          if(this.modeLength2 <= 0) {
+            this.mode2 = "idle";
+          }
+        } else if(this.mode2 === "rocket") {
+          this.makeRocket(false,true);
+          this.modeLength2--;
+          if(this.modeLength2 <= 0) {
+            this.mode2 = "idle";
+          }
+        } else if(this.mode2 === "splitter") {
+          this.splitShoot(false,true);
+          this.modeLength2--;
           if(this.modeLength2 <= 0) {
             this.mode2 = "idle";
           }

@@ -437,9 +437,9 @@ class Tripleship extends Entity {
       let mag = difference.mag();
       let angle2;
       if(this.mode === "clockwise") {
-        difference.rotate(Math.PI/2);
+        difference.rotate(Math.PI/4);
       } else {
-        difference.rotate(-Math.PI/2);
+        difference.rotate(-Math.PI/4);
       }
       difference.limit(mag-5);
       this.target = p5.Vector.add(this.pos,difference);
