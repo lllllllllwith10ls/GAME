@@ -126,6 +126,9 @@ class Bully extends Entity {
     this.attackCooldown = 0;
     this.mode = "lasers yay";
     this.modeLength = 60;
+	let angle = this.angle;
+	let laser = new BiggerLaser(this.pos.x, this.pos.y, this.angle);
+	laser.shooter = this;
   }
   laserII() {
     this.attackCooldown = 0;
@@ -152,45 +155,13 @@ class Bully extends Entity {
     }
     if(this.mode === "lasers yay") {    
       this.modeLength--;
-      if(this.modeLength > 16) {
-        
-        strokeWeight(5);
-        stroke(127,0,0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
-      } else {
-        if(this.modeLength === 16) {
+       if(this.modeLength === 16) {
           let angle = this.angle+Math.PI;
           this.v.add(p5.Vector.fromAngle(angle).mult(3));
         }
-        let angle = this.angle;
-        let x = this.pos.x;
-        let y = this.pos.y;
-        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
-          new LaserSegment(x,y,5);
-          x += Math.cos(angle) * 3;
-          y += Math.sin(angle) * 3;
-        }
-        if(this.modeLength%5 === 1) {
-          new Splitter(x,y,0,0,20);
-        }
-        angle = this.angle;
-
-        strokeWeight(5);
-        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
-
         if(this.modeLength <= 0) {
           this.mode = "idle";
         }
-      }
     } else if(this.mode === "lasers mk II") {    
       this.modeLength--;
       let modeLength2 = this.modeLength % 45;
@@ -204,35 +175,20 @@ class Bully extends Entity {
         
         line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
         pop();
-        if(modeLength2 === 44 && this.modeLength < 179) {
-          this.angle = p5.Vector.sub(player.pos,this.pos).heading();
+        if(modeLength2 === 44) {
+			
+          if(this.modeLength < 179) {
+			  this.angle = p5.Vector.sub(player.pos,this.pos).heading();
+		  }
+		let laser = new BigLaser(this.pos.x, this.pos.y, this.angle);
+		laser.shooter = this;
+		laser.life = 45;
         }
       } else {
         if(modeLength2 === 16) {
           let angle = this.angle+Math.PI;
           this.v.add(p5.Vector.fromAngle(angle).mult(3));
         }
-        let angle = this.angle;
-        let x = this.pos.x;
-        let y = this.pos.y;
-        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
-          new LaserSegment(x,y,5);
-          x += Math.cos(angle) * 3;
-          y += Math.sin(angle) * 3;
-        }
-        if(modeLength2 === 16) {
-          new Splitter(x,y,0,0,10);
-        }
-        angle = this.angle;
-
-        strokeWeight(5);
-        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
-
         if(this.modeLength <= 0) {
           this.mode = "idle";
         }

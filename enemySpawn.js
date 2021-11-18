@@ -76,107 +76,76 @@ function addEnemy() {
 			
 			for(let i = 0; i < waves[waveNum].length; i++) {
 				let enemy = waves[waveNum][i];
-				switch(enemy) {
-					case "spaceship":
-						new Spaceship(Math.random()*canvasX,0,0,0);
-						break;
-					case "chargeship":
-						new Chargeship(Math.random()*canvasX,0,0,0);
-						break;
-					case "snipeyship":
-						new Snipeyship(Math.random()*canvasX,0,0,0);
-						break;
-					case "fastship":
-						new Fastship(Math.random()*canvasX,0,0,0);
-						break;
-					case "health":
-						new Health(Math.random()*canvasX,0,0,0);
-						break;
-					case "fleet":
-						makeFleet();
-						break;
-					case "missile":
-						new Missile(Math.random()*canvasX,0,0,1,6);
-						break;
-					case "swarmship":
-						new Swarmship(Math.random()*canvasX,0,0,0);
-						break;
-					case "spawnship":
-						new Spawnship(Math.random()*canvasX,0,0,0);
-						break;
-					case "splittyship":
-						new Splittyship(Math.random()*canvasX,0,0,0);
-						break;
-					case "bigboi":
-						new BigBoi(Math.random()*canvasX,-50,0,0);
-						break;
-					case "tripleship":
-						new Tripleship(Math.random()*canvasX,0,0,0);
-						break;
-					case "teleship":
-						new Teleship(Math.random()*canvasX,0,0,0);
-						break;
-					case "mineship":
-						new Mineship(Math.random()*canvasX,0,0,0);
-						break;
-					case "bully":
-						new Bully(Math.random()*canvasX,0,0,0);
-						break;
-					default:
-						break;
-				}
+				makeEnemy(enemy);
 			}	
 		} else {
       if(player.health < 5 && Math.random() > 0.25) {
         new Health(Math.random()*canvasX,0,0,0);
       }
       let points = waveNum*2;
-      let enemyNames = ["spaceship","chargeship","snipeyship","fastship","missile","spawnship","splittyship","tripleship","teleship","mineship"];
-      let enemyCosts = [5          ,5           ,10          ,10        ,2.5      ,15         ,10           ,20          ,15        ,15];
+      let enemyNames = ["spaceship","chargeship","snipeyship","fastship","missile","spawnship","splittyship","tripleship","teleship","mineship","fleet","bigboi","bully"];
+      let enemyCosts = [5          ,5           ,10          ,10        ,2.5      ,15         ,10           ,20          ,15        ,15        ,150    ,200     ,250];
       while(points > 0) {
         let enemyNum = Math.floor(Math.random()*enemyNames.length);
         if(enemyCosts[enemyNum] <= points) {
           points -= enemyCosts[enemyNum];
-          switch(enemyNames[enemyNum]) {
-            case "spaceship":
-              new Spaceship(Math.random()*canvasX,0,0,0);
-              break;
-            case "chargeship":
-              new Chargeship(Math.random()*canvasX,0,0,0);
-              break;
-            case "snipeyship":
-              new Snipeyship(Math.random()*canvasX,0,0,0);
-              break;
-            case "fastship":
-              new Fastship(Math.random()*canvasX,0,0,0);
-              break;
-            case "missile":
-              new Missile(Math.random()*canvasX,0,0,0,6);
-              break;
-            case "swarmship":
-              new Swarmship(Math.random()*canvasX,0,0,0);
-              break;
-            case "spawnship":
-              new Spawnship(Math.random()*canvasX,0,0,0);
-              break;
-            case "splittyship":
-              new Splittyship(Math.random()*canvasX,0,0,0);
-            case "tripleship":
-              new Tripleship(Math.random()*canvasX,0,0,0);
-              break;
-            case "teleship":
-              new Teleship(Math.random()*canvasX,0,0,0);
-              break;
-            case "mineship":
-              new Mineship(Math.random()*canvasX,0,0,0);
-              break;
-            default:
-              break;
-          }
+          makeEnemy(enemyNames[enemyNum]);
         } else {
           break;
         }
       }
     }
+	}
+}
+function makeEnemy(enemy)
+{
+	switch(enemy) {
+		case "spaceship":
+			new Spaceship(Math.random()*canvasX,0,0,0);
+			break;
+		case "chargeship":
+			new Chargeship(Math.random()*canvasX,0,0,0);
+			break;
+		case "snipeyship":
+			new Snipeyship(Math.random()*canvasX,0,0,0);
+			break;
+		case "fastship":
+			new Fastship(Math.random()*canvasX,0,0,0);
+			break;
+		case "health":
+			new Health(Math.random()*canvasX,0,0,0);
+			break;
+		case "fleet":
+			makeFleet();
+			break;
+		case "missile":
+			new Missile(Math.random()*canvasX,0,0,1,6);
+			break;
+		case "swarmship":
+			new Swarmship(Math.random()*canvasX,0,0,0);
+			break;
+		case "spawnship":
+			new Spawnship(Math.random()*canvasX,0,0,0);
+			break;
+		case "splittyship":
+			new Splittyship(Math.random()*canvasX,0,0,0);
+			break;
+		case "bigboi":
+			new BigBoi(Math.random()*canvasX,-50,0,0);
+			break;
+		case "tripleship":
+			new Tripleship(Math.random()*canvasX,0,0,0);
+			break;
+		case "teleship":
+			new Teleship(Math.random()*canvasX,0,0,0);
+			break;
+		case "mineship":
+			new Mineship(Math.random()*canvasX,0,0,0);
+			break;
+		case "bully":
+			new Bully(Math.random()*canvasX,0,0,0);
+			break;
+		default:
+			break;
 	}
 }

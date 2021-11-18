@@ -36,7 +36,7 @@ class FriendlyBullet extends Bullet {
     push();
     translate(this.pos.x,this.pos.y);
     
-    line(-this.v.x*2,-this.v.y*2,this.v.x*2,this.v.y*2);
+    line(-this.v.x/this.v.mag()*10,-this.v.y/this.v.mag()*10,this.v.x/this.v.mag()*10,this.v.y/this.v.mag()*10);
     pop();
   }
 }
@@ -60,7 +60,7 @@ class EnemyBullet extends Bullet {
     push();
     translate(this.pos.x,this.pos.y);
     
-    line(-this.v.x*2,-this.v.y*2,this.v.x*2,this.v.y*2);
+    line(-this.v.x/this.v.mag()*10,-this.v.y/this.v.mag()*10,this.v.x/this.v.mag()*10,this.v.y/this.v.mag()*10);
     pop();
   }
 }
@@ -183,9 +183,13 @@ class Splitter extends EnemyBullet {
       this.pos.y = canvasY;
     }
     if(this.dead) {
-      bulletCircle(this.pos.x,this.pos.y,this.bullets);
+	this.die();
       new RedParticle(this.pos.x,this.pos.y,30,50);
     }
+  }
+  die() {
+	  
+      bulletCircle(this.pos.x,this.pos.y,this.bullets);
   }
   show() {
     noStroke();
@@ -256,9 +260,65 @@ function bulletCircle(xPos,yPos,amount) {
   let angle2 = p5.Vector.sub(player.pos,pos).heading();
 	for(let i = 0; i < amount; i++) {
     let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
-		if(xPos+Math.cos(angle)*5 >= 0 && yPos+Math.sin(angle)*5 >= 0 && xPos+Math.cos(angle)*5 <= canvas.width && yPos+Math.sin(angle)*5 <= canvas.height) {
+		if(xPos+Math.cos(angle)*5 >= 0 && yPos+Math.sin(angle)*5 >= 0 && xPos+Math.cos(angle)*5 <= canvasX && yPos+Math.sin(angle)*5 <= canvasY) {
       new EnemyBullet(xPos+Math.cos(angle)*5,yPos+Math.sin(angle)*5,Math.cos(angle)*5,Math.sin(angle)*5);
     }
+	}
+}
+
+function bulletCircle2(xPos,yPos,amount) {
+  let pos = new p5.Vector(xPos,yPos);
+  let angle2 = p5.Vector.sub(player.pos,pos).heading();
+	for(let i = 0; i < amount; i++) {
+    let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+		if(xPos+Math.cos(angle)*5 >= 0 && yPos+Math.sin(angle)*5 >= 0 && xPos+Math.cos(angle)*5 <= canvasX && yPos+Math.sin(angle)*5 <= canvasY) {
+      new Missile(xPos+Math.cos(angle)*5,yPos+Math.sin(angle)*5,Math.cos(angle)*5,Math.sin(angle)*5,10);
+    }
+	}
+}
+
+
+function bulletCircle3(xPos,yPos,amount) {
+  let pos = new p5.Vector(xPos,yPos);
+  let angle2 = p5.Vector.sub(player.pos,pos).heading();
+	for(let i = 0; i < amount; i++) {
+    let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+		if(xPos+Math.cos(angle)*5 >= 0 && yPos+Math.sin(angle)*5 >= 0 && xPos+Math.cos(angle)*5 <= canvasX && yPos+Math.sin(angle)*5 <= canvasY) {
+      let splitter = new Missile(xPos+Math.cos(angle)*5,yPos+Math.sin(angle)*5,Math.cos(angle)*5,Math.sin(angle)*5,10);
+      splitter.die = function() {
+	  
+      bulletCircle2(splitter.pos.x,splitter.pos.y,splitter.bullets);
+  }
+    }
+	}
+}
+
+function friendlyBulletCircle(xPos,yPos,amount) {
+  let pos = new p5.Vector(xPos,yPos);
+  let angle2 = p5.Vector.sub(player.pos,pos).heading();
+	for(let i = 0; i < amount; i++) {
+    let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+		if(xPos+Math.cos(angle)*5 >= 0 && yPos+Math.sin(angle)*5 >= 0 && xPos+Math.cos(angle)*5 <= canvas.width && yPos+Math.sin(angle)*5 <= canvas.height) {
+      new FriendlyBullet(xPos+Math.cos(angle)*5,yPos+Math.sin(angle)*5,Math.cos(angle)*5,Math.sin(angle)*5);
+    }
+	}
+}
+
+
+function laserCircle(xPos,yPos,amount) {
+  let pos = new p5.Vector(xPos,yPos);
+  let angle2 = p5.Vector.sub(player.pos,pos).heading();
+	for(let i = 0; i < amount; i++) {
+    let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+	new Laser(xPos,yPos,angle);
+	}
+}
+function laserCircle2(xPos,yPos,amount) {
+  let pos = new p5.Vector(xPos,yPos);
+  let angle2 = p5.Vector.sub(player.pos,pos).heading();
+	for(let i = 0; i < amount; i++) {
+    let angle = angle2 + Math.PI/amount*2*i+(Math.random()-0.5)*Math.PI/60; 
+	new JerryLaser1(xPos,yPos,angle);
 	}
 }
 
@@ -414,7 +474,7 @@ class DelayBullet extends EnemyBullet {
     push();
     translate(this.pos.x,this.pos.y);
     
-    line(-this.v.x*10/this.v.mag(),-this.v.y*10/this.v.mag(),this.v.x*10/this.v.mag(),this.v.y*10/this.v.mag());
+    line(-this.v.x/this.v.mag()*10,-this.v.y/this.v.mag()*10,this.v.x/this.v.mag()*10,this.v.y/this.v.mag()*10);
     pop();
   }
 }
@@ -453,9 +513,14 @@ class Missile extends Entity {
     }
     this.age++;
     if(this.dead) {
-      bulletCircle(this.pos.x,this.pos.y,this.bullets);
+		this.die();
       new RedParticle(this.pos.x,this.pos.y,30,50);
     }
+  }
+  die()
+  {
+	  
+      bulletCircle(this.pos.x,this.pos.y,this.bullets);
   }
   show() {
     fill(255,255*Math.sin(this.age*Math.PI/5),0);
@@ -475,4 +540,341 @@ class Missile extends Entity {
     endShape(CLOSE);
     pop();
 	}
+}
+
+
+class Laser extends Entity {
+	constructor(x,y,angle) {
+		super(x,y,0,0,1,Infinity,0,0);
+		this.life = 60;
+		this.angle = angle;
+		this.damagable = false;
+		this.width = 1;
+    this.invincible = true;
+  }
+  laserSegment(x,y)
+  {
+	  new LaserSegment(x,y,this.width/2);
+  }
+  move() {   
+		if(this.shooter)
+		{
+			this.pos = this.shooter.pos.copy();
+		}
+	  this.life--;
+      if(this.life <= 16) {
+        let angle = this.angle;
+        let x = this.pos.x;
+        let y = this.pos.y;
+        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
+			this.laserSegment(x,y)
+          x += Math.cos(angle) * this.width*10;
+          y += Math.sin(angle) * this.width*10;
+        }
+        angle = this.angle;
+    }
+	if(this.life <= 0)
+	{
+		this.dead = true;
+	}
+  }
+  show() {
+    if(this.life > 15)
+	{
+        strokeWeight(this.width);
+        stroke(127,0,0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	else
+	{
+        strokeWeight(this.width);
+        stroke(255,255*Math.sin(this.life*Math.PI/5),0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	  if(this.shooter)
+		{
+			this.shooter.show();
+		}
+  }
+}
+
+
+
+class BigLaser extends Entity {
+	constructor(x,y,angle) {
+		super(x,y,0,0,1,Infinity,0,0);
+		this.life = 60;
+		this.angle = angle;
+		this.damagable = false;
+		this.width = 5;
+    this.invincible = true;
+  }
+  laserSegment(x,y)
+  {
+	  new LaserSegment(x,y,this.width/2);
+  }
+  move() {   
+		if(this.shooter)
+		{
+			this.pos = this.shooter.pos.copy();
+		}
+	  this.life--;
+      if(this.life <= 16) {
+        let angle = this.angle;
+        let x = this.pos.x;
+        let y = this.pos.y;
+        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
+			this.laserSegment(x,y)
+          x += Math.cos(angle) * this.width*10;
+          y += Math.sin(angle) * this.width*10;
+        }
+        if(this.life === 16) {
+          new Splitter(x,y,0,0,10);
+        }
+        angle = this.angle;
+    }
+	if(this.life <= 0)
+	{
+		this.dead = true;
+	}
+  }
+  show() {
+    if(this.life > 15)
+	{
+        strokeWeight(this.width);
+        stroke(127,0,0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	else
+	{
+        strokeWeight(this.width);
+        stroke(255,255*Math.sin(this.life*Math.PI/5),0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	  if(this.shooter)
+		{
+			this.shooter.show();
+		}
+  }
+}
+
+
+class BiggerLaser extends Entity {
+	constructor(x,y,angle) {
+		super(x,y,0,0,1,Infinity,0,0);
+		this.life = 60;
+		this.angle = angle;
+		this.damagable = false;
+		this.width = 5;
+    this.invincible = true;
+  }
+  laserSegment(x,y)
+  {
+	  new LaserSegment(x,y,this.width/2);
+  }
+  move() {   
+		if(this.shooter)
+		{
+			this.pos = this.shooter.pos.copy();
+		}
+	  this.life--;
+      if(this.life <= 16) {
+        let angle = this.angle;
+        let x = this.pos.x;
+        let y = this.pos.y;
+        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
+			this.laserSegment(x,y)
+          x += Math.cos(angle) * this.width*10;
+          y += Math.sin(angle) * this.width*10;
+        }
+        if(this.life%5 === 1) {
+          new Splitter(x,y,0,0,20);
+        }
+        angle = this.angle;
+    }
+	if(this.life <= 0)
+	{
+		this.dead = true;
+	}
+  }
+  show() {
+    if(this.life > 15)
+	{
+        strokeWeight(this.width);
+        stroke(127,0,0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	else
+	{
+        strokeWeight(this.width);
+        stroke(255,255*Math.sin(this.life*Math.PI/5),0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	  if(this.shooter)
+		{
+			this.shooter.show();
+		}
+  }
+}
+
+class JerryLaser1 extends Entity {
+	constructor(x,y,angle) {
+		super(x,y,0,0,1,Infinity,0,0);
+		this.life = 60;
+		this.angle = angle;
+		this.damagable = false;
+    this.invincible = true;
+		this.width = 5;
+  }
+  move() {
+	this.life--;
+    if(this.life <= 15) {
+      
+        let angle = this.angle;
+        let x = this.pos.x;
+        let y = this.pos.y;
+		let i = 0;
+        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
+          x += Math.cos(angle);
+          y += Math.sin(angle);
+		  i = i+1;
+		  if(i % (this.width*10) === 0)
+		  {			  
+			new LaserSegment(x,y,this.width/2);
+		  }
+		  if(this.life == 15)
+		  {
+			  if(i % 150 == 0)
+			  {			  
+				  let angle2 = this.angle+Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+				  let angle3 = this.angle-Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+				  new EnemyBullet(x,y,-Math.cos(angle2)*5,-Math.sin(angle2)*5);
+				  new EnemyBullet(x,y,-Math.cos(angle3)*5,-Math.sin(angle3)*5);
+				  new EnemyBullet(x,y,-Math.cos(angle2)*3,-Math.sin(angle2)*3);
+				  new EnemyBullet(x,y,-Math.cos(angle3)*3,-Math.sin(angle3)*3);
+			  }
+			  if(i % 150 == 75)
+			  {			  
+				  let angle2 = this.angle+Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+				  let angle3 = this.angle-Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+				  new EnemyBullet(x,y,-Math.cos(angle2)*4,-Math.sin(angle2)*4);
+				  new EnemyBullet(x,y,-Math.cos(angle3)*4,-Math.sin(angle3)*4);
+			  }
+		  }
+        }
+    }
+	if(this.life <= 0)
+	{
+		this.dead = true;
+	}
+  }
+  show() {
+    if(this.life > 15)
+	{
+        strokeWeight(this.width);
+        stroke(127,0,0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	else
+	{
+        strokeWeight(this.width);
+        stroke(255,255*Math.sin(this.life*Math.PI/5),0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+  }
+}
+
+
+class JerryLaser2 extends Entity {
+	constructor(x,y,angle) {
+		super(x,y,0,0,1,Infinity,0,0);
+		this.life = 60;
+		this.angle = angle;
+		this.damagable = false;
+    this.invincible = true;
+  }
+  move() {
+	this.life--;
+    if(this.life <= 15) {
+      
+        let angle = this.angle;
+        let x = this.pos.x;
+        let y = this.pos.y;
+		let i = 0;
+        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
+          x += Math.cos(angle);
+          y += Math.sin(angle);
+		  i = i+1;
+		  if(i % this.width*10 == 0)
+		  {			  
+          new LaserSegment(x,y,this.width/2);
+		  }
+		  if(this.life == 15)
+		  {
+			  if(i % 150 == 0)
+			  {			  
+				bulletCircle(x,y,8);
+			  }
+		  }
+        }
+    }
+	if(this.life <= 0)
+	{
+		this.dead = true;
+	}
+  }
+  show() {
+    if(this.life > 15)
+	{
+        strokeWeight(5);
+        stroke(127,0,0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+	else
+	{
+        strokeWeight(5);
+        stroke(255,255*Math.sin(this.life*Math.PI/5),0);
+        push();
+        translate(this.pos.x,this.pos.y);
+        
+        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
+        pop();
+	}
+  }
 }

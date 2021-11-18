@@ -17,6 +17,9 @@ class Snipeyship extends Entity {
     if(this.cooldown >= this.reload) {
       this.shooting = true;
       this.shootLength = 60;
+        let angle = this.angle;
+		let laser = new Laser(this.pos.x, this.pos.y, this.angle);
+		laser.shooter = this;
     }
   }
   move() {
@@ -43,43 +46,15 @@ class Snipeyship extends Entity {
     }
     if(this.shooting) {    
       this.shootLength--;
-      if(this.shootLength > 16) {
-        strokeWeight(1);
-        stroke(127,0,0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
-      } else {
-        if(this.shootLength === 16) {
+      if(this.shootLength === 16) {
           let angle = this.angle+Math.PI;
           this.v.add(p5.Vector.fromAngle(angle).mult(3));
           this.cooldown -= this.reload;
         }
-        let angle = this.angle;
-        let x = this.pos.x;
-        let y = this.pos.y;
-        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
-          new LaserSegment(x,y,1);
-          x += Math.cos(angle) * 3;
-          y += Math.sin(angle) * 3;
-        }
-        angle = this.angle;
-
-        strokeWeight(1);
-        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
-
         if(this.shootLength <= 0) {
           this.shooting = false;
         }
-      }
-    } else{
+      }else {
       if(this.ai === "Random") {
         let distance = p5.Vector.sub(player.pos,this.pos).mag();
         this.angle = p5.Vector.sub(player.pos,this.pos).heading();
@@ -205,8 +180,7 @@ class Splittyship extends Entity {
     if(this.cooldown >= this.reload ) {
       this.cooldown -= this.reload;
       let angle = this.angle+Math.PI+(Math.random()-0.5)*Math.PI/60; 
-      new Splitter(this.pos.x,this.pos.y,-Math.cos(angle)*7.5,-Math.sin(angle)*7.5,10);
-      
+      let splitter = new Splitter(this.pos.x,this.pos.y,-Math.cos(angle)*7.5,-Math.sin(angle)*7.5,10);
     }
   }
   move() {

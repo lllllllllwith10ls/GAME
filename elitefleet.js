@@ -466,6 +466,10 @@ class Kevin extends Entity {
     if(this.cooldown2 >= this.reload2) {
       this.shooting = true;
       this.shootLength = 45;
+        let angle = this.angle;
+		let laser = new Laser(this.pos.x, this.pos.y, this.angle);
+		laser.shooter = this;
+		laser.life = 45;
     }
   }
   splitter(force) {
@@ -505,44 +509,17 @@ class Kevin extends Entity {
     }
     
     this.modeLength--;
-    if(this.shooting) {
+    if(this.shooting) {    
       this.shootLength--;
-      if(this.shootLength > 16) {
-        strokeWeight(1);
-        stroke(127,0,0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
-      } else {
-        if(this.shootLength <= 16 && this.shootLength > 15) {
+      if(this.shootLength === 16) {
           let angle = this.angle+Math.PI;
           this.v.add(p5.Vector.fromAngle(angle).mult(3));
           this.cooldown -= this.reload;
         }
-        let angle = this.angle;
-        let x = this.pos.x;
-        let y = this.pos.y;
-        while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
-          new LaserSegment(x,y,1);
-          x += Math.cos(angle) * 3;
-          y += Math.sin(angle) * 3;
-        }
-        angle = this.angle;
-
-        strokeWeight(1);
-        stroke(255,255*Math.sin(this.shootLength*Math.PI/5),0);
-        push();
-        translate(this.pos.x,this.pos.y);
-        
-        line(0,0,Math.cos(this.angle)*2000,Math.sin(this.angle)*2000);
-        pop();
         if(this.shootLength <= 0) {
           this.shooting = false;
-        }
-        this.pos.add(this.v);
-      }
+        
+	}
     } else {
       let distance = p5.Vector.sub(player.pos,this.pos).mag();
       this.angle = p5.Vector.sub(player.pos,this.pos).heading();
