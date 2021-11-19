@@ -570,8 +570,8 @@ class Laser extends Entity {
         let y = this.pos.y;
         while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
 			this.laserSegment(x,y)
-          x += Math.cos(angle) * this.width*10;
-          y += Math.sin(angle) * this.width*10;
+          x += Math.cos(angle) * (this.width + 10);
+          y += Math.sin(angle) * (this.width + 10);
         }
         angle = this.angle;
     }
@@ -635,8 +635,8 @@ class BigLaser extends Entity {
         let y = this.pos.y;
         while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
 			this.laserSegment(x,y)
-          x += Math.cos(angle) * this.width*10;
-          y += Math.sin(angle) * this.width*10;
+          x += Math.cos(angle) * (this.width + 10);
+          y += Math.sin(angle) * (this.width + 10);
         }
         if(this.life === 16) {
           new Splitter(x,y,0,0,10);
@@ -702,8 +702,8 @@ class BiggerLaser extends Entity {
         let y = this.pos.y;
         while(y >= 0 && y <= canvasY && x >= 0 && x <= canvasX) { 
 			this.laserSegment(x,y)
-          x += Math.cos(angle) * this.width*10;
-          y += Math.sin(angle) * this.width*10;
+          x += Math.cos(angle) * (this.width + 10);
+          y += Math.sin(angle) * (this.width + 10);
         }
         if(this.life%5 === 1) {
           new Splitter(x,y,0,0,20);
@@ -764,7 +764,7 @@ class JerryLaser1 extends Entity {
           x += Math.cos(angle);
           y += Math.sin(angle);
 		  i = i+1;
-		  if(i % (this.width*10) === 0)
+		  if(i % (this.width + 10) === 0)
 		  {			  
 			new LaserSegment(x,y,this.width/2);
 		  }
@@ -839,7 +839,7 @@ class JerryLaser2 extends Entity {
           x += Math.cos(angle);
           y += Math.sin(angle);
 		  i = i+1;
-		  if(i % this.width*10 == 0)
+		  if(i % (this.width + 10) == 0)
 		  {			  
           new LaserSegment(x,y,this.width/2);
 		  }
