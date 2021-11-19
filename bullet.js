@@ -313,6 +313,8 @@ function laserCircle(xPos,yPos,amount) {
 	new Laser(xPos,yPos,angle);
 	}
 }
+
+
 function laserCircle2(xPos,yPos,amount) {
   let pos = new p5.Vector(xPos,yPos);
   let angle2 = p5.Vector.sub(player.pos,pos).heading();

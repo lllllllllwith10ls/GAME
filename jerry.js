@@ -111,6 +111,32 @@ class JerryRevenge extends Entity {
   }
   
   
+  shoot2() {
+    if(this.cooldown2 >= this.reload3) {
+      let angle = this.angle+Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+      let angle2 = this.angle-Math.PI/2+(Math.random()-0.5)*Math.PI/60; 
+      new EnemyBullet(this.pos.x,this.pos.y,-Math.cos(angle)*5,-Math.sin(angle)*5);
+      new EnemyBullet(this.pos.x,this.pos.y,-Math.cos(angle2)*5,-Math.sin(angle2)*5);
+      this.cooldown2 -= this.reload3;
+    } else if(this.cooldown2 % this.reload3 == this.reload3/3) {
+	  let angle = this.angle+Math.PI/2+Math.PI/6+(Math.random()-0.5)*Math.PI/60; 
+      let angle2 = this.angle-Math.PI/2-Math.PI/6+(Math.random()-0.5)*Math.PI/60; 
+      new EnemyBullet(this.pos.x,this.pos.y,-Math.cos(angle)*5,-Math.sin(angle)*5);
+      new EnemyBullet(this.pos.x,this.pos.y,-Math.cos(angle2)*5,-Math.sin(angle2)*5);
+      this.cooldown2 -= this.reload3;
+    	
+	} else if(this.cooldown2 % this.reload3 == 2*this.reload3/3) {
+	  let angle = this.angle+Math.PI/2-Math.PI/6+(Math.random()-0.5)*Math.PI/60; 
+      let angle2 = this.angle-Math.PI/2+Math.PI/6+(Math.random()-0.5)*Math.PI/60; 
+      new EnemyBullet(this.pos.x,this.pos.y,-Math.cos(angle)*5,-Math.sin(angle)*5);
+      new EnemyBullet(this.pos.x,this.pos.y,-Math.cos(angle2)*5,-Math.sin(angle2)*5);
+      this.cooldown2 -= this.reload3;
+    	
+	}
+		
+  }
+  
+  
   shootLaser() {
     if(this.cooldown4 >= this.reload5 && this.modeLength > 90) {
 	  let angle = this.angle+(Math.random()-0.5)*Math.PI/60; 

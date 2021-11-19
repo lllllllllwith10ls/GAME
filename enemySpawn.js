@@ -87,11 +87,15 @@ function addEnemy() {
       let enemyCosts = [5          ,5           ,10          ,10        ,2.5      ,15         ,10           ,20          ,15        ,15        ,150    ,200     ,250];
       while(points > 0) {
         let enemyNum = Math.floor(Math.random()*enemyNames.length);
+		if(points < 2.5)
+		{
+			break;
+		}
         if(enemyCosts[enemyNum] <= points) {
           points -= enemyCosts[enemyNum];
           makeEnemy(enemyNames[enemyNum]);
         } else {
-          break;
+          continue;
         }
       }
     }

@@ -29,6 +29,10 @@ class Swarmship extends Entity {
     } else if(this.ai === "Flanker") {
       this.angle = p5.Vector.sub(player.pos,this.pos).heading();
       this.target = p5.Vector.sub(player.pos,p5.Vector.fromAngle(player.angle).mult(50));
+	  if(p5.Vector.sub(player.pos,this.pos).mag() < 60)
+	  {
+		this.target = player.pos.copy();
+	  }
       
     } else if(this.ai === "Erratic") {
       this.angle = p5.Vector.sub(player.pos,this.pos).heading();

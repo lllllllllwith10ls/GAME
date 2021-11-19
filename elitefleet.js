@@ -1,5 +1,9 @@
 let eliteFleet = [];
 function makeFleet() {
+	for(let i = 0; i < eliteFleet.length; i++)
+	{
+		eliteFleet[i].phase = 3;
+	}
 	eliteFleet = [
 	new Jerry(Math.random()*canvasX,0,0,0), 
 	new Steve(Math.random()*canvasX,0,0,0), 
